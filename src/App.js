@@ -11,7 +11,7 @@ import Profile from './Pages/Dashboard/Components/Profile';
 import ProtectedRoute from './ProtectedRoute';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // const auth = getAuth();
