@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 // import { getAuth, onAuthStateChanged } from 'firebase/auth'; // Firebase authentication
+import { getAuth,onAuthStateChanged } from 'firebase/auth';
 import Login from './Pages/Login/Components/Login';
 import Navbar from './Pages/Navbar/Components/Navbar';
 import Dashboard from './Pages/Dashboard/Components/Dashboard';
@@ -14,23 +15,23 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // const auth = getAuth();
-    // const unsubscribe = onAuthStateChanged(auth, (user) => {
-    //   if (user) {
-    //     setIsAuthenticated(true);
-    //   } else {
-    //     setIsAuthenticated(false);
-    //   }
-    //   setLoading(false);
-    // });
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+      setLoading(false);
+    });
 
-    // return () => unsubscribe(); // Cleanup on unmount
+    return () => unsubscribe(); // Cleanup on unmount
 
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>; // You can customize a loading screen here
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>; // You can customize a loading screen here
+  // }
 
   return (
     <div className="App">

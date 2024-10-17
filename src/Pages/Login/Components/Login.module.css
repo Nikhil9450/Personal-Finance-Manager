@@ -2,7 +2,7 @@
 .login_container{
     /* height: 100%; */
     /* background: url("../../../../public/Images/background3.jpg"); */
-    background-color: black;
+    background-color: rgb(69 125 88);
     background-size: cover;
   }
   .login_grid {
@@ -18,7 +18,7 @@
     flex-direction: column;
     /* background: url("../../../../public/Images/background.jpg"); */
     /* background-size: cover; */
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(69 125 88);
   }
   
   
@@ -30,7 +30,7 @@
     color: white;
     backdrop-filter: blur(8px);
     padding-left: 2rem;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.2);
   }
   h5{
     font-size: 1rem;
@@ -88,7 +88,7 @@
   h1{
   font-size: 2rem;
   margin-bottom: 5rem;
-  font-family: "Sacramento";
+  font-family: "Kantumruy Pro", sans-serif;
   font-style: normal;
   font-weight: 400;
   }
@@ -148,7 +148,7 @@
      h1{
       font-size: 1rem;
       margin-bottom: 1rem;
-      font-family: "Sacramento";
+      font-family: "Kantumruy Pro", sans-serif;
       font-style: normal;
       font-weight: 400;
       }
