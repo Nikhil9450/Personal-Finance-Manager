@@ -7,7 +7,7 @@ import { auth,GoogleAuthProvider } from "../../../firebase";
 import { signInWithPopup } from 'firebase/auth';
 const Login = () => {
   const [isSignupModalOpen, setSignupModalOpen] = useState(false);
-  // const [isSigninModalOpen, setSigninModalOpen] = useState(false);
+  const [isSigninModalOpen, setSigninModalOpen] = useState(false);
   const openSignupModal = () => {
     setSignupModalOpen(true);
   };
@@ -15,13 +15,13 @@ const Login = () => {
   const closeSignupModal = () => {
     setSignupModalOpen(false);
   };
-  // const openSigninModal = () => {
-  //   setSigninModalOpen(true);
-  // };
+  const openSigninModal = () => {
+    setSigninModalOpen(true);
+  };
 
-  // const closeSigninModal = () => {
-  //   setSigninModalOpen(false);
-  // };
+  const closeSigninModal = () => {
+    setSigninModalOpen(false);
+  };
 
   const signInWithGoogle = async () => {
     try {
@@ -58,16 +58,16 @@ const Login = () => {
                 <p className={classes.term_condition_para}>By signing up,you agree to the Terms of Service and Privacy Policy, including Cookie Use.</p>
               </div>
 
-              {/* <div>
+              <div>
                 <h5>Already have an account?</h5>
                 <button className={classes.signin_btn} onClick={openSigninModal}>Sign in</button>
-              </div> */}
+              </div>
             </div>
           </div>  
         </div>
       </div>
       <SignupModal open={isSignupModalOpen} onClose={closeSignupModal} />
-      {/* <SigninModal open={isSigninModalOpen} onClose={closeSigninModal} /> */}
+      <SigninModal open={isSigninModalOpen} onClose={closeSigninModal} />
     </div>
   )
 }
