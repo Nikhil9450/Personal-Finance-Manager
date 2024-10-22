@@ -40,6 +40,15 @@ const submit_signup_form=(e)=>{
     email:emailRef.current.value,
     password:passwordRef.current.value
   }
+  createUserWithEmailAndPassword(auth,formData.email,formData.password)
+  .then((response)=>{
+    setLoader(false);
+    console.log("response of create user----->",response);
+  })
+  .catch((error)=>{
+    setLoader(false);
+    console.log("error----->",error);
+  })
   console.log("signup form data",formData)
 }
 
