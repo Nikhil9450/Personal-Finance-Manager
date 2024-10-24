@@ -39,8 +39,8 @@
   font-weight: bold;
 }
 
-.form input {
-  margin: 10px 0;
+.form input,select {
+  margin: 5px 0;
   width: 100%;
   background-color: #e2e2e2;
   border: none;
@@ -64,6 +64,7 @@
   display: flex;
   align-items: center;
   padding: 10px;
+  font-size: small;
 }
 
 .card_terms input[type="checkbox"] {
@@ -78,4 +79,20 @@
 .card a {
   color: #4796ff;
   text-decoration: none;
+}
+.inner_formContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.inner_formContainer :nth-child(){
+  margin: 0 1rem;
+}
+
+label{
+  font-size: small;
+    color: #424242;
+}
+.signup_btn{
+  margin-top: 2rem;
 }
