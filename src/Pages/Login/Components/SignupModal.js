@@ -232,7 +232,7 @@ const submit_signup_form = (e) => {
               </Grid>
 
               <Grid size={12}>
-                <Button className={classes.signup_btn} variant="contained" type='submit' >{((loader)?<Loader size={30}/>:"Sign Up")}</Button>
+                <Button style={{marginTop:"1rem"}} variant="contained" type='submit' >{((loader)?<Loader size={30}/>:"Sign Up")}</Button>
               </Grid>
             </Grid>
 
