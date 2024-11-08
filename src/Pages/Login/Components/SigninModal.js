@@ -105,7 +105,7 @@ const SigninModal = (props) => {
               <input type="email" name="email" placeholder="Email" id="email" ref={emailRef}/>
               <input type="password" name="password" placeholder="Password" id="password" ref={passwordRef} />
 
-              <Button variant="contained" type='submit' >{((loader)?<Loader size={30}/>:"Login")}</Button>
+              <Button style={{marginTop:".5rem"}} variant="contained" type='submit' >{((loader)?<Loader size={30}/>:"Login")}</Button>
             </form>
             </div>
           </Typography>

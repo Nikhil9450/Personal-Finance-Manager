@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { auth } from '../../../firebase';
+import { db,auth } from '../../../firebase';
 import { createUserWithEmailAndPassword,updateProfile } from 'firebase/auth';
 import Loader from '../../../Loader'; 
 import IconButton from '@mui/material/IconButton';
@@ -16,6 +16,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid2';
+import { doc, setDoc } from "firebase/firestore";
 // import FormControl from '@mui/material/FormControl';
 // import Swal from 'sweetalert2'
 import Select from '@mui/material/Select';
@@ -68,6 +69,82 @@ function closeAlert(){
 }
 
 
+// const submit_signup_form = (e) => {
+//   e.preventDefault();
+//   const formData = {
+//     name: nameRef.current.value,
+//     email: emailRef.current.value,
+//     password: passwordRef.current.value,
+//     confirmPass: confirmPasswordRef.current.value,
+//     DOB: DOBref.current.value,
+//     gender: gender,
+//   };
+
+//   console.log("form data---------->",formData)
+
+//   // Validation
+//   if (!formData.name) {
+//     setError("Name is required.");
+//     openAlert();
+//     return;
+//   }
+
+//   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//   if (!emailPattern.test(formData.email)) {
+//     setError("Please enter a valid email.");
+//     openAlert();
+//     return;
+//   }
+
+//   if (formData.password.length < 6) {
+//     setError("Password should be at least 6 characters long.");
+//     openAlert();
+//     return;
+//   }
+
+//   const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+//   if (!passwordPattern.test(formData.password)) {
+//     setError("Password must contain at least one letter and one number.");
+//     openAlert();
+//     return;
+//   }
+
+//   if (formData.password !== formData.confirmPass) {
+//     setError("Passwords do not match.");
+//     openAlert();
+//     return;
+//   }
+
+//   const today = new Date();
+//   const inputDOB = new Date(formData.DOB);
+//   if (inputDOB >= today) {
+//     setError("Date of Birth must be in the past.");
+//     openAlert();
+//     return;
+//   }
+
+//   if (!formData.gender) {
+//     setError("Please select a gender.");
+//     openAlert();
+//     return;
+//   }
+
+//   // Proceed with Firebase auth if all validations pass
+//   createUserWithEmailAndPassword(auth, formData.email, formData.password)
+//     .then((response) => {
+//       setLoader(false);
+//       console.log("response of create user----->", response);
+//     })
+//     .catch((error) => {
+//       setLoader(false);
+//       setError(error)
+//       openAlert();
+//       console.log("error----->", error);
+//     });
+
+//   console.log("signup form data", formData);
+// };
+
 const submit_signup_form = (e) => {
   e.preventDefault();
   const formData = {
@@ -79,7 +156,7 @@ const submit_signup_form = (e) => {
     gender: gender,
   };
 
-  console.log("form data---------->",formData)
+  console.log("form data---------->", formData);
 
   // Validation
   if (!formData.name) {
@@ -95,18 +172,18 @@ const submit_signup_form = (e) => {
     return;
   }
 
-  if (formData.password.length < 6) {
-    setError("Password should be at least 6 characters long.");
-    openAlert();
-    return;
-  }
+  // if (formData.password.length < 6) {
+  //   setError("Password should be at least 6 characters long.");
+  //   openAlert();
+  //   return;
+  // }
 
-  const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
-  if (!passwordPattern.test(formData.password)) {
-    setError("Password must contain at least one letter and one number.");
-    openAlert();
-    return;
-  }
+  // const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+  // if (!passwordPattern.test(formData.password)) {
+  //   setError("Password must contain at least one letter and one number.");
+  //   openAlert();
+  //   return;
+  // }
 
   if (formData.password !== formData.confirmPass) {
     setError("Passwords do not match.");
@@ -130,13 +207,24 @@ const submit_signup_form = (e) => {
 
   // Proceed with Firebase auth if all validations pass
   createUserWithEmailAndPassword(auth, formData.email, formData.password)
-    .then((response) => {
+    .then(async (response) => {
       setLoader(false);
       console.log("response of create user----->", response);
+
+      // Store data in Firestore
+      const userDoc = doc(db, "users", response.user.uid);
+      await setDoc(userDoc, {
+        name: formData.name,
+        email: formData.email,
+        DOB: formData.DOB,
+        gender: formData.gender,
+      });
+
+      console.log("User data stored in Firestore.");
     })
     .catch((error) => {
       setLoader(false);
-      setError(error)
+      setError(error.message);
       openAlert();
       console.log("error----->", error);
     });
