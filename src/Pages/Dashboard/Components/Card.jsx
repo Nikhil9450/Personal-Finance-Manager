@@ -16,10 +16,10 @@ const Card = ({ width, height, children }) => {
                 // whileHover={{
                 //     scale: 1.1,
                 // }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                whileTap={{
-                    scale: 1.02
-                }}
+                // transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                // whileTap={{
+                //     scale: 1.02
+                // }}
                 style={{
                     width: width,
                     height: height,
