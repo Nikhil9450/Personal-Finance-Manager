@@ -10,7 +10,11 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import DirectionsIcon from '@mui/icons-material/Directions';
-
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import DescriptionIcon from '@mui/icons-material/Description';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import AddIcon from '@mui/icons-material/Add';
+import classes from './AddExpenses.module.css'
 const AddExpenses = () => {
     const [modal,setModal]=useState(false)
 
@@ -34,23 +38,21 @@ const showModal = () => {
             
         />
         <My_modal title="Add expense" button_name="Add Expenses" isModalOpen={modal} handleCancel={handleCancel}>
-             <div>
-                <IconButton sx={{width:"20px", p: '10px' }} aria-label="menu">
-                    <MenuIcon />
-                </IconButton>
-                <InputBase
-                    sx={{ ml: 1, flex: 1 }}
-                    placeholder="Search Google Maps"
-                    inputProps={{ 'aria-label': 'search google maps' }}
-                />
-                <IconButton type="button" sx={{width:"20px", p: '10px' }} aria-label="search">
-                    <SearchIcon />
-                </IconButton>
-                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                <IconButton color="primary" sx={{width:"20px",  p: '10px' }} aria-label="directions">
-                    <DirectionsIcon />
-                </IconButton>
+        <form action="">
+             <div id='addExpense_container' className={classes.addExpense_container}>
+                <div className={classes.Container_Child}>
+                    <label htmlFor="description"><DescriptionIcon/></label>
+                    <input id='description' className={classes.description} type="text"  placeholder='Enter description.'/>
+                </div>
+                <div className={classes.Container_Child}>
+                    <label htmlFor="amount"><CurrencyRupeeIcon/></label>
+                    <input id='amount' className={classes.amount} type="number" placeholder='Enter amount.'/>
+                </div>
+                <div className={classes.submitbtn_container}>
+                  <button className={classes.button} type='submit'><AddIcon/></button>
+                </div>
             </div>
+        </form>
         </My_modal>
     </div>
   )
