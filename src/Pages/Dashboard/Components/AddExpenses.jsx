@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useState } from 'react';
 import My_modal from '../../../My_modal'
 import AddButton from '../../../My_button'
@@ -17,16 +17,26 @@ import AddIcon from '@mui/icons-material/Add';
 import classes from './AddExpenses.module.css'
 const AddExpenses = () => {
     const [modal,setModal]=useState(false)
+    const priceRef=useRef(null);
+    const descriptionRef= useRef(null);
 
-const showModal = () => {
-    console.log("opening modal");
-    setModal(true);
-  };
+    const addToList=()=>{
+      const item={
+        price: priceRef.current.value,
+        description: descriptionRef.current.value,
+      }
+    }
 
-  const handleCancel = () => {
-    console.log("closing modal");
-    setModal(false);
-  };  
+
+    const showModal = () => {
+        console.log("opening modal");
+        setModal(true);
+      };
+
+    const handleCancel = () => {
+        console.log("closing modal");
+        setModal(false);
+      };  
   return (
     <div>
             <AddButton 
@@ -42,11 +52,11 @@ const showModal = () => {
              <div id='addExpense_container' className={classes.addExpense_container}>
                 <div className={classes.Container_Child}>
                     <label htmlFor="description"><DescriptionIcon/></label>
-                    <input id='description' className={classes.description} type="text"  placeholder='Enter description.'/>
+                    <input id='description' className={classes.description} type="text"  placeholder='Enter description.' ref={descriptionRef} />
                 </div>
                 <div className={classes.Container_Child}>
                     <label htmlFor="amount"><CurrencyRupeeIcon/></label>
-                    <input id='amount' className={classes.amount} type="number" placeholder='Enter amount.'/>
+                    <input id='amount' className={classes.amount} type="number" placeholder='Enter amount.' ref={priceRef}/>
                 </div>
                 <div className={classes.submitbtn_container}>
                   <button className={classes.button} type='submit'><AddIcon/></button>
