@@ -10,6 +10,8 @@ import Dashboard from './Pages/Dashboard/Components/Dashboard';
 // import Settings from './Pages/Settings/Components/Settings'; // Example new route
 import Profile from './Pages/Dashboard/Components/Profile';
 import ProtectedRoute from './ProtectedRoute';
+// import Navbar from './Pages/Navbar/Components/Navbar'
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,36 +37,37 @@ function App() {
 
   return (
     <div className="App">
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+      <Navbar/>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
 
-        {/* Protected routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-        {/* <Route
-          path="/settings"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <Settings />
-            </ProtectedRoute>
-          }
-        /> */}
-      </Routes>
+          {/* Protected routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          {/* <Route
+            path="/settings"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <Settings />
+              </ProtectedRoute>
+            }
+          /> */}
+        </Routes>
     </div>
   );
 }

@@ -13,7 +13,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 const Dashboard = () => {
   return (
     <div className={classes.dashboard}>
-      <Navbar/>
+      {/* <Navbar/> */}
       <div className={classes.dashboard_content}>
         <Grid container rowSpacing={5} columnSpacing={5}>
           <Grid size={8}>

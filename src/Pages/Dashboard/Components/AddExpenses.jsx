@@ -15,18 +15,60 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AddIcon from '@mui/icons-material/Add';
 import classes from './AddExpenses.module.css'
+import { doc, collection, addDoc ,updateDoc } from "firebase/firestore";
+import { db,auth } from '../../../firebase';
+import Loader from '../../../Loader';
 const AddExpenses = () => {
     const [modal,setModal]=useState(false)
     const priceRef=useRef(null);
     const descriptionRef= useRef(null);
+    const [error,setError]=useState(false);
+    const [loader,setLoader]=useState(false);
 
-    const addToList=()=>{
-      const item={
+    const addToList = async (e) => {
+      e.preventDefault();
+    
+      const user = auth.currentUser; // Get the currently authenticated user
+      if (!user) {
+        console.log("No user is logged in.");
+        setError("Please log in to add items.");
+        return;
+      }
+    
+      const item = {
         price: priceRef.current.value,
         description: descriptionRef.current.value,
+        createdAt: new Date(), // Add a timestamp
+      };
+    
+      console.log("item----------->", item);
+      setLoader(true);
+    
+      try {
+        // Reference to the user's subcollection
+        const itemsCollection = collection(db, "users", user.uid, "items");
+    
+        // Add a new document to the subcollection
+        await addDoc(itemsCollection, item);
+    
+        console.log("Item added to Firestore subcollection.");
+        setLoader(false); // Reset loader after success
+      } catch (error) {
+        setLoader(false); // Ensure loader is reset on error
+        setError(error.message);
+        console.log("error----->", error);
       }
-    }
+    };
 
+    const updateItem = async (userId, itemId, updatedData) => {
+      try {
+        const itemDoc = doc(db, "users", userId, "items", itemId); // Reference to the specific item
+        await updateDoc(itemDoc, updatedData); // Update only the fields in `updatedData`
+        console.log("Item updated successfully.");
+      } catch (error) {
+        console.error("Error updating item:", error);
+      }
+    };
 
     const showModal = () => {
         console.log("opening modal");
@@ -48,7 +90,7 @@ const AddExpenses = () => {
             
         />
         <My_modal title="Add expense" button_name="Add Expenses" isModalOpen={modal} handleCancel={handleCancel}>
-        <form action="">
+        <form onSubmit={addToList} method='post'>
              <div id='addExpense_container' className={classes.addExpense_container}>
                 <div className={classes.Container_Child}>
                     <label htmlFor="description"><DescriptionIcon/></label>
@@ -56,10 +98,10 @@ const AddExpenses = () => {
                 </div>
                 <div className={classes.Container_Child}>
                     <label htmlFor="amount"><CurrencyRupeeIcon/></label>
-                    <input id='amount' className={classes.amount} type="number" placeholder='Enter amount.' ref={priceRef}/>
+                    <input id='amount' className={classes.amount} type="integer" placeholder='Enter amount.' ref={priceRef}/>
                 </div>
                 <div className={classes.submitbtn_container}>
-                  <button className={classes.button} type='submit'><AddIcon/></button>
+                  <button className={classes.button} type='submit'>{loader?<Loader size={30} />:<AddIcon/>}</button>
                 </div>
             </div>
         </form>

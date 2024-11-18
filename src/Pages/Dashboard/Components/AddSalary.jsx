@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import My_modal from '../../../My_modal'
 import { useState } from 'react'
 import AddButton from '../../../My_button';
@@ -9,8 +9,62 @@ import { DatePicker, Space, DatePickerProps } from 'antd';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AddIcon from '@mui/icons-material/Add';
 import classes from "./AddSalary.module.css"
+import { doc, collection, addDoc ,updateDoc } from "firebase/firestore";
+import { db,auth } from '../../../firebase';
+import Loader from '../../../Loader';
+
 const AddSalary = () => {
 const [modal,setModal]=useState(false)
+const [error,setError]=useState(false);
+const [loader,setLoader]=useState(false);
+const [selectedMonth, setSelectedMonth] = useState(null);
+
+const salary=useRef(null);
+const month=useRef(null);
+
+
+const onChange = (date, dateString) => {
+  setSelectedMonth(dateString); // Set the string representation (e.g., "2024-11")
+  console.log("Selected Month (Moment Object):", date); // Moment.js object
+  console.log("Selected Month (String):", dateString); // String representation
+  month.current = dateString; // Save the selected value to the ref
+};
+
+const addSalary = async (e) => {
+  e.preventDefault();
+
+  const user = auth.currentUser; // Get the currently authenticated user
+  if (!user) {
+    console.log("No user is logged in.");
+    setError("Please log in to add items.");
+    return;
+  }
+
+  const user_salary = {
+    year_month: selectedMonth,
+    salary: salary.current.value,
+    createdAt: new Date(), // Add a timestamp
+  };
+
+  console.log("user_salary----------->", user_salary);
+  setLoader(true);
+
+  try {
+    // Reference to the user's subcollection
+    const itemsCollection = collection(db, "users", user.uid, "salary_detail");
+
+    // Add a new document to the subcollection
+    await addDoc(itemsCollection, user_salary);
+
+    console.log("Item added to Firestore subcollection.");
+    setLoader(false); // Reset loader after success
+  } catch (error) {
+    setLoader(false); // Ensure loader is reset on error
+    setError(error.message);
+    console.log("error----->", error);
+  }
+};
+
 
 const showModal = () => {
     console.log("opening modal");
@@ -22,9 +76,12 @@ const showModal = () => {
     setModal(false);
   };  
 
-  const onChange = (date, dateString) => {
-    console.log(date, dateString);
-  };
+  // const onChange = (date, dateString) => {
+  //   console.log(date, dateString);
+  //   console.log("Selected Month (Moment Object):", date); // Moment.js object
+  //   console.log("Selected Month (String):", dateString); // String representation
+  //   month.current = dateString; // Save the selected value to the ref
+  // };
   return (
     <div>
             <style>
@@ -46,18 +103,20 @@ const showModal = () => {
             bgColor="grey"
         />
         <My_modal title="Add Salary" button_name="Add Salary" isModalOpen={modal} handleCancel={handleCancel}>
-        <div id='addSalary_container' className={classes.addSalary_container}>
+        <form onSubmit={addSalary} method='post'>
+            <div id='addSalary_container' className={classes.addSalary_container}>
                 <div className={classes.Container_Child}>
                     <DatePicker style={{ width: '100%', padding: '0 8px', textAlign: 'center' }} onChange={onChange} picker="month" className="customDropdown" />
                 </div>
                 <div className={classes.Container_Child}>
                     <label htmlFor="amount"><CurrencyRupeeIcon/></label>
-                    <input id='amount' className={classes.amount} type="number" placeholder='Enter amount.'/>
+                    <input id='amount' className={classes.amount} type="integer" placeholder='Enter amount.' ref={salary}/>
                 </div>
                 <div className={classes.submitbtn_container}>
-                  <button className={classes.button} type='submit'><AddIcon/></button>
+                  <button className={classes.button} type='submit'>{loader?<Loader size={30} />:<AddIcon/>}</button>
                 </div>
             </div>
+        </form>
         </My_modal>
     </div>
   )
