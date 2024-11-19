@@ -1,0 +1,36 @@
+.upload_btn  {
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  border: 2px solid grey;
+  display: flex;               /* Align content inside the circle */
+  justify-content: center;     /* Center content horizontally */
+  align-items: center;         /* Center content vertically */
+  cursor: pointer;            /* Make it clickable */
+}
+.modify_btn_cont{
+  display: flex;
+  padding: 5px;
+}
+.modify_btn_cont button{
+  background: none;
+}
+.profile_btn{
+  height: 5rem;
+  width: 5rem;
+  border-radius: 20%;
+  /* border: 2px solid grey; */
+  display: flex;               /* Align content inside the circle */
+  justify-content: center;     /* Center content horizontally */
+  align-items: center;         /* Center content vertically */
+  cursor: pointer; 
+  background: rgb(206, 206, 206); 
+}
+
+.upload_file_cont{
+  display: flex;
+  height: 10rem;
+  width: auto;
+  justify-content: center;
+  align-items: center;
+}

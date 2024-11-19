@@ -3,7 +3,8 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../../../firebase';
 import { Button } from '@mui/material';
 import { Drawer } from 'antd';
-import classes from './Navbar.module.css'
+import classes from './Navbar.module.css';
+import Profile_picture from '../../../Profile_picture';
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
@@ -35,7 +36,8 @@ const Navbar = () => {
         <Button type="primary" onClick={showDrawer}>
           Profile
         </Button>
-        <Drawer title="Basic Drawer" onClose={onClose} open={open}>
+        <Drawer title=<div style={{display:'flex',justifyContent:'end'}}><Profile_picture/></div> onClose={onClose} open={open}>
+          
           <Button onClick={signout_user}>Signout</Button>
         </Drawer>
       </div>
