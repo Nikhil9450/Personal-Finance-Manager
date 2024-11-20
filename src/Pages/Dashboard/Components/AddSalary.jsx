@@ -18,9 +18,9 @@ const [modal,setModal]=useState(false)
 const [error,setError]=useState(false);
 const [loader,setLoader]=useState(false);
 const [selectedMonth, setSelectedMonth] = useState(null);
+const month=useRef(null);
 
 const salary=useRef(null);
-const month=useRef(null);
 
 
 const onChange = (date, dateString) => {
@@ -97,7 +97,7 @@ const showModal = () => {
         </style>
         <AddButton 
             type="salary" 
-            icon={<ShoppingCartIcon />} 
+            icon={<AttachMoneyIcon />} 
             label="Salary"
             onClick={showModal} 
             bgColor="grey"

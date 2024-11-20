@@ -68,6 +68,7 @@ const Profile_picture = () => {
                 <AddPhotoAlternateIcon  style={{color:'white' ,height:'3rem',width:'3rem'}}/>
             </label>
         </div>
+        
         </My_modal>
     </>
   );

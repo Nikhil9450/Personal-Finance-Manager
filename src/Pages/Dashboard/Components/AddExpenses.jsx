@@ -3,6 +3,7 @@ import { useState } from 'react';
 import My_modal from '../../../My_modal'
 import AddButton from '../../../My_button'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
 import Divider from '@mui/material/Divider';
@@ -18,13 +19,15 @@ import classes from './AddExpenses.module.css'
 import { doc, collection, addDoc ,updateDoc } from "firebase/firestore";
 import { db,auth } from '../../../firebase';
 import Loader from '../../../Loader';
+import Fab from '@mui/material/Fab';
+import { DatePicker } from 'antd';
 const AddExpenses = () => {
     const [modal,setModal]=useState(false)
     const priceRef=useRef(null);
     const descriptionRef= useRef(null);
     const [error,setError]=useState(false);
     const [loader,setLoader]=useState(false);
-
+    const [date, setDate] = useState(null);
     const addToList = async (e) => {
       e.preventDefault();
     
@@ -34,10 +37,16 @@ const AddExpenses = () => {
         setError("Please log in to add items.");
         return;
       }
-    
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+      const dd = String(today.getDate()).padStart(2, '0');
+      
+      const formattedDate = `${yyyy}-${mm}-${dd}`;
       const item = {
         price: priceRef.current.value,
         description: descriptionRef.current.value,
+        expenditure_date:(!date)?formattedDate:date,
         createdAt: new Date(), // Add a timestamp
       };
     
@@ -70,6 +79,13 @@ const AddExpenses = () => {
       }
     };
 
+    const onChange = (date, dateString) => {
+      setDate(dateString); // Set the string representation (e.g., "2024-11")
+      console.log("Selected Month (Moment Object):", date); // Moment.js object
+      console.log("Selected Month (String):", dateString); // String representation
+    };
+    
+
     const showModal = () => {
         console.log("opening modal");
         setModal(true);
@@ -81,17 +97,50 @@ const AddExpenses = () => {
       };  
   return (
     <div>
-            <AddButton 
+
+      <Fab 
+          // color='primary'
+          style={{
+            background:'#3a843a',
+            color:'white',
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            zIndex: 1000,
+          }}
+          onClick={showModal}
+        variant="extended">
+        <ShoppingCartIcon sx={{ mr: 1 }} />
+        Add Expenses
+      </Fab>
+            {/* <AddButton 
             type="expense" 
-            icon={<AttachMoneyIcon />} 
+            icon={<ShoppingCartIcon />} 
             label="Add Expense"
             onClick={showModal} 
             bgColor="grey"
             
-        />
+        /> */}
         <My_modal title="Add expense" button_name="Add Expenses" isModalOpen={modal} handleCancel={handleCancel}>
         <form onSubmit={addToList} method='post'>
+
              <div id='addExpense_container' className={classes.addExpense_container}>
+             <div className={classes.Container_Child}>
+             <style>
+              {`.ant-picker-header-view{
+                  display:flex;
+              }
+                .ant-picker-dropdown .ant-picker-header {
+                    /* Adjust these properties as needed */
+                    width: 23%;         /* Ensures the header fits the dropdown width */
+                    padding: 8px;        /* Adjust padding if needed */
+                    display: flex;
+                    {/* justify-content: center; /* Centers header content */ */}
+                }
+              `}
+        </style>
+                  <DatePicker style={{ width: '40%', height:'2.5rem', padding: '0 8px', textAlign: 'center' }} onChange={onChange}  className="customDropdown" />
+              </div>
                 <div className={classes.Container_Child}>
                     <label htmlFor="description"><DescriptionIcon/></label>
                     <input id='description' className={classes.description} type="text"  placeholder='Enter description.' ref={descriptionRef} />

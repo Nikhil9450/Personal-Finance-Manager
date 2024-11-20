@@ -14,19 +14,20 @@ const Dashboard = () => {
   return (
     <div className={classes.dashboard}>
       {/* <Navbar/> */}
+      <AddExpenses/>
+
       <div className={classes.dashboard_content}>
         <Grid container rowSpacing={5} columnSpacing={5}>
           <Grid size={8}>
             <Card width="" height="200px">
               {/* Content goes here */}
-              <AddExpenses/>
             </Card>
           </Grid>
           
           <Grid size={4}>
             <Card width="" height="200px">
               {/* Content goes here */}
-              <AddSalary/>
+              {/* <AddSalary/> */}
             </Card>
           </Grid>
 

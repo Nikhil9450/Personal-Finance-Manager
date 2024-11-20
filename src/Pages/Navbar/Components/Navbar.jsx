@@ -5,6 +5,7 @@ import { Button } from '@mui/material';
 import { Drawer } from 'antd';
 import classes from './Navbar.module.css';
 import Profile_picture from '../../../Profile_picture';
+import AddSalary from '../../Dashboard/Components/AddSalary';
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
@@ -37,7 +38,7 @@ const Navbar = () => {
           Profile
         </Button>
         <Drawer title=<div style={{display:'flex',justifyContent:'end'}}><Profile_picture/></div> onClose={onClose} open={open}>
-          
+          <AddSalary/>
           <Button onClick={signout_user}>Signout</Button>
         </Drawer>
       </div>
