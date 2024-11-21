@@ -95,13 +95,14 @@ const showModal = () => {
                 }
               `}
         </style>
-        <AddButton 
+        {/* <AddButton 
             type="salary" 
             icon={<AttachMoneyIcon />} 
             label="Salary"
             onClick={showModal} 
             bgColor="grey"
-        />
+        /> */}
+        <button type='button' onClick={showModal} style={{padding:'5px',justifyContent:'start', background:'none'}}><img src='/Icons/salary.png' alt="" style={{height:'2rem',paddingRight:'1rem'}}/> Add Monthly Salary</button>
         <My_modal title="Add Salary" button_name="Add Salary" isModalOpen={modal} handleCancel={handleCancel}>
         <form onSubmit={addSalary} method='post'>
             <div id='addSalary_container' className={classes.addSalary_container}>

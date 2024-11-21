@@ -8,6 +8,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import './Profile_picture.css'
 import My_modal from './My_modal';
+import { Avatar, Space } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -55,13 +58,13 @@ const Profile_picture = () => {
   return (
     <>  
         <div className="">
-            <button className='upload_btn' style={{display:'flex',flexDirection:'column',justifyContent:'center', alignItems:'center',background:'none'}} type="button"  onClick={showModal}><Person2Icon style={{color:'grey' ,height:'1.5rem',width:'1.8rem'}}/></button>
+            <button className='' style={{background:'none'}} type="button"  onClick={showModal}><Avatar size={50} icon={<UserOutlined />} /></button>
             {/* <div className='modify_btn_cont'>
                 <button type='button' ><EditIcon style={{color:'red',height:'1rem' , width:'1rem'}}/></button>
                 <button type='button' ><DeleteIcon style={{color:'green' ,height:'1rem',width:'1rem'}}/></button>
             </div> */}
         </div>
-        <My_modal title="Upload profile picture" button_name="Add Salary" isModalOpen={modal} handleCancel={handleCancel}>
+        <My_modal title="UPLOAD PROFILE PICTURE" button_name="Add Salary" isModalOpen={modal} handleCancel={handleCancel}>
         <div className='upload_file_cont'>
             <label className="profile_btn">
                 <input type="file" style={{ display: 'none' }} />
