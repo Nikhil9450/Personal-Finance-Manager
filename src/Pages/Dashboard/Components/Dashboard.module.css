@@ -1,5 +1,8 @@
 .dashboard{
     background-color: #e1e1e1;
-    padding: 2rem;
+    /* padding: 2rem; */
     /* height: 100vh; */
+}
+.dashboard_content{
+ padding: 2rem;
 }

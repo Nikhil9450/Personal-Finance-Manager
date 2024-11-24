@@ -1,8 +1,11 @@
 .navbar{
+    position: sticky;
+    top: 0;
     display: flex;
     justify-content:space-between;
     padding: 0 2rem 0 2rem;
+    width: -webkit-fill-available;
     align-items: center;
     height: 3rem;
-    background:none;
+    background:#cccccc94;
 }

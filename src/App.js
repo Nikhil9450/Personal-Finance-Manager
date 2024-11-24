@@ -37,7 +37,7 @@ function App() {
 
   return (
     <div className="App">
-      <Navbar/>
+      {/* <Navbar/> */}
         <Routes>
           {/* Public routes */}
           <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />

@@ -3,8 +3,9 @@ import classes from './Login.module.css';
 import SignupModal from './SignupModal';
 import { useState } from 'react';
 import SigninModal from './SigninModal';
-import { auth,GoogleAuthProvider } from "../../../firebase";
+import { auth,GoogleAuthProvider,db } from "../../../firebase";
 import { signInWithPopup } from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 const Login = () => {
   const [isSignupModalOpen, setSignupModalOpen] = useState(false);
   const [isSigninModalOpen, setSigninModalOpen] = useState(false);
@@ -23,12 +24,38 @@ const Login = () => {
     setSigninModalOpen(false);
   };
 
+  // const signInWithGoogle = async () => {
+  //   try {
+  //     const result = await signInWithPopup(auth, new GoogleAuthProvider());
+  //     console.log("result--------->", result);
+  //   } catch (error) {
+  //     console.error("Google authentication failed:", error);
+  //   }
+  // };
+
   const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(auth, new GoogleAuthProvider());
-      console.log("result--------->", result);
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user; // Firebase Auth user object
+  
+      // Ensure Firestore document exists
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+  
+      if (!userDoc.exists()) {
+        await setDoc(userDocRef, {
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          createdAt: new Date().toISOString(),
+        });
+        console.log('New user document created in Firestore.');
+      } else {
+        console.log('User document already exists.');
+      }
     } catch (error) {
-      console.error("Google authentication failed:", error);
+      console.error('Error during Google sign-in:', error);
     }
   };
   return (

@@ -1,4 +1,4 @@
-import React from 'react'
+import {React,useEffect} from 'react'
 import Navbar from '../../Navbar/Components/Navbar'
 import classes from './Dashboard.module.css'
 import Card from './Card'
@@ -10,10 +10,23 @@ import AddButton from '../../../My_button';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { auth } from '../../../firebase';
+import { useDispatch } from 'react-redux';
+import { fetchUserProfile } from '../../../Slices/UserSlice';
+
 const Dashboard = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (auth.currentUser) {
+      console.log('UID from auth.currentUser:', auth.currentUser.uid); // Log UID
+      dispatch(fetchUserProfile(auth.currentUser.uid));
+    } else {
+      console.log('auth.currentUser is null');
+    }
+  }, [dispatch]);
   return (
     <div className={classes.dashboard}>
-      {/* <Navbar/> */}
+      <Navbar/>
       <AddExpenses/>
 
       <div className={classes.dashboard_content}>
@@ -24,48 +37,6 @@ const Dashboard = () => {
             </Card>
           </Grid>
           
-          <Grid size={4}>
-            <Card width="" height="200px">
-              {/* Content goes here */}
-              {/* <AddSalary/> */}
-            </Card>
-          </Grid>
-
-          <Grid size={6}>
-            <Card width="" height="200px">
-              {/* Content goes here */}
-            </Card>
-          </Grid>
-
-          <Grid size={6}>
-            <Card width="" height="200px">
-              {/* Content goes here */}
-            </Card>
-          </Grid>
-
-          <Grid size={4}>
-            <Card width="" height="200px">
-              {/* Content goes here */}
-            </Card>
-          </Grid>
-
-          <Grid size={4}>
-            <Card width="" height="200px">
-              {/* Content goes here */}
-            </Card>
-          </Grid>
-
-          <Grid size={4}>
-            <Card width="" height="200px">
-              {/* Content goes here */}
-            </Card>
-          </Grid>
-
-          <Grid size={12}>
-            <Card width="" height="200px">
-              {/* Content goes here */}
-            </Card>
-          </Grid>
         </Grid>
       </div>
 
