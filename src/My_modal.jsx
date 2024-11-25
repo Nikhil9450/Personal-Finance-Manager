@@ -12,6 +12,9 @@ const My_modal = (props) => {
                   overflow: hidden !important;
                   {/* padding:2rem !important */}
                 }
+                  .ant-modal-close{
+                  border-radius:50% !important;
+                  }
               `}
       </style>
       <Modal 

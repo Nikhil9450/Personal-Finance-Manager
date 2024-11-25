@@ -15,12 +15,13 @@ import Loader from './Loader';
 import { fetchUserProfile } from './Slices/UserSlice';
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from './firebase'; 
-
+import My_modal from './My_modal';
 
 const Profile_picture = () => {
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
   const { profile, status, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const currentUser = auth.currentUser;
@@ -85,14 +86,25 @@ const Profile_picture = () => {
   
 
   const showModal = () => setModal(true);
-  const handleCancel = () => setModal(false);
+  const handleCancel = () =>{ 
+    setFilePreview(null); // Clear the file preview
+    setFile(null);
+    setModal(false);
+  }
+
 
   const handleFileChange = (e) => {
     const uploadedFile = e.target.files[0];
     if (uploadedFile) {
-      setFile(uploadedFile);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFilePreview(reader.result); // Set the file preview URL
+      };
+      reader.readAsDataURL(uploadedFile); // Read the file as a data URL
+      setFile(uploadedFile); // Optionally store the file if needed for upload
     }
   };
+  
 
   useEffect(() => {
     console.log("Updated profile from Redux:", profile);
@@ -110,9 +122,9 @@ const Profile_picture = () => {
       </Button>
       </div>
 
-      <Dialog open={modal} onClose={handleCancel} maxWidth="sm" fullWidth>
+      <My_modal isModalOpen={modal} handleCancel={handleCancel}>
         {/* <DialogTitle>Update Profile Picture</DialogTitle> */}
-        <DialogContent>
+        {/* <DialogContent> */}
           {/* <div className="upload-file-container">
             {currentUser?.photoURL ? (
               <div className="profile-preview-container">
@@ -177,45 +189,55 @@ const Profile_picture = () => {
               </div>
             )}
           </div> */}
-          <div className='outer-container'>
-            <div className="image-container">
-                    {profile?.photoURL ? (
-                                            <img
-                                              src={profile.photoURL}
-                                              alt="Profile"
-                                            />
-                                          ) : (
-                                            <UserOutlined style={{ fontSize: '100px' }} />
-                                          )}
-                    {/* <button class="edit-button"><EditIcon style={{ color: 'white', height: '1.5rem', width: '1.5rem' }} /></button> */}
-                    <label className="edit-button">
-                    <input
-                      type="file"
-                      style={{ display: 'none' }}
-                      onChange={handleFileChange}
-                    />
-                    {loading?<Loader size={20} />:<EditIcon style={{ color: 'white', height: '1rem', width: '1rem' }} />}
-                  </label>
-            </div>
+        <div className='outermost-container'>
+          <div className="outer-container">
+              <div className="image-container">
+                {profile?.photoURL ? (
+                  // <img  src={profile.photoURL} alt="Profile" />
+                  <img src={filePreview || profile.photoURL} alt="Profile" />
+                ) : (
+                  <UserOutlined style={{ fontSize: '100px' }} />
+                )}
+                <label className="edit-button">
+                  <input
+                    type="file"
+                    style={{ display: 'none' }}
+                    onChange={handleFileChange}
+                  />
+                  {loading ? <Loader size={20} /> : <EditIcon style={{ color: 'white', height: '1rem', width: '1rem' }} />}
+                </label>
+                {profile ? (
+                    <div className='nameContainer'>
+                      <p className='name'>{profile.name.toUpperCase()}</p>
+                      <p className='email'>{profile.email}</p>
+                    </div>
+                  ) : (
+                    <div className='nameContainer'>
+                      <Loader size={15} />
+                    </div>
+                  )}
+              </div>
+
           </div>
           {loading && <CircularProgress />}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} color="primary" disabled={loading}>
-            Cancel
-          </Button>
-          {file && !loading && (
-            <Button
-              onClick={() => handleUpload(file)}
-              color="primary"
-              variant="contained"
-              disabled={loading}
-            >
-              Upload
+          {/* </DialogContent> */}
+          {/* <DialogActions>
+            <Button onClick={handleCancel} color="primary" disabled={loading}>
+              Cancel
             </Button>
-          )}
-        </DialogActions>
-      </Dialog>
+            {file && !loading && (
+              <Button
+                onClick={() => handleUpload(file)}
+                color="primary"
+                variant="contained"
+                disabled={loading}
+              >
+                Upload
+              </Button>
+            )}
+          </DialogActions> */}
+        </div>
+      </My_modal>
     </>
   );
 };

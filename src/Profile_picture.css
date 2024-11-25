@@ -67,17 +67,24 @@
   justify-content: center;
   align-items: center;
 } */
- .outer-container{
+.outer-container {
   display: flex;
   justify-content: center;
   align-items: center;
- }
+  position: relative; /* Make the container a reference point for positioning */
+  height: 150px; /* Adjust height to suit your layout */
+  background-color: #f0f0f0; /* Optional background for visualization */
+  border-radius: 1rem;
+}
+
 .image-container {
-  position: relative;
+  position: absolute; /* Position the image-container absolutely */
+  bottom: -60px; /* Push it half of its height outside the outer-container */
   display: inline-block;
-  width: 200px; /* Set width and height to make it circular */
-  height: 200px;
-  overflow: hidden;
+  width: 150px;
+  height: 150px;
+  /* overflow: hidden; */
+  border: 5px solid white;
   border-radius: 50%; /* Circular shape */
 }
 
@@ -94,7 +101,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.411);
   color: white;
   border: none;
   padding: 1rem;
@@ -108,4 +115,30 @@
 
 .image-container:hover .edit-button {
   opacity: 1;
+}
+
+.outermost-container{
+  height: 20rem;
+  padding: 1rem;
+}
+
+
+.profile{
+  display: flex;
+}
+.nameContainer{
+  font-size: smaller;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgb(73, 73, 73);
+}
+.email{
+  font-size: x-small;
+  color: grey;
+}
+.name{
+  font-size: smaller;
+  font-weight: bold;
 }
