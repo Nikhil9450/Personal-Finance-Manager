@@ -111,27 +111,23 @@ const Profile_picture = () => {
       </div>
 
       <Dialog open={modal} onClose={handleCancel} maxWidth="sm" fullWidth>
-        <DialogTitle>Update Profile Picture</DialogTitle>
+        {/* <DialogTitle>Update Profile Picture</DialogTitle> */}
         <DialogContent>
-          <div className="upload-file-container">
-            {/* Show profile picture preview if available */}
+          {/* <div className="upload-file-container">
             {currentUser?.photoURL ? (
               <div className="profile-preview-container">
-          {profile?.photoURL ? (
-                    <Image
+                     {profile?.photoURL ? (
+                    <img
+                      className='update_profile'
                       src={profile.photoURL}
                       alt="Profile"
-                      width={200}
-                      height={200}
-                      style={{ objectFit: 'cover', borderRadius: '50%' }}
+                      style={{ objectFit: 'cover', borderRadius: '50%', height:'200px',width:'200px' }}
                     />
                   ) : (
                     <UserOutlined style={{ fontSize: '100px' }} />
                   )}
                 <div className="action-buttons">
-                  {/* <button type="button" onClick={}>
-                    <EditIcon style={{ color: 'blue', height: '1.5rem', width: '1.5rem' }} />
-                  </button> */}
+          
                   <label className="profile-btn">
                   <input
                     type="file"
@@ -145,6 +141,28 @@ const Profile_picture = () => {
                   </button>
                 </div>
               </div>
+              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             ) : (
               <div className="upload-placeholder">
                 <label className="profile-btn">
@@ -158,6 +176,27 @@ const Profile_picture = () => {
                 <p>Click to upload a profile picture</p>
               </div>
             )}
+          </div> */}
+          <div className='outer-container'>
+            <div className="image-container">
+                    {profile?.photoURL ? (
+                                            <img
+                                              src={profile.photoURL}
+                                              alt="Profile"
+                                            />
+                                          ) : (
+                                            <UserOutlined style={{ fontSize: '100px' }} />
+                                          )}
+                    {/* <button class="edit-button"><EditIcon style={{ color: 'white', height: '1.5rem', width: '1.5rem' }} /></button> */}
+                    <label className="edit-button">
+                    <input
+                      type="file"
+                      style={{ display: 'none' }}
+                      onChange={handleFileChange}
+                    />
+                    {loading?<Loader size={20} />:<EditIcon style={{ color: 'white', height: '1rem', width: '1rem' }} />}
+                  </label>
+            </div>
           </div>
           {loading && <CircularProgress />}
         </DialogContent>

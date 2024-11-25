@@ -8,7 +8,7 @@
   align-items: center;         /* Center content vertically */
   cursor: pointer;            /* Make it clickable */
 }
-.modify_btn_cont{
+/* .modify_btn_cont{
   display: flex;
   padding: 5px;
 }
@@ -19,10 +19,9 @@
   height: inherit;
   width: 100%;
   border-radius: 2rem;
-  /* border: 2px solid grey; */
-  display: flex;               /* Align content inside the circle */
-  justify-content: center;     /* Center content horizontally */
-  align-items: center;         /* Center content vertically */
+  display: flex;              
+  justify-content: center;     
+  align-items: center;       
   cursor: pointer; 
   background: rgb(206, 206, 206); 
 }
@@ -67,4 +66,46 @@
   display: flex;
   justify-content: center;
   align-items: center;
+} */
+ .outer-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ }
+.image-container {
+  position: relative;
+  display: inline-block;
+  width: 200px; /* Set width and height to make it circular */
+  height: 200px;
+  overflow: hidden;
+  border-radius: 50%; /* Circular shape */
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%; /* Ensure the image inherits the circular shape */
+}
+
+.edit-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  width: 3rem;
+  height: 3rem;
+}
+
+.image-container:hover .edit-button {
+  opacity: 1;
 }

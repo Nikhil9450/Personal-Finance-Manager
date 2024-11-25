@@ -32,14 +32,23 @@ const Navbar = () => {
     <div className={classes.navbar}>
       <div className={classes.logo}>Logo</div>
       <div className={classes.profile}>
-      <Button type="primary" onClick={showDrawer}>
-      <Avatar
-    size={30}
-    src={profile?.photoURL || 'fallback-image-url.png'} // Use fallback image if photoURL is missing
-    icon={<UserOutlined />} // Icon as backup if src fails
-  />
-</Button>
-
+      {profile ? (
+                    <div className={classes.nameContainer}>
+                      <p className={classes.name}>{profile.name.toUpperCase()}</p>
+                      <p className={classes.email}>{profile.email}</p>
+                    </div>
+                  ) : (
+                    <div className={classes.nameContainer}>
+                      <Loader size={15} />
+                    </div>
+                  )}
+      <Button type="primary" onClick={showDrawer} style={{width:'2rem'}}>
+        <Avatar
+          size={30}
+          src={profile?.photoURL || 'fallback-image-url.png'} // Use fallback image if photoURL is missing
+          icon={<UserOutlined />} // Icon as backup if src fails
+        />
+      </Button>
         <Drawer
           title={
             <div style={{ display: 'flex', justifyContent: 'end' }}>
