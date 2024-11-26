@@ -72,9 +72,9 @@
   justify-content: center;
   align-items: center;
   position: relative; /* Make the container a reference point for positioning */
-  height: 150px; /* Adjust height to suit your layout */
+  height: 120px; /* Adjust height to suit your layout */
   background-color: #f0f0f0; /* Optional background for visualization */
-  border-radius: 1rem;
+  border-radius: 2rem 2rem 0 0;
 }
 
 .image-container {
@@ -84,7 +84,7 @@
   width: 150px;
   height: 150px;
   /* overflow: hidden; */
-  border: 5px solid white;
+  border: 10px solid white;
   border-radius: 50%; /* Circular shape */
 }
 
@@ -127,6 +127,7 @@
   display: flex;
 }
 .nameContainer{
+  padding-top: .5rem;
   font-size: smaller;
   display: flex;
   flex-direction: column;
@@ -141,4 +142,17 @@
 .name{
   font-size: smaller;
   font-weight: bold;
+}
+
+.profile_upload_btn{
+  position: absolute;
+  width: 6rem;
+  height: 3rem;
+  color: grey;
+  bottom: 2rem;
+  right: 3rem;
+}
+
+.custom-swal {
+  border-radius: 2rem !important; /* Adjust the radius as needed */
 }

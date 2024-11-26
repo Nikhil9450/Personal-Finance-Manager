@@ -13,9 +13,30 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { auth } from '../../../firebase';
 import { useDispatch } from 'react-redux';
 import { fetchUserProfile } from '../../../Slices/UserSlice';
-
+import Daily_expenses_chart from '../../chart/daily_expenses_chart';
+import { collection, getDocs } from "firebase/firestore";
+import { db } from '../../../firebase';
 const Dashboard = () => {
   const dispatch = useDispatch();
+
+  const fetch_expense_list = async () => {
+    const uid = auth.currentUser.uid;
+    console.log("Fetching user profile for UID:", uid); // Log the UID
+  
+    // Reference the 'items' subcollection inside the 'users' collection
+    const itemsCollectionRef = collection(db, "users", uid, "items");
+  
+    try {
+      // Fetch all documents from the 'items' subcollection
+      const querySnapshot = await getDocs(itemsCollectionRef);
+      querySnapshot.forEach((doc) => {
+        console.log("Document data:", doc.data());
+      });
+    } catch (error) {
+      console.error("Error fetching items:", error);
+    }
+  };
+  
   useEffect(() => {
     if (auth.currentUser) {
       console.log('UID from auth.currentUser:', auth.currentUser.uid); // Log UID
@@ -31,12 +52,16 @@ const Dashboard = () => {
 
       <div className={classes.dashboard_content}>
         <Grid container rowSpacing={5} columnSpacing={5}>
-          <Grid size={8}>
-            <Card width="" height="200px">
-              {/* Content goes here */}
+          <Grid size={12}>
+            <Card width="" height="">
+            <Daily_expenses_chart/>
             </Card>
           </Grid>
-          
+           <Grid size={6}>
+            <Card>
+              <button onClick={fetch_expense_list}>Fetch data</button>
+            </Card>
+           </Grid>
         </Grid>
       </div>
 

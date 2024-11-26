@@ -16,6 +16,7 @@ import { fetchUserProfile } from './Slices/UserSlice';
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from './firebase'; 
 import My_modal from './My_modal';
+import Swal from 'sweetalert2'
 
 const Profile_picture = () => {
   const [modal, setModal] = useState(false);
@@ -42,14 +43,38 @@ const Profile_picture = () => {
   
       // Dispatch Redux action to update state
       dispatch(fetchUserProfile(currentUser.uid));
-  
-      alert("Profile picture updated successfully!");
+      setModal(false);
+
+      Swal.fire({
+        // title: 'Success',
+        text: 'Profile picture updated successfully.',
+        icon: 'success',
+        confirmButtonText: 'Ok',
+        didOpen: () => {
+          const popup = Swal.getPopup();
+          if (popup) {
+            popup.style.setProperty("border-radius", "2rem", "important");
+          }
+        },
+      })
     } catch (error) {
       console.error("Error uploading file:", error);
-      alert("Failed to upload profile picture.");
+      Swal.fire({
+        // title: 'Error!',
+        text: 'Failed to upload profile picture.',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+        didOpen: () => {
+          const popup = Swal.getPopup();
+          if (popup) {
+            popup.style.setProperty("border-radius", "2rem", "important");
+          }
+        },
+      })
     } finally {
       setLoading(false);
-      setModal(false);
+      setFile(null);
+      setFilePreview(null);
     }
   };
 
@@ -113,87 +138,22 @@ const Profile_picture = () => {
   return (
     <>
       <div className="profile-picture-container">
-      <Button type="primary" onClick={showModal}>
+      {/* <Button type="primary" onClick={showModal}> */}
         <Avatar
           size={50}
           src={profile?.photoURL || 'fallback-image-url.png'} // Fallback in case photoURL is missing
           icon={<UserOutlined />}
+          onClick={showModal}
+          style={{cursor:'pointer'}}
         />
-      </Button>
+      {/* </Button> */}
       </div>
 
       <My_modal isModalOpen={modal} handleCancel={handleCancel}>
-        {/* <DialogTitle>Update Profile Picture</DialogTitle> */}
-        {/* <DialogContent> */}
-          {/* <div className="upload-file-container">
-            {currentUser?.photoURL ? (
-              <div className="profile-preview-container">
-                     {profile?.photoURL ? (
-                    <img
-                      className='update_profile'
-                      src={profile.photoURL}
-                      alt="Profile"
-                      style={{ objectFit: 'cover', borderRadius: '50%', height:'200px',width:'200px' }}
-                    />
-                  ) : (
-                    <UserOutlined style={{ fontSize: '100px' }} />
-                  )}
-                <div className="action-buttons">
-          
-                  <label className="profile-btn">
-                  <input
-                    type="file"
-                    style={{ display: 'none' }}
-                    onChange={handleFileChange}
-                  />
-                  <EditIcon style={{ color: 'blue', height: '1.5rem', width: '1.5rem' }} />
-                </label>
-                  <button type="button" onClick={handleDelete}>
-                    <DeleteIcon style={{ color: 'red', height: '1.5rem', width: '1.5rem' }} />
-                  </button>
-                </div>
-              </div>
-              
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            ) : (
-              <div className="upload-placeholder">
-                <label className="profile-btn">
-                  <input
-                    type="file"
-                    style={{ display: 'none' }}
-                    onChange={handleFileChange}
-                  />
-                  <AddPhotoAlternateIcon style={{ color: 'white', height: '3rem', width: '3rem' }} />
-                </label>
-                <p>Click to upload a profile picture</p>
-              </div>
-            )}
-          </div> */}
         <div className='outermost-container'>
           <div className="outer-container">
               <div className="image-container">
                 {profile?.photoURL ? (
-                  // <img  src={profile.photoURL} alt="Profile" />
                   <img src={filePreview || profile.photoURL} alt="Profile" />
                 ) : (
                   <UserOutlined style={{ fontSize: '100px' }} />
@@ -203,6 +163,7 @@ const Profile_picture = () => {
                     type="file"
                     style={{ display: 'none' }}
                     onChange={handleFileChange}
+                    accept='.jpg,.jpeg, .png'
                   />
                   {loading ? <Loader size={20} /> : <EditIcon style={{ color: 'white', height: '1rem', width: '1rem' }} />}
                 </label>
@@ -219,7 +180,14 @@ const Profile_picture = () => {
               </div>
 
           </div>
-          {loading && <CircularProgress />}
+          {file ?<button
+                  className='profile_upload_btn'
+                  onClick={() => handleUpload(file)}
+                  color="primary"
+                  variant="contained"
+                  disabled={loading}
+                >{loading?<Loader size={15}/>:'Save'} </button>
+                :''}
           {/* </DialogContent> */}
           {/* <DialogActions>
             <Button onClick={handleCancel} color="primary" disabled={loading}>

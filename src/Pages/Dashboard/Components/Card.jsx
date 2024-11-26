@@ -23,6 +23,7 @@ const Card = ({ width, height, children }) => {
                 style={{
                     width: width,
                     height: height,
+                    padding:'2rem'
                 }}>
                 
        {children}

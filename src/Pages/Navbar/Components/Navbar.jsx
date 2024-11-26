@@ -30,7 +30,14 @@ const Navbar = () => {
 
   return (
     <div className={classes.navbar}>
-      <div className={classes.logo}>Logo</div>
+                <style>
+              {`
+                .ant-drawer-header {
+                        padding: 10px 24px !important;
+                }
+              `}
+        </style>
+      <div className={classes.logo}><img src='/Icons/self-dev.png' alt="" style={{height:'2rem',paddingRight:'1rem'}}/></div>
       <div className={classes.profile}>
       {profile ? (
                     <div className={classes.nameContainer}>
