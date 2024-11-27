@@ -47,27 +47,27 @@ const Dashboard = () => {
     }
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log("Expenses data updated ------------>", Expense_data);
-    const expensesByDate = Expense_data.reduce((acc, expense) => {
-      const date = expense.expenditure_date; // Extract the expenditure date
-      if (!acc[date]) {
-        acc[date] = []; // If no array exists for this date, initialize one
-      }
-      acc[date].push(expense); // Add the current expense to the array for this date
-      return acc; // Return the updated accumulator object
-    }, {});
+  // useEffect(() => {
+  //   console.log("Expenses data updated ------------>", Expense_data);
+  //   const expensesByDate = Expense_data.reduce((acc, expense) => {
+  //     const date = expense.expenditure_date; // Extract the expenditure date
+  //     if (!acc[date]) {
+  //       acc[date] = []; // If no array exists for this date, initialize one
+  //     }
+  //     acc[date].push(expense); // Add the current expense to the array for this date
+  //     return acc; // Return the updated accumulator object
+  //   }, {});
     
-    const dateWiseTotalExpenseAmt = {};
+  //   const dateWiseTotalExpenseAmt = {};
 
-    Object.entries(expensesByDate).forEach(([date, expenseArray]) => {
-      const totalAmt = expenseArray.reduce((sum, item) => sum + Number(item.price), 0);
-      dateWiseTotalExpenseAmt[date] = totalAmt;
-    });
+  //   Object.entries(expensesByDate).forEach(([date, expenseArray]) => {
+  //     const totalAmt = expenseArray.reduce((sum, item) => sum + Number(item.price), 0);
+  //     dateWiseTotalExpenseAmt[date] = totalAmt;
+  //   });
     
-    console.log("Date-wise total amounts:", dateWiseTotalExpenseAmt);
-    console.log("expense by date------->",expensesByDate)
-  }, [Expense_data]);
+  //   console.log("Date-wise total amounts:", dateWiseTotalExpenseAmt);
+  //   console.log("expense by date------->",expensesByDate)
+  // }, [Expense_data]);
 
 
   return (
