@@ -10,10 +10,16 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { DatePicker } from 'antd';
+import SearchIcon from '@mui/icons-material/Search';
+import classes from './daily_expenses_chart.module.css';
+import moment from 'moment';
 
 const Daily_expenses_chart = () => {
     const[data,setData]=useState([]);
     const Expense_data=useSelector((state)=>state.user.expenses)
+    const [date, setDate] = useState(null);
+    const [selectiveData,setSelectiveData]=useState(null);
 
     useEffect(() => {
       console.log("Expenses data updated ------------>", Expense_data);
@@ -43,7 +49,7 @@ const Daily_expenses_chart = () => {
       );
   
       console.log("Date-wise total amounts:", dateWiseTotalExpenseData);
-      setData(dateWiseTotalExpenseData); // Set the calculated data in state
+      // setData(dateWiseTotalExpenseData); // Set the calculated data in state
       console.log("Expenses grouped by date:", expensesByDate);
     }, [Expense_data]);
 
@@ -101,58 +107,77 @@ useEffect(() => {
   );
 
   console.log("Expenses grouped by year and month:", formattedExpensesByYear);
-  // setData(formattedExpensesByYear); // Set the restructured data in state
+  setData(formattedExpensesByYear); // Set the restructured data in state
+  // onChange(moment(), moment().format('YYYY-MM'));
 }, [Expense_data]);
-  
+
+// const onChange = (date, dateString) => {
+//   setDate(dateString); // Set the string representation (e.g., "2024-11")
+//   console.log("Selected Month (Moment Object):", date); // Moment.js object
+//   console.log("Selected Month (String):", dateString); // String representation
+//   console.log("split date-------->", dateString.split('-'));
+//   const year=dateString.split('-')[0]
+//   const month=dateString.split('-')[1]
+//   console.log("output--------->",data[year][month]) 
+//   setSelectiveData((data[year][month]).accumulated);
+// };
+const onChange = (date, dateString) => {
+  alert("inside on change");
+  setDate(dateString); // Set the string representation (e.g., "2024-11")
+  console.log("Selected Month (Moment Object):", date); // Moment.js object
+  console.log("Selected Month (String):", dateString); // String representation
+
+  const [year, month] = dateString.split('-'); // Extract year and month
+  console.log("Year:", year, "Month:", month);
+
+  if (data[year] && data[year][month]) {
+    console.log("Filtered Data for Year and Month:", data[year][month]);
+
+    // Transform the accumulated data to extract day and sort by day
+    const transformedAccumulated = data[year][month].accumulated
+      .map((item) => {
+        const day = item.name.split('-')[2]; // Extract day from 'YYYY-MM-DD'
+        return {
+          name: day, // Replace with the day
+          expense: item.expense, // Retain the expense
+        };
+      })
+      .sort((a, b) => Number(a.name) - Number(b.name)); // Sort by day numerically
+
+    console.log("Transformed and Sorted Accumulated Data:", transformedAccumulated);
+
+    setSelectiveData(transformedAccumulated); // Update state with transformed data
+  } else {
+    console.log(`No data found for year ${year} and month ${month}`);
+    setSelectiveData([]); // Reset state to an empty array if no data is found
+  }
+};
 
 
-    const sample_data = [
-  {
-    name: "A",
-    uv: 4000,
-    // pv: 500,
-    // amt: 2400,
-  },
-  {
-    name: "B",
-    uv: 3000,
-    // pv: 50,
-    // amt: 2210,
-  },
-  {
-    name: "C",
-    uv: 2000,
-    // pv: 300,
-    // amt: 2290,
-  },
-  {
-    name: "D",
-    uv: 2780,
-    // pv: 90,
-    // amt: 2000,
-  },
-  {
-    name: "E",
-    uv: 1890,
-    // pv: 10,
-    // amt: 2181,
-  },
-  {
-    name: "F",
-    uv: 2390,
-    // pv: 200,
-    // amt: 2500,
-  },
-  {
-    name: "G",
-    uv: 3490,
-    // pv: 150,
-    // amt: 2100,
-  },
-];
+
+
   return (
     <ResponsiveContainer width={"100%"} height={300}>
-      <LineChart data={data}>
+                 <div className="" style={{display:'flex',justifyContent:'end'}}>
+                  <style>
+                    {`.ant-picker-header-view{
+                        display:flex;
+                    }
+                      .ant-picker-dropdown .ant-picker-header {
+                          /* Adjust these properties as needed */
+                          width: 50% !important;         /* Ensures the header fits the dropdown width */
+                          padding: 8px;        /* Adjust padding if needed */
+                          display: flex;
+                          {/* justify-content: center; /* Centers header content */ */}
+                      }
+                    `}
+                  </style>
+                  <DatePicker style={{ width: '10rem', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" picker="month" />
+                  <div className={classes.search_icon_container}>
+                    <SearchIcon fontSize='1rem' style={{cursor:'pointer'}}/>
+                  </div>
+              </div>
+      <LineChart data={selectiveData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" padding={{ left: 30, right: 30 }} />
         <YAxis />
@@ -164,8 +189,6 @@ useEffect(() => {
           stroke="#8884d8"
           activeDot={{ r: 8 }}
         />
-        {/* <Line type="monotone" dataKey="uv" stroke="#82ca9d" /> */}
-        {/* <Line type="monotone" dataKey="amt" stroke="#32ca9d" /> */}
       </LineChart>
     </ResponsiveContainer>
   );

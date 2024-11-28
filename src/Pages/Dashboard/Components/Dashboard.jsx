@@ -5,11 +5,6 @@ import Card from './Card'
 import Grid from '@mui/material/Grid2';
 import { motion } from "framer-motion"
 import AddExpenses from './AddExpenses';
-import AddSalary from './AddSalary';
-import AddButton from '../../../My_button';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { auth } from '../../../firebase';
 import { useDispatch,useSelector } from 'react-redux';
 import { fetchUserProfile,fetch_expenses_list } from '../../../Slices/UserSlice';
