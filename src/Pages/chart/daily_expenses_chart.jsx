@@ -1,26 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { DatePicker } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 import classes from './daily_expenses_chart.module.css';
 import moment from 'moment';
-
+import My_modal from '../../My_modal';
+import { Avatar, List } from 'antd';
+import { Button } from 'antd';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 const Daily_expenses_chart = () => {
     const[data,setData]=useState([]);
     const Expense_data=useSelector((state)=>state.user.expenses)
     const [date, setDate] = useState(null);
     const [selectiveData,setSelectiveData]=useState(null);
+    const [totalExpenses,setTotalExpenses]=useState(null)
+    const [isChartReady, setIsChartReady] = useState(false);
+    const [spent_amt, setSpent_amt]= useState(0);
+    const [modal,setModal]=useState(false)
 
+    const showModal = () => {
+      console.log("opening modal");
+      setModal(true);
+    };
+
+  const handleCancel = () => {
+      console.log("closing modal");
+      setModal(false);
+    };  
     useEffect(() => {
       console.log("Expenses data updated ------------>", Expense_data);
   
@@ -111,6 +118,21 @@ useEffect(() => {
   // onChange(moment(), moment().format('YYYY-MM'));
 }, [Expense_data]);
 
+useEffect(() => {
+  // Simulate chart loading by setting a flag (or use a real condition if needed)
+  const chartLoadDelay = setTimeout(() => {
+    setIsChartReady(true);
+  }, 3000); // Simulate delay of chart loading
+
+  return () => clearTimeout(chartLoadDelay); // Cleanup the timeout on component unmount
+}, []);
+useEffect(() => {
+  if (isChartReady) {
+    // Trigger the onChange function after the chart is ready
+    onChange(moment(), moment().format('YYYY-MM')); // Pass the current moment and formatted string
+  }
+}, [isChartReady]);
+
 // const onChange = (date, dateString) => {
 //   setDate(dateString); // Set the string representation (e.g., "2024-11")
 //   console.log("Selected Month (Moment Object):", date); // Moment.js object
@@ -122,7 +144,6 @@ useEffect(() => {
 //   setSelectiveData((data[year][month]).accumulated);
 // };
 const onChange = (date, dateString) => {
-  alert("inside on change");
   setDate(dateString); // Set the string representation (e.g., "2024-11")
   console.log("Selected Month (Moment Object):", date); // Moment.js object
   console.log("Selected Month (String):", dateString); // String representation
@@ -145,11 +166,23 @@ const onChange = (date, dateString) => {
       .sort((a, b) => Number(a.name) - Number(b.name)); // Sort by day numerically
 
     console.log("Transformed and Sorted Accumulated Data:", transformedAccumulated);
+    
+    setTotalExpenses(data[year][month].allExpenses) ;
 
-    setSelectiveData(transformedAccumulated); // Update state with transformed data
+    setSelectiveData(transformedAccumulated); 
+    const totalSum = transformedAccumulated.reduce((sum, item) => {
+      return sum + Number(item.expense); // Convert expense to a number and add to sum
+    }, 0); // Start with an initial sum of 0
+    
+    console.log("Total sum -------->", totalSum);
+    
+    // Set the total sum in state
+    setSpent_amt(totalSum); 
+    // Update state with transformed data
   } else {
     console.log(`No data found for year ${year} and month ${month}`);
-    setSelectiveData([]); // Reset state to an empty array if no data is found
+    setSelectiveData([]);
+    setSpent_amt(0); // Reset state to an empty array if no data is found
   }
 };
 
@@ -158,6 +191,14 @@ const onChange = (date, dateString) => {
 
   return (
     <ResponsiveContainer width={"100%"} height={300}>
+                 <div>
+                  <p style={{fontSize:'15px',color:'grey'}}>TOTAL SPENT AMT: {spent_amt}</p>
+                 </div>
+                 <div>
+                 <Button type="primary" shape="round" icon={<FormatListBulletedIcon />} size={'large'} onClick={showModal}>
+                    VIEW EXPENSE LIST
+                </Button>
+                 </div>
                  <div className="" style={{display:'flex',justifyContent:'end'}}>
                   <style>
                     {`.ant-picker-header-view{
@@ -173,23 +214,44 @@ const onChange = (date, dateString) => {
                     `}
                   </style>
                   <DatePicker style={{ width: '10rem', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" picker="month" />
-                  <div className={classes.search_icon_container}>
+                  {/* <div className={classes.search_icon_container}>
                     <SearchIcon fontSize='1rem' style={{cursor:'pointer'}}/>
-                  </div>
+                  </div> */}
               </div>
-      <LineChart data={selectiveData}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" padding={{ left: 30, right: 30 }} />
-        <YAxis />
-        <Tooltip />
-        {/* <Legend /> */}
-        <Line
-          type="monotone"
-          dataKey="expense"
-          stroke="#8884d8"
-          activeDot={{ r: 8 }}
-        />
-      </LineChart>
+
+              <BarChart
+                width={500}
+                height={300}
+                data={selectiveData}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 40,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="expense" fill="#8884d8" activeBar={<Rectangle fill="green" stroke="green" />} />
+              </BarChart>
+              <My_modal title="" button_name="Add Expenses" isModalOpen={modal} handleCancel={handleCancel}>
+                <List
+                    size="small"
+                    footer={
+                      <div>
+                      </div>
+                    }
+                    bordered
+                  >
+                    <List.Item>
+                    </List.Item>
+                    <List.Item>
+                    </List.Item>
+                  </List>
+              </My_modal>
     </ResponsiveContainer>
   );
 };
