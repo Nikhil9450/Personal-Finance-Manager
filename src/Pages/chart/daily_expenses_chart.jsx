@@ -18,7 +18,7 @@ const Daily_expenses_chart = () => {
     const [isChartReady, setIsChartReady] = useState(false);
     const [spent_amt, setSpent_amt]= useState(0);
     const [modal,setModal]=useState(false)
-
+    const [year_month,setYear_month]=useState(moment().format('YYYY-MM'));
     const showModal = () => {
       console.log("opening modal");
       setModal(true);
@@ -67,21 +67,20 @@ useEffect(() => {
   const expensesByYear = Expense_data.reduce((acc, expense) => {
     const [year, month, day] = expense.expenditure_date.split("-"); // Split the date
     const date = `${year}-${month}-${day}`; // Reconstruct the date in desired format
-
+    
     if (!acc[year]) {
       acc[year] = {}; // Initialize the year if it doesn't exist
     }
-
     if (!acc[year][month]) {
       acc[year][month] = {
         accumulated: {}, // Temporary object to group by date
         allExpenses: [], // Flat array of all expenses for the month
       };
     }
-
     // Add to the flat array
     acc[year][month].allExpenses.push({
       name: date,
+      discription:expense.description,
       expense: Number(expense.price),
     });
 
@@ -133,20 +132,11 @@ useEffect(() => {
   }
 }, [isChartReady]);
 
-// const onChange = (date, dateString) => {
-//   setDate(dateString); // Set the string representation (e.g., "2024-11")
-//   console.log("Selected Month (Moment Object):", date); // Moment.js object
-//   console.log("Selected Month (String):", dateString); // String representation
-//   console.log("split date-------->", dateString.split('-'));
-//   const year=dateString.split('-')[0]
-//   const month=dateString.split('-')[1]
-//   console.log("output--------->",data[year][month]) 
-//   setSelectiveData((data[year][month]).accumulated);
-// };
 const onChange = (date, dateString) => {
   setDate(dateString); // Set the string representation (e.g., "2024-11")
   console.log("Selected Month (Moment Object):", date); // Moment.js object
   console.log("Selected Month (String):", dateString); // String representation
+  setYear_month(dateString);
 
   const [year, month] = dateString.split('-'); // Extract year and month
   console.log("Year:", year, "Month:", month);
@@ -168,7 +158,7 @@ const onChange = (date, dateString) => {
     console.log("Transformed and Sorted Accumulated Data:", transformedAccumulated);
     
     setTotalExpenses(data[year][month].allExpenses) ;
-
+    console.log("total expenses------------------->",data[year][month].allExpenses)
     setSelectiveData(transformedAccumulated); 
     const totalSum = transformedAccumulated.reduce((sum, item) => {
       return sum + Number(item.expense); // Convert expense to a number and add to sum
@@ -183,6 +173,7 @@ const onChange = (date, dateString) => {
     console.log(`No data found for year ${year} and month ${month}`);
     setSelectiveData([]);
     setSpent_amt(0); // Reset state to an empty array if no data is found
+    setTotalExpenses(null)
   }
 };
 
@@ -190,67 +181,92 @@ const onChange = (date, dateString) => {
 
 
   return (
-    <ResponsiveContainer width={"100%"} height={300}>
-                 <div>
-                  <p style={{fontSize:'15px',color:'grey'}}>TOTAL SPENT AMT: {spent_amt}</p>
-                 </div>
-                 <div>
-                 <Button type="primary" shape="round" icon={<FormatListBulletedIcon />} size={'large'} onClick={showModal}>
-                    VIEW EXPENSE LIST
-                </Button>
-                 </div>
-                 <div className="" style={{display:'flex',justifyContent:'end'}}>
-                  <style>
-                    {`.ant-picker-header-view{
-                        display:flex;
-                    }
-                      .ant-picker-dropdown .ant-picker-header {
-                          /* Adjust these properties as needed */
-                          width: 50% !important;         /* Ensures the header fits the dropdown width */
-                          padding: 8px;        /* Adjust padding if needed */
-                          display: flex;
-                          {/* justify-content: center; /* Centers header content */ */}
-                      }
-                    `}
-                  </style>
-                  <DatePicker style={{ width: '10rem', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" picker="month" />
-                  {/* <div className={classes.search_icon_container}>
-                    <SearchIcon fontSize='1rem' style={{cursor:'pointer'}}/>
-                  </div> */}
-              </div>
+    <ResponsiveContainer width={"100%"}>
 
-              <BarChart
-                width={500}
-                height={300}
-                data={selectiveData}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 40,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="expense" fill="#8884d8" activeBar={<Rectangle fill="green" stroke="green" />} />
-              </BarChart>
-              <My_modal title="" button_name="Add Expenses" isModalOpen={modal} handleCancel={handleCancel}>
-                <List
-                    size="small"
-                    footer={
-                      <div>
-                      </div>
-                    }
-                    bordered
+
+
+
+                 <div className="" style={{display:'flex',justifyContent:'space-between', marginBottom:'5px'}}>
+                    <style>
+                      {`.ant-picker-header-view{
+                          display:flex;
+                      }
+                        .ant-picker-dropdown .ant-picker-header {
+                            /* Adjust these properties as needed */
+                            width: 50% !important;         /* Ensures the header fits the dropdown width */
+                            padding: 8px;        /* Adjust padding if needed */
+                            display: flex;
+                            {/* justify-content: center; /* Centers header content */ */}
+                        }
+                      `}
+                    </style>
+
+                    {/* <Button type="primary" shape="round" icon={<FormatListBulletedIcon />} size={'large'} onClick={showModal}>
+                        VIEW EXPENSE LIST
+                    </Button> */}
+                    <DatePicker style={{ width: '10rem', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" picker="month" />
+                    {/* <div> */}
+                      <p style={{fontSize:'12px',color:'grey'}}>Total spent amount : {spent_amt}</p>
+                    {/* </div> */}
+                  </div>
+                  {totalExpenses && totalExpenses.length > 0 ? (
+                    <BarChart
+                    width={500}
+                    height={300}
+                    data={selectiveData}
+                    margin={{
+                      top: 5,
+                      right: 30,
+                      left: 20,
+                      bottom: 40,
+                    }}
                   >
-                    <List.Item>
-                    </List.Item>
-                    <List.Item>
-                    </List.Item>
-                  </List>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="expense" fill="#8884d8" />
+                  </BarChart>
+                    ) : (
+                      <div className={classes.empty_graph_handler}>No expenses to display</div>
+                    )}
+                    {totalExpenses && totalExpenses.length > 0 ?
+                    <div style={{textAlign:'right'}}>
+                      <p style={{color:'#127afb',cursor:'pointer' ,fontSize:'12px'}} onClick={showModal}>View expenses</p>
+                    </div>:
+                    <div></div>}
+              <My_modal title={'Expenses ('+ year_month +')'}  isModalOpen={modal} handleCancel={handleCancel}>
+                  <div className={classes.expense_list_container}>
+                  {totalExpenses && totalExpenses.length > 0 ? (
+                      <List
+                        itemLayout="horizontal"
+                        dataSource={totalExpenses}
+                        renderItem={(item, index) => {
+                          const date = new Date(item.name);
+                          const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+                          const day = date.getDate();
+
+                          return (
+                            <List.Item>
+                              <List.Item.Meta
+                                avatar={
+                                  <div className={classes.list_avatar}>
+                                    <h4>{month}</h4>
+                                    <p>{day}</p>
+                                  </div>
+                                }
+                                title={<h5>{item.discription}</h5>}
+                                description={<p>{item.expense}</p>}
+                              />
+                            </List.Item>
+                          );
+                        }}
+                      />
+                    ) : (
+                      <div className={classes.empty_list_handler}>No expenses to display</div>
+                    )}
+                  </div>
               </My_modal>
     </ResponsiveContainer>
   );
