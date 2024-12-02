@@ -82,6 +82,7 @@ useEffect(() => {
       name: date,
       discription:expense.description,
       expense: Number(expense.price),
+      id:expense.id,
     });
 
     // Add to accumulated expenses
@@ -177,6 +178,9 @@ const onChange = (date, dateString) => {
   }
 };
 
+const edit_expense=(id)=>{
+console.log("it to be update----------->",id)
+};
 
 
 
@@ -186,7 +190,7 @@ const onChange = (date, dateString) => {
 
 
 
-                 <div className="" style={{display:'flex',justifyContent:'space-between', marginBottom:'5px'}}>
+                 <div className="" style={{display:'flex',justifyContent:'end', marginBottom:'5px'}}>
                     <style>
                       {`.ant-picker-header-view{
                           display:flex;
@@ -200,19 +204,18 @@ const onChange = (date, dateString) => {
                         }
                       `}
                     </style>
-
-                    {/* <Button type="primary" shape="round" icon={<FormatListBulletedIcon />} size={'large'} onClick={showModal}>
-                        VIEW EXPENSE LIST
-                    </Button> */}
                     <DatePicker style={{ width: '10rem', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" picker="month" />
-                    {/* <div> */}
-                      <p style={{fontSize:'12px',color:'grey'}}>Total spent amount : {spent_amt}</p>
-                    {/* </div> */}
                   </div>
+                  {totalExpenses && totalExpenses.length > 0 ?
+                    <div style={{display:'flex',justifyContent:'space-between'}}>
+                      <p style={{fontSize:'12px',color:'grey', marginLeft: '5rem'}}>Total spent amount : {spent_amt}</p>
+                      <p style={{color:'#127afb',cursor:'pointer' ,fontSize:'12px',marginRight:'2rem'}} onClick={showModal}>View expenses</p>
+                    </div>:
+                    <div></div>}
                   {totalExpenses && totalExpenses.length > 0 ? (
                     <BarChart
                     width={500}
-                    height={300}
+                    height={500}
                     data={selectiveData}
                     margin={{
                       top: 5,
@@ -227,15 +230,11 @@ const onChange = (date, dateString) => {
                     <Tooltip />
                     <Legend />
                     <Bar dataKey="expense" fill="#8884d8" />
-                  </BarChart>
+                    </BarChart>
                     ) : (
                       <div className={classes.empty_graph_handler}>No expenses to display</div>
                     )}
-                    {totalExpenses && totalExpenses.length > 0 ?
-                    <div style={{textAlign:'right'}}>
-                      <p style={{color:'#127afb',cursor:'pointer' ,fontSize:'12px'}} onClick={showModal}>View expenses</p>
-                    </div>:
-                    <div></div>}
+
               <My_modal title={'Expenses ('+ year_month +')'}  isModalOpen={modal} handleCancel={handleCancel}>
                   <div className={classes.expense_list_container}>
                   {totalExpenses && totalExpenses.length > 0 ? (
@@ -248,7 +247,9 @@ const onChange = (date, dateString) => {
                           const day = date.getDate();
 
                           return (
-                            <List.Item>
+                            <List.Item
+                            // actions={<a key="list-loadmore-edit">edit</a>}
+                            >
                               <List.Item.Meta
                                 avatar={
                                   <div className={classes.list_avatar}>
@@ -259,6 +260,7 @@ const onChange = (date, dateString) => {
                                 title={<h5>{item.discription}</h5>}
                                 description={<p>{item.expense}</p>}
                               />
+                              <a onClick={() => edit_expense(item.id)}>edit</a>
                             </List.Item>
                           );
                         }}

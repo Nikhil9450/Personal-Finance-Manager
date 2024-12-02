@@ -73,13 +73,12 @@ const Dashboard = () => {
       <div className={classes.dashboard_content}>
         <Grid container rowSpacing={5} columnSpacing={5}>
           <Grid size={12}>
-            <Card width="" height="200px">
+            <Card width="" height="315px">
             <Daily_expenses_chart/>
             </Card>
           </Grid>
            <Grid size={6}>
-            <Card>
-              {/* <button onClick={fetch_expense_list}>Fetch data</button> */}
+            <Card width="" height="400px">
             </Card>
            </Grid>
         </Grid>

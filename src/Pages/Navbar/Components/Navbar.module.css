@@ -8,6 +8,7 @@
     align-items: center;
     height: 3rem;
     background:#cccccc94;
+    z-index: 2;
 }
 
 .profile{
