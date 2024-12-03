@@ -6,9 +6,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import classes from './daily_expenses_chart.module.css';
 import moment from 'moment';
 import My_modal from '../../My_modal';
+import Update_expense from '../Dashboard/Components/Update_expense';
 import { Avatar, List } from 'antd';
 import { Button } from 'antd';
+import Loader from '../../Loader';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import { doc,deleteDoc } from 'firebase/firestore';
+import { db,auth } from '../../firebase';
 const Daily_expenses_chart = () => {
     const[data,setData]=useState([]);
     const Expense_data=useSelector((state)=>state.user.expenses)
@@ -19,6 +23,7 @@ const Daily_expenses_chart = () => {
     const [spent_amt, setSpent_amt]= useState(0);
     const [modal,setModal]=useState(false)
     const [year_month,setYear_month]=useState(moment().format('YYYY-MM'));
+    const [deletingItem, setDeletingItem] = useState(null);
     const showModal = () => {
       console.log("opening modal");
       setModal(true);
@@ -178,10 +183,32 @@ const onChange = (date, dateString) => {
   }
 };
 
-const edit_expense=(id)=>{
-console.log("it to be update----------->",id)
-};
 
+
+const deleteExpense = async (itemId) => {
+  if (!auth.currentUser) {
+    console.error("No user is logged in.");
+    return;
+  }
+
+  const confirmDelete = window.confirm("Are you sure you want to delete this expense?");
+  if (!confirmDelete) return;
+
+  setDeletingItem(itemId); // Set the current item as being deleted
+
+  try {
+    const user = auth.currentUser;
+    const itemDoc = doc(db, "users", user.uid, "items", itemId);
+    await deleteDoc(itemDoc);
+    console.log("Expense deleted successfully.");
+    alert("Expense deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting expense:", error);
+    alert("Failed to delete expense. Please try again.");
+  } finally {
+    setDeletingItem(null); // Reset the deleting state
+  }
+};
 
 
   return (
@@ -260,8 +287,19 @@ console.log("it to be update----------->",id)
                                 title={<h5>{item.discription}</h5>}
                                 description={<p>{item.expense}</p>}
                               />
-                              <a onClick={() => edit_expense(item.id)}>edit</a>
-                            </List.Item>
+                              {/* <a onClick={() => edit_expense(item.id)}>edit</a> */}
+                              <Update_expense itemId={item.id} />
+                                {deletingItem === item.id ? (
+                                  <Loader size={20} /> // Replace the icon with a loader
+                                ) : (
+                                  <img
+                                    src="/Icons/delete.png"
+                                    onClick={() => deleteExpense(item.id)}
+                                    alt="Delete"
+                                    style={{ height: '1.4rem', cursor: 'pointer' }}
+                                  />
+                                )}                           
+                              </List.Item>
                           );
                         }}
                       />

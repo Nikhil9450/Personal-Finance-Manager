@@ -12,7 +12,7 @@ import { Image } from 'antd';
 import './Profile_picture.css';
 import { useSelector,useDispatch } from 'react-redux';
 import Loader from './Loader';
-import { fetchUserProfile } from './Slices/UserSlice';
+import { listenToUserProfile } from './Slices/UserSlice';
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from './firebase'; 
 import My_modal from './My_modal';
@@ -42,7 +42,7 @@ const Profile_picture = () => {
       await updateDoc(userDocRef, { photoURL: downloadURL });
   
       // Dispatch Redux action to update state
-      dispatch(fetchUserProfile(currentUser.uid));
+      dispatch(listenToUserProfile(currentUser.uid));
       setModal(false);
 
       Swal.fire({
@@ -96,7 +96,7 @@ const Profile_picture = () => {
       await auth.currentUser.reload();
   
       // Dispatch Redux action to update state
-      dispatch(fetchUserProfile(currentUser.uid));
+      dispatch(listenToUserProfile(currentUser.uid));
   
       alert("Profile picture deleted successfully!");
       setFile(null);

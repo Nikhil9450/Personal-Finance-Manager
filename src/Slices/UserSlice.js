@@ -1,57 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getDoc, doc, collection, getDocs } from 'firebase/firestore';
+import { createSlice } from '@reduxjs/toolkit';
+import { doc, collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
-
-// Thunk to fetch user profile
-export const fetchUserProfile = createAsyncThunk(
-  'user/fetchUserProfile',
-  async (uid, thunkAPI) => {
-    try {
-      console.log('Fetching user profile for UID:', uid); // Log the UID
-      const userDocRef = doc(db, 'users', uid);
-      const userDoc = await getDoc(userDocRef);
-
-      if (userDoc.exists()) {
-        console.log('User data found:', userDoc.data());
-        return userDoc.data(); // Return user profile data
-      } else {
-        console.log('User not found in Firestore');
-        return thunkAPI.rejectWithValue('User not found');
-      }
-    } catch (error) {
-      console.error('Error fetching user profile:', error.message);
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
-
-// Thunk to fetch user expenses list
-export const fetch_expenses_list = createAsyncThunk(
-  'user/fetch_expenses_list',
-  async (uid, thunkAPI) => {
-    try {
-      console.log('Fetching expenses for UID:', uid);
-      const userExpenseListRef = collection(db, 'users', uid, 'items');
-      const expenseSnapshot = await getDocs(userExpenseListRef);
-
-      if (!expenseSnapshot.empty) {
-        // Map over the documents and retrieve their data
-        const expenseList = expenseSnapshot.docs.map((doc) => ({
-          id: doc.id, // Include document ID if needed
-          ...doc.data(),
-        }));
-        console.log('User expenses found:', expenseList);
-        return expenseList; // Return the list of expenses
-      } else {
-        console.log('No expenses found for user');
-        return thunkAPI.rejectWithValue('No expenses found');
-      }
-    } catch (error) {
-      console.error('Error fetching expenses:', error.message);
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
 
 const userSlice = createSlice({
   name: 'user',
@@ -62,40 +11,74 @@ const userSlice = createSlice({
     error: null, // Error message
   },
   reducers: {
+    setProfile: (state, action) => {
+      state.profile = action.payload;
+    },
+    setExpenses: (state, action) => {
+      state.expenses = action.payload;
+    },
+    setStatus: (state, action) => {
+      state.status = action.payload;
+    },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
     clearProfile: (state) => {
       state.profile = null;
+      state.expenses = [];
     },
   },
-  extraReducers: (builder) => {
-    builder
-      // Fetch user profile cases
-      .addCase(fetchUserProfile.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
-      })
-      .addCase(fetchUserProfile.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.profile = action.payload;
-      })
-      .addCase(fetchUserProfile.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
-      })
-      // Fetch expenses list cases
-      .addCase(fetch_expenses_list.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
-      })
-      .addCase(fetch_expenses_list.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.expenses = action.payload;
-      })
-      .addCase(fetch_expenses_list.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
-      });
-  },
 });
+
+// Thunk to listen for user profile changes
+export const listenToUserProfile = (uid) => (dispatch) => {
+  try {
+    dispatch(userSlice.actions.setStatus('loading'));
+
+    const userDocRef = doc(db, 'users', uid);
+    onSnapshot(userDocRef, (docSnap) => {
+      if (docSnap.exists()) {
+        dispatch(userSlice.actions.setProfile(docSnap.data()));
+        dispatch(userSlice.actions.setStatus('succeeded'));
+      } else {
+        console.error('User profile not found');
+        dispatch(userSlice.actions.setError('User profile not found'));
+        dispatch(userSlice.actions.setStatus('failed'));
+      }
+    });
+  } catch (error) {
+    console.error('Error listening to user profile:', error.message);
+    dispatch(userSlice.actions.setError(error.message));
+    dispatch(userSlice.actions.setStatus('failed'));
+  }
+};
+
+// Thunk to listen for user expenses list changes
+export const listenToUserExpenses = (uid) => (dispatch) => {
+  try {
+    dispatch(userSlice.actions.setStatus('loading'));
+
+    const userExpenseListRef = collection(db, 'users', uid, 'items');
+    onSnapshot(userExpenseListRef, (snapshot) => {
+      if (!snapshot.empty) {
+        const expenses = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        dispatch(userSlice.actions.setExpenses(expenses));
+        dispatch(userSlice.actions.setStatus('succeeded'));
+      } else {
+        console.error('No expenses found');
+        dispatch(userSlice.actions.setError('No expenses found'));
+        dispatch(userSlice.actions.setStatus('failed'));
+      }
+    });
+  } catch (error) {
+    console.error('Error listening to expenses:', error.message);
+    dispatch(userSlice.actions.setError(error.message));
+    dispatch(userSlice.actions.setStatus('failed'));
+  }
+};
 
 // Export actions
 export const { clearProfile } = userSlice.actions;

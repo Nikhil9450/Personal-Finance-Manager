@@ -7,7 +7,8 @@ import { motion } from "framer-motion"
 import AddExpenses from './AddExpenses';
 import { auth } from '../../../firebase';
 import { useDispatch,useSelector } from 'react-redux';
-import { fetchUserProfile,fetch_expenses_list } from '../../../Slices/UserSlice';
+import { listenToUserProfile, listenToUserExpenses } from '../../../Slices/UserSlice';
+
 import Daily_expenses_chart from '../../chart/daily_expenses_chart';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from '../../../firebase';
@@ -35,8 +36,8 @@ const Dashboard = () => {
   useEffect(() => {
     if (auth.currentUser) {
       console.log('UID from auth.currentUser:', auth.currentUser.uid); // Log UID
-      dispatch(fetchUserProfile(auth.currentUser.uid));
-      dispatch(fetch_expenses_list(auth.currentUser.uid));
+      dispatch(listenToUserProfile(auth.currentUser.uid));
+      dispatch(listenToUserExpenses(auth.currentUser.uid));
     } else {
       console.log('auth.currentUser is null');
     }

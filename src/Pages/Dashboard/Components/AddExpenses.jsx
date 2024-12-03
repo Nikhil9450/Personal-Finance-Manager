@@ -21,6 +21,9 @@ import { db,auth } from '../../../firebase';
 import Loader from '../../../Loader';
 import Fab from '@mui/material/Fab';
 import { DatePicker } from 'antd';
+import { useDispatch } from 'react-redux';
+import { listenToUserExpenses,listenToUserProfile } from '../../../Slices/UserSlice';
+
 const AddExpenses = () => {
     const [modal,setModal]=useState(false)
     const priceRef=useRef(null);
@@ -28,6 +31,7 @@ const AddExpenses = () => {
     const [error,setError]=useState(false);
     const [loader,setLoader]=useState(false);
     const [date, setDate] = useState(null);
+    const dispatch=useDispatch();
     const addToList = async (e) => {
       e.preventDefault();
     
@@ -62,10 +66,14 @@ const AddExpenses = () => {
     
         console.log("Item added to Firestore subcollection.");
         setLoader(false); // Reset loader after success
+
       } catch (error) {
         setLoader(false); // Ensure loader is reset on error
         setError(error.message);
         console.log("error----->", error);
+      } finally{
+        dispatch(listenToUserProfile(auth.currentUser.uid));
+        dispatch(listenToUserExpenses(auth.currentUser.uid));
       }
     };
 
