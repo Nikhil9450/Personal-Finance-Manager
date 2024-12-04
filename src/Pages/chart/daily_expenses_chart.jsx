@@ -13,6 +13,9 @@ import Loader from '../../Loader';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import { doc,deleteDoc } from 'firebase/firestore';
 import { db,auth } from '../../firebase';
+import { useDispatch } from 'react-redux';
+import { listenToUserExpenses,listenToUserProfile } from '../../Slices/UserSlice';
+import Swal from 'sweetalert2';
 const Daily_expenses_chart = () => {
     const[data,setData]=useState([]);
     const Expense_data=useSelector((state)=>state.user.expenses)
@@ -24,18 +27,15 @@ const Daily_expenses_chart = () => {
     const [modal,setModal]=useState(false)
     const [year_month,setYear_month]=useState(moment().format('YYYY-MM'));
     const [deletingItem, setDeletingItem] = useState(null);
+    const dispatch= useDispatch();
     const showModal = () => {
-      console.log("opening modal");
       setModal(true);
     };
 
   const handleCancel = () => {
-      console.log("closing modal");
       setModal(false);
     };  
-    useEffect(() => {
-      console.log("Expenses data updated ------------>", Expense_data);
-  
+    useEffect(() => {  
       // Group expenses by date
       const expensesByDate = Expense_data.reduce((acc, expense) => {
         const date = expense.expenditure_date; // Extract the expenditure date
@@ -59,16 +59,10 @@ const Daily_expenses_chart = () => {
           };
         }
       );
-  
-      console.log("Date-wise total amounts:", dateWiseTotalExpenseData);
-      // setData(dateWiseTotalExpenseData); // Set the calculated data in state
-      console.log("Expenses grouped by date:", expensesByDate);
-    }, [Expense_data]);
+      }, [Expense_data]);
 
 // by year grouping---------------------
 useEffect(() => {
-  console.log("Expenses data updated ------------>", Expense_data);
-
   const expensesByYear = Expense_data.reduce((acc, expense) => {
     const [year, month, day] = expense.expenditure_date.split("-"); // Split the date
     const date = `${year}-${month}-${day}`; // Reconstruct the date in desired format
@@ -118,7 +112,6 @@ useEffect(() => {
     {}
   );
 
-  console.log("Expenses grouped by year and month:", formattedExpensesByYear);
   setData(formattedExpensesByYear); // Set the restructured data in state
   // onChange(moment(), moment().format('YYYY-MM'));
 }, [Expense_data]);
@@ -138,17 +131,17 @@ useEffect(() => {
   }
 }, [isChartReady]);
 
-const onChange = (date, dateString) => {
+const onChange = (date,dateString) => {
   setDate(dateString); // Set the string representation (e.g., "2024-11")
   console.log("Selected Month (Moment Object):", date); // Moment.js object
   console.log("Selected Month (String):", dateString); // String representation
   setYear_month(dateString);
 
   const [year, month] = dateString.split('-'); // Extract year and month
-  console.log("Year:", year, "Month:", month);
+  // console.log("Year:", year, "Month:", month);
 
   if (data[year] && data[year][month]) {
-    console.log("Filtered Data for Year and Month:", data[year][month]);
+    // console.log("Filtered Data for Year and Month:", data[year][month]);
 
     // Transform the accumulated data to extract day and sort by day
     const transformedAccumulated = data[year][month].accumulated
@@ -161,22 +154,22 @@ const onChange = (date, dateString) => {
       })
       .sort((a, b) => Number(a.name) - Number(b.name)); // Sort by day numerically
 
-    console.log("Transformed and Sorted Accumulated Data:", transformedAccumulated);
+    // console.log("Transformed and Sorted Accumulated Data:", transformedAccumulated);
     
     setTotalExpenses(data[year][month].allExpenses) ;
-    console.log("total expenses------------------->",data[year][month].allExpenses)
+    // console.log("total expenses------------------->",data[year][month].allExpenses)
     setSelectiveData(transformedAccumulated); 
     const totalSum = transformedAccumulated.reduce((sum, item) => {
       return sum + Number(item.expense); // Convert expense to a number and add to sum
     }, 0); // Start with an initial sum of 0
     
-    console.log("Total sum -------->", totalSum);
+    // console.log("Total sum -------->", totalSum);
     
     // Set the total sum in state
     setSpent_amt(totalSum); 
     // Update state with transformed data
   } else {
-    console.log(`No data found for year ${year} and month ${month}`);
+    // console.log(`No data found for year ${year} and month ${month}`);
     setSelectiveData([]);
     setSpent_amt(0); // Reset state to an empty array if no data is found
     setTotalExpenses(null)
@@ -185,38 +178,90 @@ const onChange = (date, dateString) => {
 
 
 
-const deleteExpense = async (itemId) => {
+const deleteExpense = async (itemId, day, expense_price) => {
   if (!auth.currentUser) {
     console.error("No user is logged in.");
     return;
   }
+  console.log("before updating selectiveData",selectiveData)
+  console.log("before updating spent_amt",spent_amt)
+  const result = await Swal.fire({
+    text: "Are you sure you want to delete this expense?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    cancelButtonText: "No",
+    customClass: {
+      popup: "custom-swal-popup",
+    },
+  });
 
-  const confirmDelete = window.confirm("Are you sure you want to delete this expense?");
-  if (!confirmDelete) return;
+  if (!result.isConfirmed) return;
 
-  setDeletingItem(itemId); // Set the current item as being deleted
+  setDeletingItem(itemId);
 
   try {
     const user = auth.currentUser;
     const itemDoc = doc(db, "users", user.uid, "items", itemId);
+
     await deleteDoc(itemDoc);
-    console.log("Expense deleted successfully.");
-    alert("Expense deleted successfully.");
+
+    // Update `totalExpenses` state by filtering out the deleted item
+    const updatedExpenses = totalExpenses.filter((item) => item.id !== itemId);
+    setTotalExpenses(updatedExpenses);
+
+    // Update `selectiveData` state
+    const updatedSelectiveData = selectiveData.map((item) => {
+      if (item.name == day) {
+        const updatedExpense = Number(item.expense) - Number(expense_price);
+        return { ...item, expense: updatedExpense };
+      }
+      return item;
+    }).filter(item => item.expense > 0); // Remove days with no expenses
+
+    setSelectiveData(updatedSelectiveData);
+
+    
+
+    // Recalculate the total sum
+    const totalSum = updatedSelectiveData.reduce((sum, item) => sum + Number(item.expense), 0);
+    setSpent_amt(totalSum);
+    console.log("after updating selectiveData",updatedSelectiveData)
+    console.log("after updating spent_amt",totalSum)
+    Swal.fire({
+      text: "Expense deleted successfully.",
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false,
+    });
   } catch (error) {
-    console.error("Error deleting expense:", error);
-    alert("Failed to delete expense. Please try again.");
+    console.error("Error during deletion:", error);
+
+    Swal.fire({
+      text: "Failed to delete expense. Please try again.",
+      icon: "error",
+      timer: 2000,
+      showConfirmButton: false,
+    });
   } finally {
-    setDeletingItem(null); // Reset the deleting state
+    setDeletingItem(null);
+
+    // Optionally refresh user data
+    dispatch(listenToUserProfile(auth.currentUser.uid));
+    dispatch(listenToUserExpenses(auth.currentUser.uid));
   }
 };
 
+const handleDataUpdate = (updated_selective_data,updated_amt) => {
+
+  setSelectiveData(updated_selective_data);
+  setSpent_amt(updated_amt)
+
+
+};
 
   return (
     <ResponsiveContainer width={"100%"}>
-
-
-
-
                  <div className="" style={{display:'flex',justifyContent:'end', marginBottom:'5px'}}>
                     <style>
                       {`.ant-picker-header-view{
@@ -255,7 +300,7 @@ const deleteExpense = async (itemId) => {
                     <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip />
-                    <Legend />
+                    {/* <Legend /> */}
                     <Bar dataKey="expense" fill="#8884d8" />
                     </BarChart>
                     ) : (
@@ -288,13 +333,13 @@ const deleteExpense = async (itemId) => {
                                 description={<p>{item.expense}</p>}
                               />
                               {/* <a onClick={() => edit_expense(item.id)}>edit</a> */}
-                              <Update_expense itemId={item.id} />
+                              <Update_expense itemId={item.id} date={day} initial_selective_data={selectiveData} initial_spent_amt={spent_amt}  onUpdateData={handleDataUpdate} />
                                 {deletingItem === item.id ? (
                                   <Loader size={20} /> // Replace the icon with a loader
                                 ) : (
                                   <img
                                     src="/Icons/delete.png"
-                                    onClick={() => deleteExpense(item.id)}
+                                    onClick={() => deleteExpense(item.id,day,item.expense)}
                                     alt="Delete"
                                     style={{ height: '1.4rem', cursor: 'pointer' }}
                                   />

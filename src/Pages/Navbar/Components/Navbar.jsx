@@ -24,9 +24,9 @@ const Navbar = () => {
       .catch((error) => console.error("Error during sign out:", error));
   };
 
-  useEffect(()=>{
-    console.log("profile detail from redux ------------->",profile);
-  })
+  // useEffect(()=>{
+  //   console.log("profile detail from redux ------------->",profile);
+  // })
 
   return (
     <div className={classes.navbar}>

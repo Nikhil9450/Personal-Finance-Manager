@@ -54,6 +54,7 @@ export const listenToUserProfile = (uid) => (dispatch) => {
 };
 
 // Thunk to listen for user expenses list changes
+// Thunk to listen for user expenses list changes
 export const listenToUserExpenses = (uid) => (dispatch) => {
   try {
     dispatch(userSlice.actions.setStatus('loading'));
@@ -61,10 +62,14 @@ export const listenToUserExpenses = (uid) => (dispatch) => {
     const userExpenseListRef = collection(db, 'users', uid, 'items');
     onSnapshot(userExpenseListRef, (snapshot) => {
       if (!snapshot.empty) {
-        const expenses = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const expenses = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            createdAt: data.createdAt?.toDate().toISOString(), // Convert to serializable format
+          };
+        });
         dispatch(userSlice.actions.setExpenses(expenses));
         dispatch(userSlice.actions.setStatus('succeeded'));
       } else {
@@ -79,6 +84,7 @@ export const listenToUserExpenses = (uid) => (dispatch) => {
     dispatch(userSlice.actions.setStatus('failed'));
   }
 };
+
 
 // Export actions
 export const { clearProfile } = userSlice.actions;

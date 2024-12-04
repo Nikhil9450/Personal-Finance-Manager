@@ -70,8 +70,10 @@ const Update_expense = (props) => {
       console.log("Item updated successfully.");
       setModal(false);
         console.log('UID from auth.currentUser:', auth.currentUser.uid); // Log UID
-
-
+      
+      const updatedSelectiveData = props.initial_selective_data.map((item) => {
+        return item;
+      }).filter(item => item.expense > 0); 
     } catch (error) {
       console.error("Error updating item:", error);
     } finally {
