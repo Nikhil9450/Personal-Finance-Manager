@@ -157,7 +157,7 @@ const onChange = (date,dateString) => {
     // console.log("Transformed and Sorted Accumulated Data:", transformedAccumulated);
     
     setTotalExpenses(data[year][month].allExpenses) ;
-    // console.log("total expenses------------------->",data[year][month].allExpenses)
+    console.log("total expenses------------------->",data[year][month].allExpenses)
     setSelectiveData(transformedAccumulated); 
     const totalSum = transformedAccumulated.reduce((sum, item) => {
       return sum + Number(item.expense); // Convert expense to a number and add to sum
@@ -209,7 +209,7 @@ const deleteExpense = async (itemId, day, expense_price) => {
     // Update `totalExpenses` state by filtering out the deleted item
     const updatedExpenses = totalExpenses.filter((item) => item.id !== itemId);
     setTotalExpenses(updatedExpenses);
-
+    
     // Update `selectiveData` state
     const updatedSelectiveData = selectiveData.map((item) => {
       if (item.name == day) {
@@ -252,10 +252,16 @@ const deleteExpense = async (itemId, day, expense_price) => {
   }
 };
 
-const handleDataUpdate = (updated_selective_data,updated_amt) => {
-
+const handleDataUpdate = (updated_total_expenses,updated_selective_data,updated_total_sum) => {
+  console.log("updated amount before----------->",totalExpenses);
+  console.log("updated amount after----------->",updated_total_expenses);
+  console.log("selectiveData after----------->",selectiveData);
+  console.log("updated_selective_data after----------->",updated_selective_data);
+  console.log("total sum before", spent_amt);
+  console.log("total sum after", updated_total_sum)
   setSelectiveData(updated_selective_data);
-  setSpent_amt(updated_amt)
+  setTotalExpenses(updated_total_expenses);
+  setSpent_amt(updated_total_sum);
 
 
 };
@@ -333,7 +339,7 @@ const handleDataUpdate = (updated_selective_data,updated_amt) => {
                                 description={<p>{item.expense}</p>}
                               />
                               {/* <a onClick={() => edit_expense(item.id)}>edit</a> */}
-                              <Update_expense itemId={item.id} date={day} initial_selective_data={selectiveData} initial_spent_amt={spent_amt}  onUpdateData={handleDataUpdate} />
+                              <Update_expense itemId={item.id} date={day} initial_total_expenses={totalExpenses} initial_selective_data={selectiveData} initial_spent_amt={spent_amt}  onUpdateData={handleDataUpdate} />
                                 {deletingItem === item.id ? (
                                   <Loader size={20} /> // Replace the icon with a loader
                                 ) : (

@@ -63,23 +63,47 @@ const Update_expense = (props) => {
 
     console.log("Updating item:", updatedData);
     setLoader(true);
-
+    
     try {
       const itemDoc = doc(db, "users", user.uid, "items", props.itemId);
       await updateDoc(itemDoc, updatedData);
       console.log("Item updated successfully.");
       setModal(false);
-        console.log('UID from auth.currentUser:', auth.currentUser.uid); // Log UID
+        console.log('UID from auth.currentUser:', auth.currentUser.uid); 
       
-      const updatedSelectiveData = props.initial_selective_data.map((item) => {
+      const updatedTotalExpenses = props.initial_total_expenses.map((item) => {
+        if (props.itemId==item.id){
+          return {...item,
+            discription:updatedData.description,
+            expense:updatedData.price,
+            name:updatedData.expenditure_date,
+            id:item.id,
+          };
+        }
         return item;
       }).filter(item => item.expense > 0); 
+
+      const groupedData = updatedTotalExpenses.reduce((acc, { name, expense }) => {
+        const date = name.split("-")[2]; // Extract the day part
+        acc[date] = (acc[date] || 0) + Number(expense); // Sum up expenses for each date
+        return acc;
+      }, {});
+      
+      // Step 2: Transform the grouped data into the desired format
+      const sortedData = Object.entries(groupedData)
+        .map(([date, totalExpense]) => ({ name: date, expense: totalExpense }))
+        .sort((a, b) => a.name - b.name); // Sort by date
+
+      const totalSum = sortedData.reduce((sum, item) => sum + Number(item.expense), 0);
+
+      props.onUpdateData(updatedTotalExpenses, sortedData,totalSum)
+
     } catch (error) {
       console.error("Error updating item:", error);
     } finally {
       setLoader(false);
-      dispatch(listenToUserProfile(auth.currentUser.uid));
-      dispatch(listenToUserExpenses(auth.currentUser.uid));
+      // dispatch(listenToUserProfile(auth.currentUser.uid));
+      // dispatch(listenToUserExpenses(auth.currentUser.uid));
     }
   };
 
