@@ -62,7 +62,8 @@ const Login = () => {
     <div className={classes.login_container}>
       <div className={classes.login_grid}>
         <div className={classes.grid_item1}>
-          <img className={classes.icon} src = 'Icons/logo8.png' alt='twitter icon'></img>
+          {/* <img className={classes.icon} src = 'Icons/logo8.png' alt='twitter icon'></img> */}
+          <img className={classes.icon} src='/Icons/self-dev.png' alt="logo"/>
           {/* <h4 className={classes.logo_name}>Personal Finance Manager</h4> */}
           </div>
         <div className={classes.grid_item2}>
@@ -77,16 +78,16 @@ const Login = () => {
                   <button className={classes.g_signup} onClick={signInWithGoogle} ><img className={classes.google_icon} src="Icons/google.png" alt="google icon" /><span>Sign up with Google</span></button>
                 </div>
                 <div className={classes.line}>
-                  <hr width="100%" size="2" color="grey" noshade/>
+                  <hr width="100%" size="1" color="grey" noshade/>
                   <p className={classes.or}>or</p>
-                  <hr width="100%" size="2" color="grey" noshade></hr>
+                  <hr width="100%" size="1" color="grey" noshade></hr>
                 </div>
                 <button className={classes.create_acc_btn} onClick={openSignupModal}>Create account</button>
                 <p className={classes.term_condition_para}>By signing up,you agree to the Terms of Service and Privacy Policy, including Cookie Use.</p>
               </div>
 
               <div>
-                <h5>Already have an account?</h5>
+                <h5 className={classes.al_hav_acc}>Already have an account?</h5>
                 <button className={classes.signin_btn} onClick={openSigninModal}>Sign in</button>
               </div>
             </div>
