@@ -69,7 +69,7 @@ const Dashboard = () => {
   return (
     <div className={classes.dashboard}>
       <Navbar/>
-      <AddExpenses/>
+      {/* <AddExpenses/> */}
 
       <div className={classes.dashboard_content}>
         <Grid container rowSpacing={5} columnSpacing={5}>

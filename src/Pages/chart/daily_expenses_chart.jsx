@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState ,useRef} from 'react';
 import { useSelector } from 'react-redux';
 // import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { DatePicker } from 'antd';
@@ -11,14 +11,18 @@ import { Avatar, List } from 'antd';
 import { Button } from 'antd';
 import Loader from '../../Loader';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import { doc,deleteDoc } from 'firebase/firestore';
-import { db,auth } from '../../firebase';
 import { useDispatch } from 'react-redux';
 import { listenToUserExpenses,listenToUserProfile } from '../../Slices/UserSlice';
 import Swal from 'sweetalert2';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { LineChart } from '@mui/x-charts/LineChart';
+import { doc, collection, addDoc ,updateDoc ,deleteDoc} from "firebase/firestore";
+import { db,auth } from '../../firebase';
+import AddExpenses from '../Dashboard/Components/AddExpenses';
+
+
+
 
 const Daily_expenses_chart = () => {
     const[data,setData]=useState([]);
@@ -258,18 +262,17 @@ const deleteExpense = async (itemId, day, expense_price) => {
 };
 
 const handleDataUpdate = (updated_total_expenses,updated_selective_data,updated_total_sum) => {
-  console.log("updated amount before----------->",totalExpenses);
-  console.log("updated amount after----------->",updated_total_expenses);
-  console.log("selectiveData after----------->",selectiveData);
-  console.log("updated_selective_data after----------->",updated_selective_data);
-  console.log("total sum before", spent_amt);
-  console.log("total sum after", updated_total_sum)
+  // console.log("updated amount before----------->",totalExpenses);
+  // console.log("updated amount after----------->",updated_total_expenses);
+  // console.log("selectiveData after----------->",selectiveData);
+  // console.log("updated_selective_data after----------->",updated_selective_data);
+  // console.log("total sum before", spent_amt);
+  // console.log("total sum after", updated_total_sum)
   setSelectiveData(updated_selective_data);
   setTotalExpenses(updated_total_expenses);
   setSpent_amt(updated_total_sum);
-
-
 };
+
 useEffect(() => {
     const handleResize = () => {
       setChartWidth(window.innerWidth * 0.8); // Adjust width on window resize.
@@ -282,6 +285,7 @@ useEffect(() => {
 
   return (
             <>
+            <AddExpenses  initial_total_expenses={totalExpenses} initial_selective_data={selectiveData} initial_spent_amt={spent_amt}  onAddData={handleDataUpdate} />
                  <div className="" style={{display:'flex',justifyContent:'end', marginBottom:'5px'}}>
                     <style>
                       {`.ant-picker-header-view{

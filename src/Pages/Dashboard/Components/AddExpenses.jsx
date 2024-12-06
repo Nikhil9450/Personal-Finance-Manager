@@ -1,17 +1,7 @@
 import React, { useRef } from 'react'
 import { useState } from 'react';
 import My_modal from '../../../My_modal'
-import AddButton from '../../../My_button'
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import Paper from '@mui/material/Paper';
-import InputBase from '@mui/material/InputBase';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import DirectionsIcon from '@mui/icons-material/Directions';
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import DescriptionIcon from '@mui/icons-material/Description';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AddIcon from '@mui/icons-material/Add';
@@ -24,7 +14,7 @@ import { DatePicker } from 'antd';
 import { useDispatch } from 'react-redux';
 import { listenToUserExpenses,listenToUserProfile } from '../../../Slices/UserSlice';
 
-const AddExpenses = () => {
+const AddExpenses = (props) => {
     const [modal,setModal]=useState(false)
     const priceRef=useRef(null);
     const descriptionRef= useRef(null);
@@ -66,7 +56,7 @@ const AddExpenses = () => {
     
         console.log("Item added to Firestore subcollection.");
         setLoader(false); // Reset loader after success
-
+        
       } catch (error) {
         setLoader(false); // Ensure loader is reset on error
         setError(error.message);
@@ -77,15 +67,15 @@ const AddExpenses = () => {
       }
     };
 
-    const updateItem = async (userId, itemId, updatedData) => {
-      try {
-        const itemDoc = doc(db, "users", userId, "items", itemId); // Reference to the specific item
-        await updateDoc(itemDoc, updatedData); // Update only the fields in `updatedData`
-        console.log("Item updated successfully.");
-      } catch (error) {
-        console.error("Error updating item:", error);
-      }
-    };
+    // const updateItem = async (userId, itemId, updatedData) => {
+    //   try {
+    //     const itemDoc = doc(db, "users", userId, "items", itemId); // Reference to the specific item
+    //     await updateDoc(itemDoc, updatedData); // Update only the fields in `updatedData`
+    //     console.log("Item updated successfully.");
+    //   } catch (error) {
+    //     console.error("Error updating item:", error);
+    //   }
+    // };
 
     const onChange = (date, dateString) => {
       setDate(dateString); // Set the string representation (e.g., "2024-11")
