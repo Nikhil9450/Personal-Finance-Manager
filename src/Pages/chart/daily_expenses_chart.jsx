@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+// import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { DatePicker } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 import classes from './daily_expenses_chart.module.css';
@@ -16,6 +16,10 @@ import { db,auth } from '../../firebase';
 import { useDispatch } from 'react-redux';
 import { listenToUserExpenses,listenToUserProfile } from '../../Slices/UserSlice';
 import Swal from 'sweetalert2';
+import { BarChart } from '@mui/x-charts/BarChart';
+import { axisClasses } from '@mui/x-charts/ChartsAxis';
+import { LineChart } from '@mui/x-charts/LineChart';
+
 const Daily_expenses_chart = () => {
     const[data,setData]=useState([]);
     const Expense_data=useSelector((state)=>state.user.expenses)
@@ -28,6 +32,7 @@ const Daily_expenses_chart = () => {
     const [year_month,setYear_month]=useState(moment().format('YYYY-MM'));
     const [deletingItem, setDeletingItem] = useState(null);
     const dispatch= useDispatch();
+    const [chartWidth, setChartWidth] = useState(window.innerWidth * 0.8); 
     const showModal = () => {
       setModal(true);
     };
@@ -265,9 +270,18 @@ const handleDataUpdate = (updated_total_expenses,updated_selective_data,updated_
 
 
 };
+useEffect(() => {
+    const handleResize = () => {
+      setChartWidth(window.innerWidth * 0.8); // Adjust width on window resize.
+    };
+
+    handleResize(); // Set width on mount
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   return (
-    <ResponsiveContainer width={"100%"}>
+            <>
                  <div className="" style={{display:'flex',justifyContent:'end', marginBottom:'5px'}}>
                     <style>
                       {`.ant-picker-header-view{
@@ -284,31 +298,29 @@ const handleDataUpdate = (updated_total_expenses,updated_selective_data,updated_
                     </style>
                     <DatePicker style={{ width: '10rem', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" picker="month" />
                   </div>
-                  {totalExpenses && totalExpenses.length > 0 ?
+                  {/* {totalExpenses && totalExpenses.length > 0 ?
                     <div style={{display:'flex',justifyContent:'space-between'}}>
                       <p style={{fontSize:'12px',color:'grey', marginLeft: '5rem'}}>Total spent amount : {spent_amt}</p>
                       <p style={{color:'#127afb',cursor:'pointer' ,fontSize:'12px',marginRight:'2rem'}} onClick={showModal}>View expenses</p>
                     </div>:
-                    <div></div>}
+                    <div></div>} */}
                   {totalExpenses && totalExpenses.length > 0 ? (
-                    <BarChart
-                    width={500}
-                    height={500}
-                    data={selectiveData}
-                    margin={{
-                      top: 5,
-                      right: 30,
-                      left: 20,
-                      bottom: 40,
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    {/* <Legend /> */}
-                    <Bar dataKey="expense" fill="#8884d8" />
-                    </BarChart>
+                    <div style={{ width: '100%' }}>
+                    <div style={{display:'flex',justifyContent:'space-between'}}>
+                      <p style={{fontSize:'12px',color:'grey'}}>Total spent amount : {spent_amt}</p>
+                      <p style={{color:'#127afb',cursor:'pointer' ,fontSize:'12px'}} onClick={showModal}>View expenses</p>
+                    </div>
+                    <div className={classes.chart_container}>
+                        <LineChart
+                          width={chartWidth}
+                          height={300}
+                          dataset={selectiveData}
+                          series={[{ dataKey: "expense", label: "Expenses" }]}
+                          xAxis={[{ scaleType: "point", dataKey: "name" }]}
+                        />
+                    </div>
+                  </div>
+
                     ) : (
                       <div className={classes.empty_graph_handler}>No expenses to display</div>
                     )}
@@ -359,7 +371,8 @@ const handleDataUpdate = (updated_total_expenses,updated_selective_data,updated_
                     )}
                   </div>
               </My_modal>
-    </ResponsiveContainer>
+            </>
+   
   );
 };
 

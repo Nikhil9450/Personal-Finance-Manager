@@ -128,19 +128,19 @@ const AddExpenses = () => {
              <div id='addExpense_container' className={classes.addExpense_container}>
              <div className={classes.Container_Child}>
              <style>
-              {`.ant-picker-header-view{
-                  display:flex;
-              }
-                .ant-picker-dropdown .ant-picker-header {
-                    /* Adjust these properties as needed */
-                    width: 23% !important;         /* Ensures the header fits the dropdown width */
-                    padding: 8px;        /* Adjust padding if needed */
-                    display: flex;
-                    {/* justify-content: center; /* Centers header content */ */}
-                }
-              `}
-        </style>
-                  <DatePicker style={{ width: '40%', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" />
+                    {`.ant-picker-header-view{
+                        display:flex;
+                    }
+                      .ant-picker-dropdown .ant-picker-header {
+                          /* Adjust these properties as needed */
+                          width: 23% !important;         /* Ensures the header fits the dropdown width */
+                          padding: 8px;        /* Adjust padding if needed */
+                          display: flex;
+                          {/* justify-content: center; /* Centers header content */ */}
+                      }
+                    `}
+              </style>
+              <DatePicker style={{ width: '40%', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" />
               </div>
                 <div className={classes.Container_Child}>
                     <label htmlFor="description"><DescriptionIcon/></label>

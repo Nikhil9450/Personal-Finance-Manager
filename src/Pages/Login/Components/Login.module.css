@@ -181,11 +181,15 @@
       }
       .grid_item2{
         padding:1rem;
+        justify-content: start;
       }
       .grid_item1{
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+      .icon{
+        height: 5rem;
       }
    }
   
