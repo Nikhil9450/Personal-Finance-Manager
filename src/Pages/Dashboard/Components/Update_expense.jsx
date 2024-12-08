@@ -71,10 +71,10 @@ const Update_expense = (props) => {
       setModal(false);
         console.log('UID from auth.currentUser:', auth.currentUser.uid); 
       
-      const updatedTotalExpenses = props.initial_total_expenses.map((item) => {
+      const updatedTotalExpenses = props.initial_total_expenses.allExpenses.map((item) => {
         if (props.itemId==item.id){
           return {...item,
-            discription:updatedData.description,
+            description:updatedData.description,
             expense:updatedData.price,
             name:updatedData.expenditure_date,
             id:item.id,

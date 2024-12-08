@@ -27,6 +27,9 @@ import AddExpenses from '../Dashboard/Components/AddExpenses';
 const Daily_expenses_chart = () => {
     const[data,setData]=useState([]);
     const Expense_data=useSelector((state)=>state.user.expenses)
+    const [updated_expense, setUpdated_expense] = useState([]);
+    
+    // const [Expense_data,setExpense_data]=useState(Expense_data_from_redux);
     const [date, setDate] = useState(null);
     const [selectiveData,setSelectiveData]=useState(null);
     const [totalExpenses,setTotalExpenses]=useState(null)
@@ -44,86 +47,10 @@ const Daily_expenses_chart = () => {
   const handleCancel = () => {
       setModal(false);
     };  
-    useEffect(() => {  
-      // Group expenses by date
-      const expensesByDate = Expense_data.reduce((acc, expense) => {
-        const date = expense.expenditure_date; // Extract the expenditure date
-        if (!acc[date]) {
-          acc[date] = []; // Initialize an array for this date if it doesn't exist
-        }
-        acc[date].push(expense); // Add the expense to the correct date group
-        return acc;
-      }, {});
-  
-      // Calculate total expense for each date
-      const dateWiseTotalExpenseData = Object.entries(expensesByDate).map(
-        ([date, expenseArray]) => {
-          const totalAmt = expenseArray.reduce(
-            (sum, item) => sum + Number(item.price),
-            0
-          );
-          return {
-            name: date, // Date as a name
-            expense: totalAmt, // Total expense amount for this date
-          };
-        }
-      );
-      }, [Expense_data]);
 
-// by year grouping---------------------
-useEffect(() => {
-  const expensesByYear = Expense_data.reduce((acc, expense) => {
-    const [year, month, day] = expense.expenditure_date.split("-"); // Split the date
-    const date = `${year}-${month}-${day}`; // Reconstruct the date in desired format
-    
-    if (!acc[year]) {
-      acc[year] = {}; // Initialize the year if it doesn't exist
-    }
-    if (!acc[year][month]) {
-      acc[year][month] = {
-        accumulated: {}, // Temporary object to group by date
-        allExpenses: [], // Flat array of all expenses for the month
-      };
-    }
-    // Add to the flat array
-    acc[year][month].allExpenses.push({
-      name: date,
-      discription:expense.description,
-      expense: Number(expense.price),
-      id:expense.id,
-    });
-
-    // Add to accumulated expenses
-    if (!acc[year][month].accumulated[date]) {
-      acc[year][month].accumulated[date] = 0; // Initialize total for this date
-    }
-    acc[year][month].accumulated[date] += Number(expense.price);
-
-    return acc;
-  }, {});
-
-  // Convert the accumulated object to an array of objects
-  const formattedExpensesByYear = Object.keys(expensesByYear).reduce(
-    (acc, year) => {
-      acc[year] = Object.keys(expensesByYear[year]).reduce((yearAcc, month) => {
-        const { accumulated, allExpenses } = expensesByYear[year][month];
-        yearAcc[month] = {
-          accumulated: Object.entries(accumulated).map(([name, expense]) => ({
-            name,
-            expense,
-          })), // Convert accumulated object to array
-          allExpenses, // Keep flat array as is
-        };
-        return yearAcc;
-      }, {});
-      return acc;
-    },
-    {}
-  );
-
-  setData(formattedExpensesByYear); // Set the restructured data in state
-  // onChange(moment(), moment().format('YYYY-MM'));
-}, [Expense_data]);
+useEffect(()=>{
+  setUpdated_expense(Expense_data)
+},[Expense_data])
 
 useEffect(() => {
   // Simulate chart loading by setting a flag (or use a real condition if needed)
@@ -133,56 +60,30 @@ useEffect(() => {
 
   return () => clearTimeout(chartLoadDelay); // Cleanup the timeout on component unmount
 }, []);
+
+useEffect(() => {
+  console.log("Updated expense state:", updated_expense);
+  const currentMonth = moment().format('YYYY-MM');
+  render_data(updated_expense, currentMonth);
+  // console.log("selective data-------->",selectiveData);
+  // console.log("spentamt--------->",spent_amt);
+  // console.log("total expenses from use effect--------->",totalExpenses);
+}, [updated_expense]);
+
 useEffect(() => {
   if (isChartReady) {
-    // Trigger the onChange function after the chart is ready
-    onChange(moment(), moment().format('YYYY-MM')); // Pass the current moment and formatted string
+    const currentMonth = moment().format('YYYY-MM');
+    onChange(moment(), currentMonth); // Trigger data load for the current month
   }
 }, [isChartReady]);
 
-const onChange = (date,dateString) => {
-  setDate(dateString); // Set the string representation (e.g., "2024-11")
-  console.log("Selected Month (Moment Object):", date); // Moment.js object
-  console.log("Selected Month (String):", dateString); // String representation
+const onChange = (date, dateString) => {
+  console.log("onChange triggered");
+  console.log("Current Data:", data); // Ensure data is updated
+  setDate(dateString);
   setYear_month(dateString);
 
-  const [year, month] = dateString.split('-'); // Extract year and month
-  // console.log("Year:", year, "Month:", month);
-
-  if (data[year] && data[year][month]) {
-    // console.log("Filtered Data for Year and Month:", data[year][month]);
-
-    // Transform the accumulated data to extract day and sort by day
-    const transformedAccumulated = data[year][month].accumulated
-      .map((item) => {
-        const day = item.name.split('-')[2]; // Extract day from 'YYYY-MM-DD'
-        return {
-          name: day, // Replace with the day
-          expense: item.expense, // Retain the expense
-        };
-      })
-      .sort((a, b) => Number(a.name) - Number(b.name)); // Sort by day numerically
-
-    // console.log("Transformed and Sorted Accumulated Data:", transformedAccumulated);
-    
-    setTotalExpenses(data[year][month].allExpenses) ;
-    console.log("total expenses------------------->",data[year][month].allExpenses)
-    setSelectiveData(transformedAccumulated); 
-    const totalSum = transformedAccumulated.reduce((sum, item) => {
-      return sum + Number(item.expense); // Convert expense to a number and add to sum
-    }, 0); // Start with an initial sum of 0
-    
-    // console.log("Total sum -------->", totalSum);
-    
-    // Set the total sum in state
-    setSpent_amt(totalSum); 
-    // Update state with transformed data
-  } else {
-    // console.log(`No data found for year ${year} and month ${month}`);
-    setSelectiveData([]);
-    setSpent_amt(0); // Reset state to an empty array if no data is found
-    setTotalExpenses(null)
-  }
+  render_data(updated_expense ,dateString);
 };
 
 
@@ -216,8 +117,8 @@ const deleteExpense = async (itemId, day, expense_price) => {
     await deleteDoc(itemDoc);
 
     // Update `totalExpenses` state by filtering out the deleted item
-    const updatedExpenses = totalExpenses.filter((item) => item.id !== itemId);
-    setTotalExpenses(updatedExpenses);
+    totalExpenses.allExpenses = totalExpenses.allExpenses.filter((item) => item.id !== itemId);
+    setTotalExpenses(totalExpenses);
     
     // Update `selectiveData` state
     const updatedSelectiveData = selectiveData.map((item) => {
@@ -268,10 +169,177 @@ const handleDataUpdate = (updated_total_expenses,updated_selective_data,updated_
   // console.log("updated_selective_data after----------->",updated_selective_data);
   // console.log("total sum before", spent_amt);
   // console.log("total sum after", updated_total_sum)
+
   setSelectiveData(updated_selective_data);
-  setTotalExpenses(updated_total_expenses);
+  totalExpenses.allExpenses=updated_total_expenses
+  // setTotalExpenses(updated_total_expenses);
   setSpent_amt(updated_total_sum);
 };
+
+const handleDataAdd = (newExpense) => {
+  console.log("New expense added:", newExpense);
+
+  // Combine the new expense with existing ones
+  // const updatedExpenses = [...updated_expense, ...newExpense];
+  
+  // Update the main state
+  setUpdated_expense(newExpense);
+
+  // Re-render data with the updated expenses
+  const currentMonth = moment().format('YYYY-MM');
+  render_data(newExpense ,currentMonth);
+
+  // Refresh UI for the current month
+  // onChange(moment(), currentMonth); 
+};
+
+
+
+
+// const render_data = (expenseToRender,dateString) => {
+//   console.log("Render_data triggered");
+  
+//   const expensesByYear = expenseToRender.reduce((acc, expense) => {
+//     const [year, month, day] = expense.expenditure_date.split("-"); // Split the date
+//     const date = `${year}-${month}-${day}`; // Reconstruct the date in desired format
+
+//     if (!acc[year]) {
+//       acc[year] = {}; // Initialize the year if it doesn't exist
+//     }
+//     if (!acc[year][month]) {
+//       acc[year][month] = {
+//         accumulated: {}, // Temporary object to group by date
+//         allExpenses: [], // Flat array of all expenses for the month
+//       };
+//     }
+
+//     // Add to the flat array
+//     acc[year][month].allExpenses.push({
+//       name: date,
+//       description: expense.description,
+//       expense: Number(expense.price),
+//       id: expense.id,
+//     });
+
+//     // Add to accumulated expenses
+//     if (!acc[year][month].accumulated[date]) {
+//       acc[year][month].accumulated[date] = 0; // Initialize total for this date
+//     }
+//     acc[year][month].accumulated[date] += Number(expense.price);
+
+//     return acc;
+//   }, {});
+
+//   const formattedExpensesByYear = Object.keys(expensesByYear).reduce(
+//     (acc, year) => {
+//       acc[year] = Object.keys(expensesByYear[year]).reduce((yearAcc, month) => {
+//         const { accumulated, allExpenses } = expensesByYear[year][month];
+//         yearAcc[month] = {
+//           accumulated: Object.entries(accumulated).map(([name, expense]) => ({
+//             name,
+//             expense,
+//           })), // Convert accumulated object to array
+//           allExpenses, // Keep flat array as is
+//         };
+//         return yearAcc;
+//       }, {});
+//       return acc;
+//     },
+//     {}
+//   );
+
+//   setData(formattedExpensesByYear); // Update `data` state
+//   console.log("Updated data:", formattedExpensesByYear);
+
+//   setDate(dateString);
+//   setYear_month(dateString);
+//   const [year, month] = dateString.split("-");
+//   if (formattedExpensesByYear) {
+//     const transformedAccumulated = formattedExpensesByYear[year][month].accumulated
+//       .map((item) => ({
+//         name: item.name.split('-')[2], // Extract day
+//         expense: item.expense,
+//       }))
+//       .sort((a, b) => Number(a.name) - Number(b.name));
+
+//     setTotalExpenses(formattedExpensesByYear[year][month].allExpenses);
+//     setSelectiveData(transformedAccumulated);
+
+//     const totalSum = transformedAccumulated.reduce((sum, item) => sum + Number(item.expense), 0);
+//     setSpent_amt(totalSum);
+//   }else {
+//     setSelectiveData([]);
+//     setSpent_amt(0);
+//     setTotalExpenses(null);
+//   }
+// };
+
+const render_data = (expenseToRender, dateString) => {
+  let spentamt=0;
+  console.log("Render_data triggered",expenseToRender);
+
+  // Skip if expense data hasn't changed
+  if (!expenseToRender || !dateString) return;
+  console.log("inside if---------");
+  const expensesByYear = expenseToRender.reduce((acc, expense) => {
+    const [year, month, day] = expense.expenditure_date.split("-");
+    const date = `${year}-${month}-${day}`;
+    if (!acc[year]) acc[year] = {};
+    if (!acc[year][month]) acc[year][month] = { accumulated: {}, allExpenses: [] };
+
+    acc[year][month].allExpenses.push({
+      name: date,
+      description: expense.description,
+      expense: Number(expense.price),
+      id: expense.id,
+    });
+
+    if (!acc[year][month].accumulated[date]) acc[year][month].accumulated[date] = 0;
+    acc[year][month].accumulated[date] += Number(expense.price);
+    return acc;
+  }, {});
+
+  // Update state only if data has changed
+  setData(expensesByYear);
+  console.log("expense by year--------->",expensesByYear);
+  // Handle current month data
+  console.log("datestring--------->",dateString,dateString.split("-"));
+  const [year, month] = dateString.split("-");
+  // console.log( "expensesByYear[year]-----------",expensesByYear[year]);
+  // console.log(" expensesByYear[month]--------------->", expensesByYear[year][month])
+  if (expensesByYear[year] && expensesByYear[year][month]) {
+    setTotalExpenses( expensesByYear[year][month]);
+    console.log("total expenses--------->",expensesByYear[year][month]);
+
+    console.log("inside inner if")
+    // const transformedAccumulated = expensesByYear[year][month].accumulated
+    //   .map((item) => ({
+    //     name: item.name.split('-')[2],
+    //     expense: item.expense,
+    //   }))
+    //   .sort((a, b) => Number(a.name) - Number(b.name));
+
+    const transformedAccumulated = Object.entries(expensesByYear[year][month].accumulated)
+    .map(([date, expense]) => ({
+      name: date.split("-")[2], // Extract the day
+      expense,
+    }))
+    .sort((a, b) => Number(a.name) - Number(b.name)); 
+    
+    setSelectiveData(transformedAccumulated);
+
+    console.log("selective data----->",transformedAccumulated)
+    const totalSum = transformedAccumulated.reduce((sum, item) => sum + Number(item.expense), 0);
+    console.log("total sum--------->",totalSum);
+    setSpent_amt(totalSum);
+    // console.log("total expenses length----------->",totalExpenses.length)
+  } else {
+    setSelectiveData([]);
+    setSpent_amt(0);
+  }
+};
+
+
 
 useEffect(() => {
     const handleResize = () => {
@@ -285,7 +353,7 @@ useEffect(() => {
 
   return (
             <>
-            <AddExpenses  initial_total_expenses={totalExpenses} initial_selective_data={selectiveData} initial_spent_amt={spent_amt}  onAddData={handleDataUpdate} />
+            <AddExpenses  onUpdateExpenses={handleDataAdd} />
                  <div className="" style={{display:'flex',justifyContent:'end', marginBottom:'5px'}}>
                     <style>
                       {`.ant-picker-header-view{
@@ -308,7 +376,7 @@ useEffect(() => {
                       <p style={{color:'#127afb',cursor:'pointer' ,fontSize:'12px',marginRight:'2rem'}} onClick={showModal}>View expenses</p>
                     </div>:
                     <div></div>} */}
-                  {totalExpenses && totalExpenses.length > 0 ? (
+                  {totalExpenses ? (
                     <div style={{ width: '100%' }}>
                     <div style={{display:'flex',justifyContent:'space-between'}}>
                       <p style={{fontSize:'12px',color:'grey'}}>Total spent amount : {spent_amt}</p>
@@ -331,10 +399,10 @@ useEffect(() => {
 
               <My_modal title={'Expenses ('+ year_month +')'}  isModalOpen={modal} handleCancel={handleCancel}>
                   <div className={classes.expense_list_container}>
-                  {totalExpenses && totalExpenses.length > 0 ? (
+                  {totalExpenses ? (
                       <List
                         itemLayout="horizontal"
-                        dataSource={totalExpenses}
+                        dataSource={totalExpenses.allExpenses}
                         renderItem={(item, index) => {
                           const date = new Date(item.name);
                           const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
@@ -351,7 +419,7 @@ useEffect(() => {
                                     <p>{day}</p>
                                   </div>
                                 }
-                                title={<h5>{item.discription}</h5>}
+                                title={<h5>{item.description}</h5>}
                                 description={<p>{item.expense}</p>}
                               />
                               {/* <a onClick={() => edit_expense(item.id)}>edit</a> */}

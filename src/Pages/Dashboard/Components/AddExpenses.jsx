@@ -6,7 +6,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AddIcon from '@mui/icons-material/Add';
 import classes from './AddExpenses.module.css'
-import { doc, collection, addDoc ,updateDoc } from "firebase/firestore";
+import { doc, collection, addDoc ,updateDoc,getDocs } from "firebase/firestore";
 import { db,auth } from '../../../firebase';
 import Loader from '../../../Loader';
 import Fab from '@mui/material/Fab';
@@ -14,7 +14,7 @@ import { DatePicker } from 'antd';
 import { useDispatch } from 'react-redux';
 import { listenToUserExpenses,listenToUserProfile } from '../../../Slices/UserSlice';
 
-const AddExpenses = (props) => {
+const AddExpenses = ({ onUpdateExpenses }) => {
     const [modal,setModal]=useState(false)
     const priceRef=useRef(null);
     const descriptionRef= useRef(null);
@@ -22,48 +22,58 @@ const AddExpenses = (props) => {
     const [loader,setLoader]=useState(false);
     const [date, setDate] = useState(null);
     const dispatch=useDispatch();
+
     const addToList = async (e) => {
       e.preventDefault();
-    
+  
       const user = auth.currentUser; // Get the currently authenticated user
       if (!user) {
-        console.log("No user is logged in.");
         setError("Please log in to add items.");
         return;
       }
+  
       const today = new Date();
-      const yyyy = today.getFullYear();
-      const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-      const dd = String(today.getDate()).padStart(2, '0');
-      
-      const formattedDate = `${yyyy}-${mm}-${dd}`;
+      const formattedDate = date || today.toISOString().split("T")[0];
       const item = {
         price: priceRef.current.value,
         description: descriptionRef.current.value,
-        expenditure_date:(!date)?formattedDate:date,
+        expenditure_date: formattedDate,
         createdAt: new Date(), // Add a timestamp
       };
-    
-      console.log("item----------->", item);
+  
       setLoader(true);
-    
+  
       try {
-        // Reference to the user's subcollection
+        // Add data to Firestore
         const itemsCollection = collection(db, "users", user.uid, "items");
-    
-        // Add a new document to the subcollection
         await addDoc(itemsCollection, item);
-    
-        console.log("Item added to Firestore subcollection.");
-        setLoader(false); // Reset loader after success
-        
+  
+        console.log("Item added to Firestore.");
+        fetchExpenses(user.uid); // Fetch updated expenses after adding
       } catch (error) {
-        setLoader(false); // Ensure loader is reset on error
+        console.error("Error adding item:", error);
         setError(error.message);
-        console.log("error----->", error);
-      } finally{
-        dispatch(listenToUserProfile(auth.currentUser.uid));
-        dispatch(listenToUserExpenses(auth.currentUser.uid));
+      } finally {
+        setLoader(false);
+        setModal(false); // Close modal
+      }
+    };
+  
+    const fetchExpenses = async (uid) => {
+      try {
+        const userExpenseListRef = collection(db, "users", uid, "items");
+        const snapshot = await getDocs(userExpenseListRef);
+  
+        const expenses = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate().toISOString(), // Convert to serializable format
+        }));
+  
+        console.log("Fetched Expenses:", expenses);
+        onUpdateExpenses(expenses); // Pass updated expenses to parent
+      } catch (error) {
+        console.error("Error fetching expenses:", error);
       }
     };
 
