@@ -7,7 +7,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import classes from "./AddExpenses.module.css";
 import { useDispatch,useSelector } from "react-redux";
-import { listenToUserExpenses,listenToUserProfile,data_tobe_render,updateUserExpenses,deleteExpense,createExpenses } from '../../../Slices/UserSlice';
+import { listenToUserExpenses,listenToUserProfile,data_tobe_render,updateUserExpenses } from '../../../Slices/UserSlice';
 import Swal from "sweetalert2";
 const Update_expense = (props) => {
   const [modal, setModal] = useState(false);
@@ -24,32 +24,27 @@ const Update_expense = (props) => {
   const status=useSelector((state)=>state.user.status)
   
   useEffect(()=>{
+    console.log("status-------->",status);
     if(error){
+      handleCancel(); 
       Swal.fire({
-      text: error,
+      // text: error,
       icon: "error",
-      timer: 1500,
+      // timer: 2000,
       showConfirmButton: false,
     });
     }
     if(status=="success"){
+      handleCancel(); 
       Swal.fire({
-        text: error,
-        icon: "error",
-        timer: 1500,
+        icon: "success",
+        timer: 1800,
         showConfirmButton: false,
       });
     }
-  },[error]);
+  },[error,status]);
 
   useEffect(() => {
-    // if (!user) {
-    //   console.log("No user is logged in.");
-    //   setError("Please log in to update items.");
-    //   return;
-    // }
-
-
     const fetchItemData = async () => {
       const selectedIdData = Monthly_total_data.allExpenses.find(
         (item) => item.id === props.itemId
@@ -149,7 +144,7 @@ const Update_expense = (props) => {
             </div>
             <div className={classes.submitbtn_container}>
               <button className={classes.button} type="submit">
-                {isLoading ? <Loader size={30} /> : <img src='/Icons/upload.png' alt="upload image" style={{height:'1rem',cursor:'pointer'}}/>}
+                {(status=="loading") ? <Loader size={30} /> : <img src='/Icons/upload.png' alt="upload image" style={{height:'1rem',cursor:'pointer'}}/>}
               </button>
             </div>
           </div>

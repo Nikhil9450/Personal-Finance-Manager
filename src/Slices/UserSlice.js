@@ -50,49 +50,6 @@ const userSlice = createSlice({
   },
 });
 
-// export const data_tobe_render =(dateString)=>(getState)=>{
-//   const currentExpenses = getState().user.expenses; // Access current expenses from the state
-
-//   const expensesByYear = currentExpenses.reduce((acc, expense) => {
-//     const [year, month, day] = expense.expenditure_date.split("-");
-//     const date = `${year}-${month}-${day}`;
-//     if (!acc[year]) acc[year] = {};
-//     if (!acc[year][month]) acc[year][month] = { accumulated: {}, allExpenses: [] };
-
-//     acc[year][month].allExpenses.push({
-//       name: date,
-//       description: expense.description,
-//       expense: Number(expense.price),
-//       id: expense.id,
-//     });
-
-//     if (!acc[year][month].accumulated[date]) acc[year][month].accumulated[date] = 0;
-//     acc[year][month].accumulated[date] += Number(expense.price);
-//     return acc;
-//   }, {});
-//   console.log("datestring--------->",dateString,dateString.split("-"));
-//   const [year, month] = dateString.split("-");
-
-//   if (expensesByYear[year] && expensesByYear[year][month]) {
-//     setMonthWiseTotalExpense( expensesByYear[year][month]);
-//     console.log("total expenses--------->",expensesByYear[year][month]);
-
-//     console.log("inside inner if")
-
-//     const transformedAccumulated = Object.entries(expensesByYear[year][month].accumulated)
-//     .map(([date, expense]) => ({
-//       name: date.split("-")[2], // Extract the day
-//       expense,
-//     }))
-//     .sort((a, b) => Number(a.name) - Number(b.name)); 
-    
-//     setChartData(transformedAccumulated);
-//     const totalSum = transformedAccumulated.reduce((sum, item) => sum + Number(item.expense), 0);
-//     console.log("total sum--------->",totalSum);
-//     setTotalSpentAmt(totalSum);
-//   }
-// }
-
 // Thunk to listen for user profile changes
 export const data_tobe_render = (dateString) => (dispatch, getState) => {
   const currentExpenses = getState().user.expenses; // Access current expenses from state
@@ -160,22 +117,22 @@ export const listenToUserProfile = (uid) => (dispatch) => {
   console.log("this is user id--------->",uid)
   dispatch(userSlice.actions.setUid(uid));
   try {
-    dispatch(userSlice.actions.setStatus('loading'));
+    // dispatch(userSlice.actions.setStatus('loading'));
     const userDocRef = doc(db, 'users', uid);
     onSnapshot(userDocRef, (docSnap) => {
       if (docSnap.exists()) {
         dispatch(userSlice.actions.setProfile(docSnap.data()));
-        dispatch(userSlice.actions.setStatus('succeeded'));
+        // dispatch(userSlice.actions.setStatus('success'));
       } else {
         console.error('User profile not found');
         dispatch(userSlice.actions.setError('User profile not found'));
-        dispatch(userSlice.actions.setStatus('failed'));
+        // dispatch(userSlice.actions.setStatus('failed'));
       }
     });
   } catch (error) {
     console.error('Error listening to user profile:', error.message);
     dispatch(userSlice.actions.setError(error.message));
-    dispatch(userSlice.actions.setStatus('failed'));
+    // dispatch(userSlice.actions.setStatus('failed'));
   }
 };
 
@@ -183,7 +140,7 @@ export const listenToUserProfile = (uid) => (dispatch) => {
 // Thunk to listen for user expenses list changes
 export const listenToUserExpenses = (uid) => (dispatch) => {
   try {
-    dispatch(userSlice.actions.setStatus('loading'));
+    // dispatch(userSlice.actions.setStatus('loading'));
 
     const userExpenseListRef = collection(db, 'users', uid, 'items');
     onSnapshot(userExpenseListRef, (snapshot) => {
@@ -197,33 +154,39 @@ export const listenToUserExpenses = (uid) => (dispatch) => {
           };
         });
         dispatch(userSlice.actions.setExpenses(expenses));
-        dispatch(userSlice.actions.setStatus('succeeded'));
+        // dispatch(userSlice.actions.setStatus('success'));
       } else {
         console.error('No expenses found');
         dispatch(userSlice.actions.setError('No expenses found'));
-        dispatch(userSlice.actions.setStatus('failed'));
+        // dispatch(userSlice.actions.setStatus('failed'));
       }
     });
   } catch (error) {
     console.error('Error listening to expenses:', error.message);
     dispatch(userSlice.actions.setError(error.message));
-    dispatch(userSlice.actions.setStatus('failed'));
+    // dispatch(userSlice.actions.setStatus('failed'));
   }
 };
  
-export const updateUserExpenses = ( itemid, updatedData,) => async (dispatch, getState) => {
-  const uid = getState().user.uid;
+export const updateUserExpenses = (itemid, updatedData) => async (dispatch, getState) => {
+  const state = getState();
+  const uid = state.user.uid;
+  const currentExpenses = state.user.expenses; // Cache state values
+
   dispatch(userSlice.actions.setLoader(true));
+  dispatch(userSlice.actions.setStatus("loading"));
+
   try {
     // Reference the Firestore document
     const itemDoc = doc(db, "users", uid, "items", itemid);
-    
+
     // Update the Firestore document
     await updateDoc(itemDoc, updatedData);
+
+    dispatch(userSlice.actions.setStatus("success"));
     console.log("Item updated successfully");
 
     // Update the state
-    const currentExpenses = getState().user.expenses; // Access current expenses from the state
     const updatedExpenses = currentExpenses.map((expense) =>
       expense.id === itemid ? { ...expense, ...updatedData } : expense
     );
@@ -232,11 +195,13 @@ export const updateUserExpenses = ( itemid, updatedData,) => async (dispatch, ge
     dispatch(userSlice.actions.setExpenses(updatedExpenses));
   } catch (error) {
     console.error("Error updating item:", error);
-    dispatch(userSlice.actions.setError(error.message));
+    dispatch(userSlice.actions.setError(error.message || "An unexpected error occurred"));
+    dispatch(userSlice.actions.setStatus("failed"));
   } finally {
     dispatch(userSlice.actions.setLoader(false));
   }
 };
+
 
 
 export const deleteExpense=(itemid)=>async(dispatch,getState)=>{
