@@ -1,21 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { doc, collection, onSnapshot, getDoc, updateDoc  } from 'firebase/firestore';
+import { doc, collection, onSnapshot, getDoc, updateDoc ,deleteDoc,addDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { act } from 'react';
 
 const userSlice = createSlice({
   name: 'user',
   initialState: {
+    uid:null,
     profile: null, // User profile data
     expenses: [], // User expenses data
-    status: 'idle', // idle | loading | succeeded | failed
+    status: 'idle', // idle | loading | success | failed
     error: null, // Error message
     loader:false,
-    month_wise_totalExpense:null,
-    chart_data_expense:null,
+    month_wise_totalExpense:{},
+    chart_data_expense:[],
     total_spent_data:null,
   },
   reducers: {
+    setUid: (state, action) => {
+      state.uid = action.payload;
+    },
     setProfile: (state, action) => {
       state.profile = action.payload;
     },
@@ -146,15 +149,18 @@ export const data_tobe_render = (dateString) => (dispatch, getState) => {
     );
     dispatch(userSlice.actions.setTotalSpentAmt(totalSum));
   } else {
+    dispatch(userSlice.actions.setChartData({}));
+    dispatch(userSlice.actions.setTotalSpentAmt(""));
     console.log(`No data found for year: ${year}, month: ${month}`);
   }
 };
 
 
 export const listenToUserProfile = (uid) => (dispatch) => {
+  console.log("this is user id--------->",uid)
+  dispatch(userSlice.actions.setUid(uid));
   try {
     dispatch(userSlice.actions.setStatus('loading'));
-
     const userDocRef = doc(db, 'users', uid);
     onSnapshot(userDocRef, (docSnap) => {
       if (docSnap.exists()) {
@@ -205,7 +211,8 @@ export const listenToUserExpenses = (uid) => (dispatch) => {
   }
 };
  
-export const updateUserExpenses = (uid, itemid, updatedData) => async (dispatch, getState) => {
+export const updateUserExpenses = ( itemid, updatedData,) => async (dispatch, getState) => {
+  const uid = getState().user.uid;
   dispatch(userSlice.actions.setLoader(true));
   try {
     // Reference the Firestore document
@@ -232,7 +239,8 @@ export const updateUserExpenses = (uid, itemid, updatedData) => async (dispatch,
 };
 
 
-export const deleteExpense=(uid,itemid)=>async(dispatch,getState)=>{
+export const deleteExpense=(itemid)=>async(dispatch,getState)=>{
+  const uid = getState().user.uid;
   try{
     const itemDoc = doc(db, "users", uid, "items", itemid);
     await deleteDoc(itemDoc);
@@ -249,8 +257,9 @@ export const deleteExpense=(uid,itemid)=>async(dispatch,getState)=>{
   }
 }
 
-export const createExpenses = (uid, item) => async (dispatch, getState) => {
+export const createExpenses = (item) => async (dispatch, getState) => {
   dispatch(userSlice.actions.setLoader(true)); // Start loader
+  const uid = getState().user.uid;
   try {
     // Add the new item to the Firestore collection
     const itemsCollection = collection(db, "users", uid, "items");

@@ -6,35 +6,60 @@ import Loader from "../../../Loader";
 import DescriptionIcon from "@mui/icons-material/Description";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import classes from "./AddExpenses.module.css";
-import { useDispatch } from "react-redux";
-import { listenToUserExpenses } from "../../../Slices/UserSlice";
-import { listenToUserProfile } from "../../../Slices/UserSlice";
+import { useDispatch,useSelector } from "react-redux";
+import { listenToUserExpenses,listenToUserProfile,data_tobe_render,updateUserExpenses,deleteExpense,createExpenses } from '../../../Slices/UserSlice';
+import Swal from "sweetalert2";
 const Update_expense = (props) => {
   const [modal, setModal] = useState(false);
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
-  const [loader, setLoader] = useState(false);
-  const [error, setError] = useState(false);
+  // const [loader, setLoader] = useState(false);
+  // const [error, setError] = useState(false);
   const dispatch=useDispatch();
   const user = auth.currentUser;
+  const Monthly_total_data=useSelector((state)=>state.user.month_wise_totalExpense)
+  const isLoading=useSelector((state)=>state.user.loader)
+  const error=useSelector((state)=>state.user.error)
+  const status=useSelector((state)=>state.user.status)
+  
+  useEffect(()=>{
+    if(error){
+      Swal.fire({
+      text: error,
+      icon: "error",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+    }
+    if(status=="success"){
+      Swal.fire({
+        text: error,
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
+  },[error]);
 
   useEffect(() => {
-    if (!user) {
-      console.log("No user is logged in.");
-      setError("Please log in to update items.");
-      return;
-    }
+    // if (!user) {
+    //   console.log("No user is logged in.");
+    //   setError("Please log in to update items.");
+    //   return;
+    // }
+
 
     const fetchItemData = async () => {
+      const selectedIdData = Monthly_total_data.allExpenses.find(
+        (item) => item.id === props.itemId
+      );
       try {
-        const itemDoc = doc(db, "users", user.uid, "items", props.itemId);
-        const docSnap = await getDoc(itemDoc);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setPrice(data.price || "");
-          setDescription(data.description || "");
-          setDate(data.expenditure_date || "");
+
+        if (selectedIdData) {
+          setPrice(selectedIdData.expense || "");
+          setDescription(selectedIdData.description || "");
+          setDate(selectedIdData.name || "");
         } else {
           console.error("No such document!");
         }
@@ -62,52 +87,12 @@ const Update_expense = (props) => {
     };
 
     console.log("Updating item:", updatedData);
-    setLoader(true);
-    
-    try {
-      const itemDoc = doc(db, "users", user.uid, "items", props.itemId);
-      await updateDoc(itemDoc, updatedData);
-      console.log("Item updated successfully.");
-      setModal(false);
-        console.log('UID from auth.currentUser:', auth.currentUser.uid); 
-      
-      const updatedTotalExpenses = props.initial_total_expenses.allExpenses.map((item) => {
-        if (props.itemId==item.id){
-          return {...item,
-            description:updatedData.description,
-            expense:updatedData.price,
-            name:updatedData.expenditure_date,
-            id:item.id,
-          };
-        }
-        return item;
-      }).filter(item => item.expense > 0); 
-
-      const groupedData = updatedTotalExpenses.reduce((acc, { name, expense }) => {
-        const date = name.split("-")[2]; // Extract the day part
-        acc[date] = (acc[date] || 0) + Number(expense); // Sum up expenses for each date
-        return acc;
-      }, {});
-      
-      // Step 2: Transform the grouped data into the desired format
-      const sortedData = Object.entries(groupedData)
-        .map(([date, totalExpense]) => ({ name: date, expense: totalExpense }))
-        .sort((a, b) => a.name - b.name); // Sort by date
-
-      const totalSum = sortedData.reduce((sum, item) => sum + Number(item.expense), 0);
-
-      props.onUpdateData(updatedTotalExpenses, sortedData,totalSum)
-
-    } catch (error) {
-      console.error("Error updating item:", error);
-    } finally {
-      setLoader(false);
-      // dispatch(listenToUserProfile(auth.currentUser.uid));
-      // dispatch(listenToUserExpenses(auth.currentUser.uid));
-    }
+    dispatch(updateUserExpenses(props.itemId,updatedData))
   };
 
-  const showModal = () => setModal(true);
+  const showModal = () => {
+    setModal(true)
+  };
   const handleCancel = () => setModal(false);
 
   return (
@@ -164,7 +149,7 @@ const Update_expense = (props) => {
             </div>
             <div className={classes.submitbtn_container}>
               <button className={classes.button} type="submit">
-                {loader ? <Loader size={30} /> : <img src='/Icons/upload.png' alt="upload image" style={{height:'1rem',cursor:'pointer'}}/>}
+                {isLoading ? <Loader size={30} /> : <img src='/Icons/upload.png' alt="upload image" style={{height:'1rem',cursor:'pointer'}}/>}
               </button>
             </div>
           </div>
