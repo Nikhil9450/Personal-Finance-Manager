@@ -35,7 +35,6 @@ const Daily_expenses_chart = () => {
     const error=useSelector((state)=>state.user.error)
     const status=useSelector((state)=>state.user.status)
     const [loadingItems, setLoadingItems] = useState({});
-
     const showModal = () => {
       setModal(true);
     };
@@ -45,7 +44,7 @@ const Daily_expenses_chart = () => {
     };  
 
 useEffect(()=>{
-  const currentMonth = moment().format('YYYY-MM');
+  const currentMonth =(!date)? moment().format('YYYY-MM'):date;
   dispatch(data_tobe_render(currentMonth));
 },[Expense_data])
 
@@ -62,36 +61,38 @@ const onChange = (date, dateString) => {
 
 
 const deleteitem = async (itemId) => {
-  try {
-    console.log("loadingItems before:", loadingItems);
+  console.log("loadingItems before:", loadingItems);
 
-    const result = await Swal.fire({
-      text: "Are you sure you want to delete this expense?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-      // customClass: {
-      //   popup: "custom-swal-popup",
-      // },
-    });
+  // Display the SweetAlert confirmation dialog
+  const result = await Swal.fire({
+    text: "Are you sure you want to delete this expense?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    cancelButtonText: "No",
+    customClass: {
+      popup: "custom-swal-popup",
+    },
+  });
 
-    if (result.isConfirmed) {
-      console.log("User confirmed deletion.");
-      // Start loader for the specific item
-      setLoadingItems((prev) => ({ ...prev, [itemId]: true }));
+  // Handle user response
+  if (result.isConfirmed) {
+    console.log("User confirmed deletion.");
+    // Show loader for the specific item
+    setLoadingItems((prev) => ({ ...prev, [itemId]: true }));
 
-      // Dispatch deletion
-      await dispatch(deleteExpense(itemId));
+    try {
+      // Dispatch the deletion action
+      dispatch(deleteExpense(itemId));
       console.log("Expense deleted:", itemId);
-    } else {
-      console.log("User canceled deletion.");
+    } catch (error) {
+      console.error("Error while deleting the expense:", error);
+    } finally {
+      // Stop loader for the specific item
+      // setLoadingItems((prev) => ({ ...prev, [itemId]: false }));
     }
-  } catch (error) {
-    console.error("Error during deletion:", error);
-  } finally {
-    // Stop loader for the specific item
-    setLoadingItems((prev) => ({ ...prev, [itemId]: false }));
+  } else {
+    console.log("User canceled deletion.");
   }
 };
 

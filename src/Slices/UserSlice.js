@@ -52,6 +52,8 @@ const userSlice = createSlice({
 
 // Thunk to listen for user profile changes
 export const data_tobe_render = (dateString) => (dispatch, getState) => {
+  console.log("datestring from slice",dateString);
+  // dispatch(userSlice.actions.setStatus("loading"));
   const currentExpenses = getState().user.expenses; // Access current expenses from state
 
   // Group expenses by year and month
@@ -108,6 +110,7 @@ export const data_tobe_render = (dateString) => (dispatch, getState) => {
   } else {
     dispatch(userSlice.actions.setChartData({}));
     dispatch(userSlice.actions.setTotalSpentAmt(""));
+    dispatch(userSlice.actions.setStatus("failed"));
     console.log(`No data found for year: ${year}, month: ${month}`);
   }
 };
@@ -205,6 +208,7 @@ export const updateUserExpenses = (itemid, updatedData) => async (dispatch, getS
 
 
 export const deleteExpense=(itemid)=>async(dispatch,getState)=>{
+  console.log("delete executed from slice");
   const uid = getState().user.uid;
   dispatch(userSlice.actions.setStatus("loading"));
   try{
