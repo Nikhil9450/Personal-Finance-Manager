@@ -23,26 +23,26 @@ const Update_expense = (props) => {
   const error=useSelector((state)=>state.user.error)
   const status=useSelector((state)=>state.user.status)
   
-  useEffect(()=>{
-    console.log("status-------->",status);
-    if(error){
-      handleCancel(); 
-      Swal.fire({
-      // text: error,
-      icon: "error",
-      // timer: 2000,
-      showConfirmButton: false,
-    });
-    }
-    if(status=="success"){
-      handleCancel(); 
-      Swal.fire({
-        icon: "success",
-        timer: 1800,
-        showConfirmButton: false,
-      });
-    }
-  },[error,status]);
+  // useEffect(()=>{
+  //   console.log("status-------->",status);
+  //   if(error){
+  //     handleCancel(); 
+  //     Swal.fire({
+  //     // text: error,
+  //     icon: "error",
+  //     // timer: 2000,
+  //     showConfirmButton: false,
+  //   });
+  //   }
+  //   if(status=="success"){
+  //     handleCancel(); 
+  //     Swal.fire({
+  //       icon: "success",
+  //       timer: 1800,
+  //       showConfirmButton: false,
+  //     });
+  //   }
+  // },[error,status]);
 
   useEffect(() => {
     const fetchItemData = async () => {

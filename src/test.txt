@@ -1,81 +1,135 @@
-            <AddExpenses  onUpdateExpenses={handleDataAdd} />
-                 <div className="" style={{display:'flex',justifyContent:'end', marginBottom:'5px'}}>
-                    <style>
-                      {`.ant-picker-header-view{
-                          display:flex;
+const Daily_expenses_chart = () => {
+  const Expense_data = useSelector((state) => state.user.expenses);
+  const Monthly_total_data = useSelector((state) => state.user.month_wise_totalExpense);
+  const Chart_data = useSelector((state) => state.user.chart_data_expense);
+  const Total_spent_amt = useSelector((state) => state.user.total_spent_data);
+  const dispatch = useDispatch();
+  const [modal, setModal] = useState(false);
+  const [year_month, setYear_month] = useState(moment().format("YYYY-MM"));
+  const [loadingItems, setLoadingItems] = useState({}); // Tracks loading state per item
+
+  const showModal = () => setModal(true);
+  const handleCancel = () => setModal(false);
+
+  const onChange = (date, dateString) => {
+    setYear_month(dateString);
+    dispatch(data_tobe_render(dateString));
+  };
+
+  const deleteitem = async (itemId) => {
+    const result = await Swal.fire({
+      text: "Are you sure you want to delete this expense?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      customClass: {
+        popup: "custom-swal-popup",
+      },
+    });
+
+    if (!result.isConfirmed) {
+      console.log("Deletion canceled by the user.");
+      return;
+    }
+
+    // Set loading state for the specific item
+    setLoadingItems((prev) => ({ ...prev, [itemId]: true }));
+
+    try {
+      await dispatch(deleteExpense(itemId));
+      console.log("Expense deleted:", itemId);
+    } finally {
+      // Remove loading state for the specific item
+      setLoadingItems((prev) => ({ ...prev, [itemId]: false }));
+    }
+  };
+
+  return (
+    <>
+      <div className="" style={{ display: "flex", justifyContent: "end", marginBottom: "5px" }}>
+        <DatePicker
+          style={{
+            width: "10rem",
+            height: "2.5rem",
+            padding: "0 8px",
+            textAlign: "center",
+            borderRadius: "1rem",
+            color: "lightgrey",
+          }}
+          onChange={onChange}
+          className="customDropdown"
+          picker="month"
+        />
+      </div>
+
+      {Chart_data.length > 0 ? (
+        <div style={{ width: "100%" }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <p style={{ fontSize: "12px", color: "grey" }}>Total spent amount : {Total_spent_amt}</p>
+            <p style={{ color: "#127afb", cursor: "pointer", fontSize: "12px" }} onClick={showModal}>
+              View expenses
+            </p>
+          </div>
+          <div className={classes.chart_container}>
+            <LineChart
+              width={chartWidth}
+              height={300}
+              dataset={Chart_data}
+              series={[{ dataKey: "expense", label: "Expenses" }]}
+              xAxis={[{ scaleType: "point", dataKey: "name" }]}
+            />
+          </div>
+        </div>
+      ) : (
+        <div className={classes.empty_graph_handler}>No expenses to display</div>
+      )}
+
+      <My_modal title={"Expenses (" + year_month + ")"} isModalOpen={modal} handleCancel={handleCancel}>
+        <div className={classes.expense_list_container}>
+          {Object.keys(Monthly_total_data).length > 0 ? (
+            <List
+              itemLayout="horizontal"
+              dataSource={Monthly_total_data.allExpenses}
+              renderItem={(item) => {
+                const date = new Date(item.name);
+                const month = date.toLocaleString("default", { month: "short" }).toUpperCase();
+                const day = date.getDate();
+
+                return (
+                  <List.Item>
+                    <List.Item.Meta
+                      avatar={
+                        <div className={classes.list_avatar}>
+                          <h4>{month}</h4>
+                          <p>{day}</p>
+                        </div>
                       }
-                        .ant-picker-dropdown .ant-picker-header {
-                            /* Adjust these properties as needed */
-                            width: 50% !important;         /* Ensures the header fits the dropdown width */
-                            padding: 8px;        /* Adjust padding if needed */
-                            display: flex;
-                            {/* justify-content: center; /* Centers header content */ */}
-                        }
-                      `}
-                    </style>
-                    <DatePicker style={{ width: '10rem', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" picker="month" />
-                  </div>
-                  {totalExpenses ? (
-                    <div style={{ width: '100%' }}>
-                    <div style={{display:'flex',justifyContent:'space-between'}}>
-                      <p style={{fontSize:'12px',color:'grey'}}>Total spent amount : {spent_amt}</p>
-                      <p style={{color:'#127afb',cursor:'pointer' ,fontSize:'12px'}} onClick={showModal}>View expenses</p>
-                    </div>
-                    <div className={classes.chart_container}>
-                        <LineChart
-                          width={chartWidth}
-                          height={300}
-                          dataset={selectiveData}
-                          series={[{ dataKey: "expense", label: "Expenses" }]}
-                          xAxis={[{ scaleType: "point", dataKey: "name" }]}
-                        />
-                    </div>
-                  </div>
-
+                      title={<h5>{item.description}</h5>}
+                      description={<p>{item.expense}</p>}
+                    />
+                    <Update_expense itemId={item.id} />
+                    {loadingItems[item.id] ? (
+                      <Loader size={20} />
                     ) : (
-                      <div className={classes.empty_graph_handler}>No expenses to display</div>
-                    )}
-
-              <My_modal title={'Expenses ('+ year_month +')'}  isModalOpen={modal} handleCancel={handleCancel}>
-                  <div className={classes.expense_list_container}>
-                  {totalExpenses ? (
-                      <List
-                        itemLayout="horizontal"
-                        dataSource={totalExpenses.allExpenses}
-                        renderItem={(item, index) => {
-                          const date = new Date(item.name);
-                          const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-                          const day = date.getDate();
-
-                          return (
-                            <List.Item>
-                              <List.Item.Meta
-                                avatar={
-                                  <div className={classes.list_avatar}>
-                                    <h4>{month}</h4>
-                                    <p>{day}</p>
-                                  </div>
-                                }
-                                title={<h5>{item.description}</h5>}
-                                description={<p>{item.expense}</p>}
-                              />
-                              <Update_expense itemId={item.id} date={day} initial_total_expenses={totalExpenses} initial_selective_data={selectiveData} initial_spent_amt={spent_amt}  onUpdateData={handleDataUpdate} />
-                                {deletingItem === item.id ? (
-                                  <Loader size={20} /> 
-                                ) : (
-                                  <img
-                                    src="/Icons/delete.png"
-                                    onClick={() => deleteExpense(item.id,day,item.expense)}
-                                    alt="Delete"
-                                    style={{ height: '1.4rem', cursor: 'pointer' }}
-                                  />
-                                )}                           
-                              </List.Item>
-                          );
-                        }}
+                      <img
+                        src="/Icons/delete.png"
+                        onClick={() => deleteitem(item.id)}
+                        alt="Delete"
+                        style={{ height: "1.4rem", cursor: "pointer" }}
                       />
-                    ) : (
-                      <div className={classes.empty_list_handler}>No expenses to display</div>
                     )}
-                  </div>
-              </My_modal>
+                  </List.Item>
+                );
+              }}
+            />
+          ) : (
+            <div className={classes.empty_list_handler}>No expenses to display</div>
+          )}
+        </div>
+      </My_modal>
+    </>
+  );
+};
+
+export default Daily_expenses_chart;

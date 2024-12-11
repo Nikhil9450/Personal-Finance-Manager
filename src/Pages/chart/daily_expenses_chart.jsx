@@ -17,31 +17,25 @@ import Swal from 'sweetalert2';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { LineChart } from '@mui/x-charts/LineChart';
-import { doc, collection, addDoc ,updateDoc ,deleteDoc} from "firebase/firestore";
-import { db,auth } from '../../firebase';
-import AddExpenses from '../Dashboard/Components/AddExpenses';
 
 
 
 
 const Daily_expenses_chart = () => {
-    const[data,setData]=useState([]);
     const Expense_data=useSelector((state)=>state.user.expenses)
     const Monthly_total_data=useSelector((state)=>state.user.month_wise_totalExpense)
-    const [updated_expense, setUpdated_expense] = useState([]);
     const Chart_data=useSelector((state)=>state.user.chart_data_expense)
     const Total_spent_amt=useSelector((state)=>state.user.total_spent_data)
     // const [Expense_data,setExpense_data]=useState(Expense_data_from_redux);
     const [date, setDate] = useState(null);
-    const [selectiveData,setSelectiveData]=useState(null);
-    const [totalExpenses,setTotalExpenses]=useState(null)
-    const [isChartReady, setIsChartReady] = useState(false);
-    const [spent_amt, setSpent_amt]= useState(0);
     const [modal,setModal]=useState(false)
     const [year_month,setYear_month]=useState(moment().format('YYYY-MM'));
-    const [deletingItem, setDeletingItem] = useState(null);
     const dispatch= useDispatch();
     const [chartWidth, setChartWidth] = useState(window.innerWidth * 0.8); 
+    const error=useSelector((state)=>state.user.error)
+    const status=useSelector((state)=>state.user.status)
+    const [loadingItems, setLoadingItems] = useState({});
+
     const showModal = () => {
       setModal(true);
     };
@@ -52,44 +46,12 @@ const Daily_expenses_chart = () => {
 
 useEffect(()=>{
   const currentMonth = moment().format('YYYY-MM');
-  // render_data(updated_expense, currentMonth);
   dispatch(data_tobe_render(currentMonth));
 },[Expense_data])
 
-useEffect(()=>{
- console.log("Monthly_total_data------------->",Monthly_total_data)
-},[Monthly_total_data])
-useEffect(()=>{
-  console.log("Chart_data------------->",Chart_data)
- },[Chart_data])
- useEffect(()=>{
-  console.log("Total_spent_amt------------->",Total_spent_amt)
- },[Total_spent_amt])
 
-// useEffect(() => {
-//   // Simulate chart loading by setting a flag (or use a real condition if needed)
-//   const chartLoadDelay = setTimeout(() => {
-//     setIsChartReady(true);
-//   }, 3000); // Simulate delay of chart loading
-
-//   return () => clearTimeout(chartLoadDelay); // Cleanup the timeout on component unmount
-// }, []);
-
-// useEffect(() => {
-//   console.log("Updated expense state:", updated_expense);
-//   const currentMonth = moment().format('YYYY-MM');
-//   render_data(updated_expense, currentMonth);
-// }, [updated_expense]);
-
-// useEffect(() => {
-//   if (isChartReady) {
-//     const currentMonth = moment().format('YYYY-MM');
-//     onChange(moment(), currentMonth); // Trigger data load for the current month
-//   }
-// }, [isChartReady]);
 
 const onChange = (date, dateString) => {
-
   setDate(dateString);
   setYear_month(dateString);
   dispatch(data_tobe_render(dateString));
@@ -97,156 +59,41 @@ const onChange = (date, dateString) => {
 
 
 
-// const deleteExpense = async (itemId, day, expense_price) => {
-//   if (!auth.currentUser) {
-//     console.error("No user is logged in.");
-//     return;
-//   }
-//   console.log("before updating selectiveData",selectiveData)
-//   console.log("before updating spent_amt",spent_amt)
-//   const result = await Swal.fire({
-//     text: "Are you sure you want to delete this expense?",
-//     icon: "warning",
-//     showCancelButton: true,
-//     confirmButtonText: "Yes",
-//     cancelButtonText: "No",
-//     customClass: {
-//       popup: "custom-swal-popup",
-//     },
-//   });
 
-//   if (!result.isConfirmed) return;
 
-//   setDeletingItem(itemId);
+const deleteitem = async (itemId) => {
+  try {
+    console.log("loadingItems before:", loadingItems);
 
-//   try {
-//     const user = auth.currentUser;
-//     const itemDoc = doc(db, "users", user.uid, "items", itemId);
+    const result = await Swal.fire({
+      text: "Are you sure you want to delete this expense?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      // customClass: {
+      //   popup: "custom-swal-popup",
+      // },
+    });
 
-//     await deleteDoc(itemDoc);
+    if (result.isConfirmed) {
+      console.log("User confirmed deletion.");
+      // Start loader for the specific item
+      setLoadingItems((prev) => ({ ...prev, [itemId]: true }));
 
-//     // Update `totalExpenses` state by filtering out the deleted item
-//     totalExpenses.allExpenses = totalExpenses.allExpenses.filter((item) => item.id !== itemId);
-//     setTotalExpenses(totalExpenses);
-    
-//     // Update `selectiveData` state
-//     const updatedSelectiveData = selectiveData.map((item) => {
-//       if (item.name == day) {
-//         const updatedExpense = Number(item.expense) - Number(expense_price);
-//         return { ...item, expense: updatedExpense };
-//       }
-//       return item;
-//     }).filter(item => item.expense > 0); // Remove days with no expenses
-
-//     setSelectiveData(updatedSelectiveData);
-
-    
-
-//     // Recalculate the total sum
-//     const totalSum = updatedSelectiveData.reduce((sum, item) => sum + Number(item.expense), 0);
-//     setSpent_amt(totalSum);
-//     console.log("after updating selectiveData",updatedSelectiveData)
-//     console.log("after updating spent_amt",totalSum)
-//     Swal.fire({
-//       text: "Expense deleted successfully.",
-//       icon: "success",
-//       timer: 1500,
-//       showConfirmButton: false,
-//     });
-//   } catch (error) {
-//     console.error("Error during deletion:", error);
-
-//     Swal.fire({
-//       text: "Failed to delete expense. Please try again.",
-//       icon: "error",
-//       timer: 2000,
-//       showConfirmButton: false,
-//     });
-//   } finally {
-//     setDeletingItem(null);
-
-//     // Optionally refresh user data
-//     dispatch(listenToUserProfile(auth.currentUser.uid));
-//     dispatch(listenToUserExpenses(auth.currentUser.uid));
-//   }
-// };
-
-// const handleDataUpdate = (updated_total_expenses,updated_selective_data,updated_total_sum) => {
-//   setSelectiveData(updated_selective_data);
-//   totalExpenses.allExpenses=updated_total_expenses
-//   setSpent_amt(updated_total_sum);
-// };
-
-// const handleDataAdd = (newExpense) => {
-//   console.log("New expense added:", newExpense);
-
-//   // Combine the new expense with existing ones
-//   // const updatedExpenses = [...updated_expense, ...newExpense];
-  
-//   // Update the main state
-//   setUpdated_expense(newExpense);
-
-//   // Re-render data with the updated expenses
-//   const currentMonth = moment().format('YYYY-MM');
-//   render_data(newExpense ,currentMonth);
-// };
-
-// const render_data = (expenseToRender, dateString) => {
-//   let spentamt=0;
-//   console.log("Render_data triggered",expenseToRender);
-
-//   // Skip if expense data hasn't changed
-//   if (!expenseToRender || !dateString) return;
-//   console.log("inside if---------");
-//   const expensesByYear = expenseToRender.reduce((acc, expense) => {
-//     const [year, month, day] = expense.expenditure_date.split("-");
-//     const date = `${year}-${month}-${day}`;
-//     if (!acc[year]) acc[year] = {};
-//     if (!acc[year][month]) acc[year][month] = { accumulated: {}, allExpenses: [] };
-
-//     acc[year][month].allExpenses.push({
-//       name: date,
-//       description: expense.description,
-//       expense: Number(expense.price),
-//       id: expense.id,
-//     });
-
-//     if (!acc[year][month].accumulated[date]) acc[year][month].accumulated[date] = 0;
-//     acc[year][month].accumulated[date] += Number(expense.price);
-//     return acc;
-//   }, {});
-
-//   // Update state only if data has changed
-//   setData(expensesByYear);
-//   console.log("expense by year--------->",expensesByYear);
-//   // Handle current month data
-//   console.log("datestring--------->",dateString,dateString.split("-"));
-//   const [year, month] = dateString.split("-");
-//   if (expensesByYear[year] && expensesByYear[year][month]) {
-//     setTotalExpenses( expensesByYear[year][month]);
-//     console.log("total expenses--------->",expensesByYear[year][month]);
-
-//     console.log("inside inner if")
-
-//     const transformedAccumulated = Object.entries(expensesByYear[year][month].accumulated)
-//     .map(([date, expense]) => ({
-//       name: date.split("-")[2], // Extract the day
-//       expense,
-//     }))
-//     .sort((a, b) => Number(a.name) - Number(b.name)); 
-    
-//     setSelectiveData(transformedAccumulated);
-
-//     console.log("selective data----->",transformedAccumulated)
-//     const totalSum = transformedAccumulated.reduce((sum, item) => sum + Number(item.expense), 0);
-//     console.log("total sum--------->",totalSum);
-//     setSpent_amt(totalSum);
-//     // console.log("total expenses length----------->",totalExpenses.length)
-//   } else {
-//     setSelectiveData([]);
-//     setSpent_amt(0);
-//   }
-// };
+      // Dispatch deletion
+      await dispatch(deleteExpense(itemId));
+      console.log("Expense deleted:", itemId);
+    } else {
+      console.log("User canceled deletion.");
+    }
+  } catch (error) {
+    console.error("Error during deletion:", error);
+  } finally {
+    // Stop loader for the specific item
+    setLoadingItems((prev) => ({ ...prev, [itemId]: false }));
+  }
+};
 
 
 
@@ -312,27 +159,27 @@ const onChange = (date, dateString) => {
 
                           return (
                             <List.Item>
-                              <List.Item.Meta
-                                avatar={
-                                  <div className={classes.list_avatar}>
-                                    <h4>{month}</h4>
-                                    <p>{day}</p>
-                                  </div>
-                                }
-                                title={<h5>{item.description}</h5>}
-                                description={<p>{item.expense}</p>}
-                              />
-                              <Update_expense itemId={item.id} />
-                              {deletingItem === item.id ? (
-                                  <Loader size={20} /> 
-                                ) : (
-                                  <img
-                                    src="/Icons/delete.png"
-                                    onClick={() =>dispatch(deleteExpense(item.id,day,item.expense)) }
-                                    alt="Delete"
-                                    style={{ height: '1.4rem', cursor: 'pointer' }}
-                                  />
-                                )}                           
+                                <List.Item.Meta
+                                  avatar={
+                                    <div className={classes.list_avatar}>
+                                      <h4>{month}</h4>
+                                      <p>{day}</p>
+                                    </div>
+                                  }
+                                  title={<h5>{item.description}</h5>}
+                                  description={<p>{item.expense}</p>}
+                                />
+                                <Update_expense itemId={item.id} />
+                                {loadingItems[item.id] ? (
+                                    <Loader size={20} />
+                                  ) : (
+                                    <img
+                                      src="/Icons/delete.png"
+                                      onClick={() => deleteitem(item.id)}
+                                      alt="Delete"
+                                      style={{ height: "1.4rem", cursor: "pointer" }}
+                                    />
+                                  )}                          
                               </List.Item>
                           );
                         }}

@@ -206,6 +206,7 @@ export const updateUserExpenses = (itemid, updatedData) => async (dispatch, getS
 
 export const deleteExpense=(itemid)=>async(dispatch,getState)=>{
   const uid = getState().user.uid;
+  dispatch(userSlice.actions.setStatus("loading"));
   try{
     const itemDoc = doc(db, "users", uid, "items", itemid);
     await deleteDoc(itemDoc);
@@ -213,10 +214,12 @@ export const deleteExpense=(itemid)=>async(dispatch,getState)=>{
     const currentExpenses = getState().user.expenses;
     const updatedExpenses = currentExpenses.filter((expense) => expense.id !== itemid); // Remove deleted expense
     dispatch(userSlice.actions.setExpenses(updatedExpenses));
+    dispatch(userSlice.actions.setStatus("success"));
 
   }catch(error){
     console.error("Error updating item:", error);
     dispatch(userSlice.actions.setError(error.message));
+    dispatch(userSlice.actions.setStatus("failed"));
   }finally{
     dispatch(userSlice.actions.setLoader(false));
   }
