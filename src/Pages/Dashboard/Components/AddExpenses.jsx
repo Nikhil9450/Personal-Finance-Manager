@@ -12,7 +12,7 @@ import Loader from '../../../Loader';
 import Fab from '@mui/material/Fab';
 import { DatePicker } from 'antd';
 import { useDispatch } from 'react-redux';
-import { listenToUserExpenses,listenToUserProfile,createExpenses } from '../../../Slices/UserSlice';
+import {createExpenses } from '../../../Slices/UserSlice';
 
 const AddExpenses = ({ onUpdateExpenses }) => {
     const [modal,setModal]=useState(false)
