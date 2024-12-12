@@ -12,7 +12,7 @@ import Loader from '../../../Loader';
 import Fab from '@mui/material/Fab';
 import { DatePicker } from 'antd';
 import { useDispatch } from 'react-redux';
-import { listenToUserExpenses,listenToUserProfile } from '../../../Slices/UserSlice';
+import { listenToUserExpenses,listenToUserProfile,createExpenses } from '../../../Slices/UserSlice';
 
 const AddExpenses = ({ onUpdateExpenses }) => {
     const [modal,setModal]=useState(false)
@@ -41,22 +41,9 @@ const AddExpenses = ({ onUpdateExpenses }) => {
         createdAt: new Date(), // Add a timestamp
       };
   
-      setLoader(true);
-  
-      try {
-        // Add data to Firestore
-        const itemsCollection = collection(db, "users", user.uid, "items");
-        await addDoc(itemsCollection, item);
-  
-        console.log("Item added to Firestore.");
-        fetchExpenses(user.uid); // Fetch updated expenses after adding
-      } catch (error) {
-        console.error("Error adding item:", error);
-        setError(error.message);
-      } finally {
-        setLoader(false);
-        setModal(false); // Close modal
-      }
+      // setLoader(true);
+      dispatch(createExpenses(item));
+   
     };
   
     const fetchExpenses = async (uid) => {

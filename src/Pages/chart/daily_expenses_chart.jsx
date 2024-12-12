@@ -17,7 +17,7 @@ import Swal from 'sweetalert2';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { LineChart } from '@mui/x-charts/LineChart';
-
+import AddExpenses from '../Dashboard/Components/AddExpenses';
 
 
 
@@ -110,7 +110,7 @@ const deleteitem = async (itemId) => {
 
   return (
             <>
-              {/* <AddExpenses  /> */}
+              <AddExpenses  />
                  <div className="" style={{display:'flex',justifyContent:'end', marginBottom:'5px'}}>
                     <style>
                       {`.ant-picker-header-view{

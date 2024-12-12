@@ -231,12 +231,13 @@ export const deleteExpense=(itemid)=>async(dispatch,getState)=>{
 
 export const createExpenses = (item) => async (dispatch, getState) => {
   dispatch(userSlice.actions.setLoader(true)); // Start loader
+  dispatch(userSlice.actions.setStatus("loading"));
   const uid = getState().user.uid;
   try {
     // Add the new item to the Firestore collection
     const itemsCollection = collection(db, "users", uid, "items");
     const docRef = await addDoc(itemsCollection, item);
-
+    dispatch(userSlice.actions.setStatus("success"));
     console.log("Item added to Firestore.");
 
     // Update Redux state with the new item
@@ -246,6 +247,7 @@ export const createExpenses = (item) => async (dispatch, getState) => {
     dispatch(userSlice.actions.setExpenses(updatedExpenses)); // Update state
   } catch (error) {
     console.error("Error adding item:", error);
+    dispatch(userSlice.actions.setStatus("failed"));
     dispatch(userSlice.actions.setError(error.message)); // Handle error
   } finally {
     dispatch(userSlice.actions.setLoader(false)); // Stop loader
