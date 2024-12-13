@@ -13,6 +13,10 @@ import Fab from '@mui/material/Fab';
 import { DatePicker } from 'antd';
 import { useDispatch } from 'react-redux';
 import {createExpenses } from '../../../Slices/UserSlice';
+import { Select } from 'antd';
+import { Alert,Collapse } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 const AddExpenses = ({ onUpdateExpenses }) => {
     const [modal,setModal]=useState(false)
@@ -21,6 +25,8 @@ const AddExpenses = ({ onUpdateExpenses }) => {
     const [error,setError]=useState(false);
     const [loader,setLoader]=useState(false);
     const [date, setDate] = useState(null);
+    const [category,setCategory]=useState(null);
+    const [open, setOpen]=useState(false);
     const dispatch=useDispatch();
 
     const addToList = async (e) => {
@@ -39,46 +45,47 @@ const AddExpenses = ({ onUpdateExpenses }) => {
         description: descriptionRef.current.value,
         expenditure_date: formattedDate,
         createdAt: new Date(), // Add a timestamp
+        category:category,
       };
-  
-      // setLoader(true);
-      dispatch(createExpenses(item));
-   
-    };
-  
-    const fetchExpenses = async (uid) => {
-      try {
-        const userExpenseListRef = collection(db, "users", uid, "items");
-        const snapshot = await getDocs(userExpenseListRef);
-  
-        const expenses = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          createdAt: doc.data().createdAt?.toDate().toISOString(), // Convert to serializable format
-        }));
-  
-        console.log("Fetched Expenses:", expenses);
-        onUpdateExpenses(expenses); // Pass updated expenses to parent
-      } catch (error) {
-        console.error("Error fetching expenses:", error);
-      }
-    };
 
-    // const updateItem = async (userId, itemId, updatedData) => {
-    //   try {
-    //     const itemDoc = doc(db, "users", userId, "items", itemId); // Reference to the specific item
-    //     await updateDoc(itemDoc, updatedData); // Update only the fields in `updatedData`
-    //     console.log("Item updated successfully.");
-    //   } catch (error) {
-    //     console.error("Error updating item:", error);
-    //   }
-    // };
+      if (!item.price || !item.description || !item.expenditure_date || !item.category) {
+        console.error("All fields are required!");
+        setOpen(true);
+        setTimeout(() => {
+          setOpen(false);
+        }, 1500);
+      } else {
+        console.log("All fields are filled:", item);
+        setOpen(false);
+        dispatch(createExpenses(item));
+      }   
+    };
+  
 
     const onChange = (date, dateString) => {
       setDate(dateString); // Set the string representation (e.g., "2024-11")
       console.log("Selected Month (Moment Object):", date); // Moment.js object
       console.log("Selected Month (String):", dateString); // String representation
     };
+    const onChangeSelect=(value)=>{
+      console.log(`selected ${value}`);
+      setCategory(value);
+    }
+    const categories = [
+      { value: "Food & Beverages", label: "Food & Beverages" },
+      { value: "Vegetables", label: "Vegetables" },
+      { value: "Electronics", label: "Electronics" },
+      { value: "Clothing", label: "Clothing" },
+      { value: "Entertainment", label: "Entertainment" },
+      { value: "Grocery", label: "Grocery" },
+      { value: "Transportation", label: "Transportation" },
+      { value: "Health & Fitness", label: "Health & Fitness" },
+      { value: "Travel", label: "Travel" },
+      { value: "Education", label: "Education" },
+      { value: "Personal Care", label: "Personal Care" },
+      { value: "Renting", label: "Renting" },
+      { value: "Others", label: "Others" }
+    ];
     
 
     const showModal = () => {
@@ -110,6 +117,25 @@ const AddExpenses = ({ onUpdateExpenses }) => {
       </Fab>
 
         <My_modal title="" button_name="Add Expenses" isModalOpen={modal} handleCancel={handleCancel}>
+        <Collapse in={open} style={{width:'95%'}}>
+            <Alert severity="warning"
+                // action={
+                //   <IconButton
+                //     aria-label="close"
+                //     color="inherit"
+                //     size="small"
+                //     onClick={() => {
+                //       setOpen(false);
+                //     }}
+                //   >
+                //     <CloseIcon fontSize="inherit" />
+                //   </IconButton>
+                // }
+                sx={{ mb: 2 }}>
+              {/* <AlertTitle>info</AlertTitle> */}
+              All fields are required.
+            </Alert>
+          </Collapse>
         <form onSubmit={addToList} method='post'>
 
              <div id='addExpense_container' className={classes.addExpense_container}>
@@ -127,16 +153,31 @@ const AddExpenses = ({ onUpdateExpenses }) => {
                       }
                     `}
               </style>
-              <DatePicker style={{ width: '40%', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" />
+              <div style={ {width: '100%', display: 'flex', justifyContent: 'space-between',alignItems: 'center'}}>
+              <DatePicker style={{ width: '40%', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,color:'lightgrey'}} onChange={onChange}  className="customDropdown" />
+
+                <Select
+                    // showSearch
+                    placeholder="Select category"
+                    optionFilterProp="label"
+                    onChange={onChangeSelect}
+                    // onSearch={onSearch}
+                    options={categories}
+                    style={{ width: '40%', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,color:'lightgrey'}}
+                  />
+                </div>
               </div>
                 <div className={classes.Container_Child}>
                     <label htmlFor="description"><DescriptionIcon/></label>
                     <input id='description' className={classes.description} type="text"  placeholder='Enter description.' ref={descriptionRef} />
                 </div>
+
+
                 <div className={classes.Container_Child}>
                     <label htmlFor="amount"><CurrencyRupeeIcon/></label>
                     <input id='amount' className={classes.amount} type="integer" placeholder='Enter amount.' ref={priceRef}/>
                 </div>
+
                 <div className={classes.submitbtn_container}>
                   <button className={classes.button} type='submit'>{loader?<Loader size={30} />:<AddIcon/>}</button>
                 </div>

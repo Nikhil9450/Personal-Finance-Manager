@@ -9,11 +9,14 @@ import classes from "./AddExpenses.module.css";
 import { useDispatch,useSelector } from "react-redux";
 import { listenToUserExpenses,listenToUserProfile,data_tobe_render,updateUserExpenses } from '../../../Slices/UserSlice';
 import Swal from "sweetalert2";
+import { Select } from 'antd';
+
 const Update_expense = (props) => {
   const [modal, setModal] = useState(false);
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
+  const [category,setCategory]=useState("");
   // const [loader, setLoader] = useState(false);
   // const [error, setError] = useState(false);
   const dispatch=useDispatch();
@@ -55,6 +58,7 @@ const Update_expense = (props) => {
           setPrice(selectedIdData.expense || "");
           setDescription(selectedIdData.description || "");
           setDate(selectedIdData.name || "");
+          setCategory(selectedIdData.category || "Others")
         } else {
           console.error("No such document!");
         }
@@ -69,7 +73,6 @@ const Update_expense = (props) => {
   const handlePriceChange = (e) => setPrice(e.target.value);
   const handleDescriptionChange = (e) => setDescription(e.target.value);
   const handleDateChange = (e) => setDate(e.target.value);
-
   const updateItem = async (e) => {
     e.preventDefault();
 
@@ -79,6 +82,7 @@ const Update_expense = (props) => {
       price,
       description,
       expenditure_date: formattedDate,
+      category,
     };
 
     console.log("Updating item:", updatedData);
@@ -90,6 +94,26 @@ const Update_expense = (props) => {
   };
   const handleCancel = () => setModal(false);
 
+  const categories = [
+    { value: "Food & Beverages", label: "Food & Beverages" },
+    { value: "Vegetables", label: "Vegetables" },
+    { value: "Electronics", label: "Electronics" },
+    { value: "Clothing", label: "Clothing" },
+    { value: "Entertainment", label: "Entertainment" },
+    { value: "Grocery", label: "Grocery" },
+    { value: "Transportation", label: "Transportation" },
+    { value: "Health & Fitness", label: "Health & Fitness" },
+    { value: "Travel", label: "Travel" },
+    { value: "Education", label: "Education" },
+    { value: "Personal Care", label: "Personal Care" },
+    { value: "Renting", label: "Renting" },
+    { value: "Others", label: "Others" }
+  ];
+
+  const handleCategoryChange=(value)=>{
+    console.log(`selected ${value}`);
+    setCategory(value);
+  }
   return (
     <div>
       <img
@@ -103,6 +127,16 @@ const Update_expense = (props) => {
         <form onSubmit={updateItem} method="post">
           <div id="addExpense_container" className={classes.addExpense_container}>
             <div className={classes.Container_Child}>
+              <Select
+                // showSearch
+                placeholder="Select category"
+                optionFilterProp="label"
+                onChange={handleCategoryChange}
+                // onSearch={onSearch}
+                value={{ value:category, label: category }}
+                options={categories}
+                style={{ width: '40%', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,color:'lightgrey'}}
+              />
               <input
                 type="date"
                 value={date}

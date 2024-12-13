@@ -71,6 +71,7 @@ export const data_tobe_render = (dateString) => (dispatch, getState) => {
       description: expense.description,
       expense: Number(expense.price),
       id: expense.id,
+      category:expense.category,
     });
 
     // Accumulate expenses for the specific date
@@ -230,6 +231,7 @@ export const deleteExpense=(itemid)=>async(dispatch,getState)=>{
 }
 
 export const createExpenses = (item) => async (dispatch, getState) => {
+  console.log("item before adding in db",item);
   dispatch(userSlice.actions.setLoader(true)); // Start loader
   dispatch(userSlice.actions.setStatus("loading"));
   const uid = getState().user.uid;

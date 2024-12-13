@@ -18,7 +18,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { LineChart } from '@mui/x-charts/LineChart';
 import AddExpenses from '../Dashboard/Components/AddExpenses';
-
+import CategorizeExpenses from '../Dashboard/Components/CategorizeExpenses';
 
 
 const Daily_expenses_chart = () => {
@@ -54,6 +54,8 @@ const onChange = (date, dateString) => {
   setDate(dateString);
   setYear_month(dateString);
   dispatch(data_tobe_render(dateString));
+  console.log(Monthly_total_data)
+
 };
 
 
@@ -110,6 +112,7 @@ const deleteitem = async (itemId) => {
 
   return (
             <>
+              {/* <CategorizeExpenses/> */}
               <AddExpenses  />
                  <div className="" style={{display:'flex',justifyContent:'end', marginBottom:'5px'}}>
                     <style>
