@@ -18,7 +18,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { LineChart } from '@mui/x-charts/LineChart';
 import AddExpenses from '../Dashboard/Components/AddExpenses';
-import CategorizeExpenses from '../Dashboard/Components/CategorizeExpenses';
+// import CategorizeExpenses from '../Dashboard/Components/CategorizeExpenses';
 
 
 const Daily_expenses_chart = () => {

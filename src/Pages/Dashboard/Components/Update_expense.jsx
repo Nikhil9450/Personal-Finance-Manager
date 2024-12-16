@@ -126,7 +126,7 @@ const Update_expense = (props) => {
       <My_modal title="" button_name="Update Expense" isModalOpen={modal} handleCancel={handleCancel}>
         <form onSubmit={updateItem} method="post">
           <div id="addExpense_container" className={classes.addExpense_container}>
-            <div className={classes.Container_Child}>
+            <div className={classes.Container_Child} style={{display:'flex',justifyContent:'space-between'}}>
               <Select
                 // showSearch
                 placeholder="Select category"
