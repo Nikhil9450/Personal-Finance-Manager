@@ -53,7 +53,8 @@ const userSlice = createSlice({
 // Thunk to listen for user profile changes
 export const data_tobe_render = (dateString) => (dispatch, getState) => {
   console.log("datestring from slice",dateString);
-  // dispatch(userSlice.actions.setStatus("loading"));
+  
+  // dispatch(userSlice.actions.setLoader(true));
   const currentExpenses = getState().user.expenses; // Access current expenses from state
 
   // Group expenses by year and month
@@ -108,10 +109,13 @@ export const data_tobe_render = (dateString) => (dispatch, getState) => {
       0
     );
     dispatch(userSlice.actions.setTotalSpentAmt(totalSum));
+    // dispatch(userSlice.actions.setLoader(false));
   } else {
     dispatch(userSlice.actions.setChartData({}));
     dispatch(userSlice.actions.setTotalSpentAmt(""));
     dispatch(userSlice.actions.setStatus("failed"));
+    // dispatch(userSlice.actions.setLoader(false));
+
     console.log(`No data found for year: ${year}, month: ${month}`);
   }
 };
@@ -120,6 +124,8 @@ export const data_tobe_render = (dateString) => (dispatch, getState) => {
 export const listenToUserProfile = (uid) => (dispatch) => {
   console.log("this is user id--------->",uid)
   dispatch(userSlice.actions.setUid(uid));
+  dispatch(userSlice.actions.setLoader(true));
+
   try {
     // dispatch(userSlice.actions.setStatus('loading'));
     const userDocRef = doc(db, 'users', uid);
@@ -132,10 +138,13 @@ export const listenToUserProfile = (uid) => (dispatch) => {
         dispatch(userSlice.actions.setError('User profile not found'));
         // dispatch(userSlice.actions.setStatus('failed'));
       }
+      dispatch(userSlice.actions.setLoader(false));
+
     });
   } catch (error) {
     console.error('Error listening to user profile:', error.message);
     dispatch(userSlice.actions.setError(error.message));
+    dispatch(userSlice.actions.setLoader(false));
     // dispatch(userSlice.actions.setStatus('failed'));
   }
 };

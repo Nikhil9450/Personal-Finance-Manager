@@ -12,27 +12,12 @@ import { listenToUserProfile, listenToUserExpenses } from '../../../Slices/UserS
 import Daily_expenses_chart from '../../chart/daily_expenses_chart';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from '../../../firebase';
+import LoadingScreen from 'react-loading-screen';
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const Expense_data=useSelector((state)=>state.user.expenses)
-  // const fetch_expense_list = async () => {
-  //   const uid = auth.currentUser.uid;
-  //   console.log("Fetching user profile for UID:", uid); // Log the UID
-  
-  //   // Reference the 'items' subcollection inside the 'users' collection
-  //   const itemsCollectionRef = collection(db, "users", uid, "items");
-  
-  //   try {
-  //     // Fetch all documents from the 'items' subcollection
-  //     const querySnapshot = await getDocs(itemsCollectionRef);
-  //     querySnapshot.forEach((doc) => {
-  //       console.log("Document data:", doc.data());
-  //     });
-  //   } catch (error) {
-  //     console.error("Error fetching items:", error);
-  //   }
-  // };
-  
+  const exp_loader=useSelector((state)=>state.user.loader)
+  // const Chart_data=useSelector((state)=>state.user.chart_data_expense)
+   
   useEffect(() => {
     if (auth.currentUser) {
       console.log('UID from auth.currentUser:', auth.currentUser.uid); // Log UID
@@ -43,51 +28,46 @@ const Dashboard = () => {
     }
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   console.log("Expenses data updated ------------>", Expense_data);
-  //   const expensesByDate = Expense_data.reduce((acc, expense) => {
-  //     const date = expense.expenditure_date; // Extract the expenditure date
-  //     if (!acc[date]) {
-  //       acc[date] = []; // If no array exists for this date, initialize one
-  //     }
-  //     acc[date].push(expense); // Add the current expense to the array for this date
-  //     return acc; // Return the updated accumulator object
-  //   }, {});
-    
-  //   const dateWiseTotalExpenseAmt = {};
+  useEffect(()=>{
 
-  //   Object.entries(expensesByDate).forEach(([date, expenseArray]) => {
-  //     const totalAmt = expenseArray.reduce((sum, item) => sum + Number(item.price), 0);
-  //     dateWiseTotalExpenseAmt[date] = totalAmt;
-  //   });
-    
-  //   console.log("Date-wise total amounts:", dateWiseTotalExpenseAmt);
-  //   console.log("expense by date------->",expensesByDate)
-  // }, [Expense_data]);
+  })
 
 
   return (
-    <div className={classes.dashboard}>
-      <Navbar/>
-      {/* <AddExpenses/> */}
+    (exp_loader)?
+    <LoadingScreen
+      loading={true}
+      bgColor="rgba(255,255,255,0.8)"
+      spinnerColor="#9ee5f8"
+      textColor="#676767"
+      logoSrc=""
+      text=""
+    >
+      {" "}
+    </LoadingScreen>
+    :
+      <div className={classes.dashboard}>
+        <Navbar/>
+        {/* <AddExpenses/> */}
 
-      <div className={classes.dashboard_content}>
-        <Grid container rowSpacing={5} columnSpacing={5}>
-          <Grid size={12}>
-          <div style={{height:'300px'}}>
-            <Daily_expenses_chart/>
-          </div>
-            {/* <Card width="" height="315px"> */}
-            {/* </Card> */}
+        <div className={classes.dashboard_content}>
+          <Grid container rowSpacing={5} columnSpacing={5}>
+            <Grid size={12}>
+            <div style={{height:'300px'}}>
+              <Daily_expenses_chart/>
+            </div>
+              {/* <Card width="" height="315px"> */}
+              {/* </Card> */}
+            </Grid>
+            {/* <Grid size={6}>
+              <Card width="" height="400px">
+              </Card>
+            </Grid> */}
           </Grid>
-           {/* <Grid size={6}>
-            <Card width="" height="400px">
-            </Card>
-           </Grid> */}
-        </Grid>
-      </div>
+        </div>
 
-    </div>
+      </div>
+      
   )
 }
 
