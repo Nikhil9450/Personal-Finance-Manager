@@ -18,6 +18,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { LineChart } from '@mui/x-charts/LineChart';
 import AddExpenses from '../Dashboard/Components/AddExpenses';
+import AreaChart from './AreaChart';
 // import CategorizeExpenses from '../Dashboard/Components/CategorizeExpenses';
 
 
@@ -31,7 +32,7 @@ const Daily_expenses_chart = () => {
     const [modal,setModal]=useState(false)
     const [year_month,setYear_month]=useState(moment().format('YYYY-MM'));
     const dispatch= useDispatch();
-    const [chartWidth, setChartWidth] = useState(window.innerWidth * 0.8); 
+    // const [chartWidth, setChartWidth] = useState(window.innerWidth * 0.8); 
     const error=useSelector((state)=>state.user.error)
     const status=useSelector((state)=>state.user.status)
     const [loadingItems, setLoadingItems] = useState({});
@@ -89,26 +90,11 @@ const deleteitem = async (itemId) => {
       console.log("Expense deleted:", itemId);
     } catch (error) {
       console.error("Error while deleting the expense:", error);
-    } finally {
-      // Stop loader for the specific item
-      // setLoadingItems((prev) => ({ ...prev, [itemId]: false }));
-    }
+    } 
   } else {
     console.log("User canceled deletion.");
   }
 };
-
-
-
-// useEffect(() => {
-//     const handleResize = () => {
-//       setChartWidth(window.innerWidth * 0.8); // Adjust width on window resize.
-//     };
-
-//     handleResize(); // Set width on mount
-//     window.addEventListener("resize", handleResize);
-//     return () => window.removeEventListener("resize", handleResize);
-// }, []);
 
   return (
             <>
@@ -132,67 +118,60 @@ const deleteitem = async (itemId) => {
                   </div>
                   { (Chart_data.length > 0)? (
                     <div style={{ width: '100%' }}>
-                    <div style={{display:'flex',justifyContent:'space-between'}}>
-                      <p style={{fontSize:'12px',color:'grey'}}>Total spent amount : {Total_spent_amt}</p>
-                      <p style={{color:'#127afb',cursor:'pointer' ,fontSize:'12px'}} onClick={showModal}>View expenses</p>
+                      <div style={{display:'flex',justifyContent:'space-between'}}>
+                        <p style={{fontSize:'12px',color:'grey'}}>Total spent amount : {Total_spent_amt}</p>
+                        <p style={{color:'#127afb',cursor:'pointer' ,fontSize:'12px'}} onClick={showModal}>View expenses</p>
+                      </div>
+                      <div className={classes.chart_container}>
+                          <AreaChart Chart_data={Chart_data} />
+                      </div>
                     </div>
-                    <div className={classes.chart_container}>
-                        <LineChart
-                          width={chartWidth}
-                          height={300}
-                          dataset={Chart_data}
-                          series={[{ dataKey: "expense", label: "Expenses" }]}
-                          xAxis={[{ scaleType: "point", dataKey: "name" }]}
-                        />
-                    </div>
-                  </div>
-
                     ) : (
                       <div className={classes.empty_graph_handler}>No expenses to display</div>
                     )}
-              <My_modal title={'Expenses ('+ year_month +')'}  isModalOpen={modal} handleCancel={handleCancel}>
-                  <div className={classes.expense_list_container}>
-                  {(Object.keys(Monthly_total_data).length > 0) ? (
-                      <List
-                        itemLayout="horizontal"
-                        dataSource={Monthly_total_data.allExpenses}
-                        renderItem={(item, index) => {
-                          const date = new Date(item.name);
-                          const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-                          const day = date.getDate();
+                    <My_modal title={'Expenses ('+ year_month +')'}  isModalOpen={modal} handleCancel={handleCancel}>
+                        <div className={classes.expense_list_container}>
+                        {(Object.keys(Monthly_total_data).length > 0) ? (
+                            <List
+                              itemLayout="horizontal"
+                              dataSource={Monthly_total_data.allExpenses}
+                              renderItem={(item, index) => {
+                                const date = new Date(item.name);
+                                const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+                                const day = date.getDate();
 
-                          return (
-                            <List.Item>
-                                <List.Item.Meta
-                                  avatar={
-                                    <div className={classes.list_avatar}>
-                                      <h4>{month}</h4>
-                                      <p>{day}</p>
-                                    </div>
-                                  }
-                                  title={<h5>{item.description}</h5>}
-                                  description={<p>{item.expense}</p>}
-                                />
-                                <Update_expense itemId={item.id} />
-                                {loadingItems[item.id] ? (
-                                    <Loader size={20} />
-                                  ) : (
-                                    <img
-                                      src="/Icons/delete.png"
-                                      onClick={() => deleteitem(item.id)}
-                                      alt="Delete"
-                                      style={{ height: "1.4rem", cursor: "pointer" }}
-                                    />
-                                  )}                          
-                              </List.Item>
-                          );
-                        }}
-                      />
-                    ) : (
-                      <div className={classes.empty_list_handler}>No expenses to display</div>
-                    )}
-                  </div>
-              </My_modal>
+                                return (
+                                  <List.Item>
+                                      <List.Item.Meta
+                                        avatar={
+                                          <div className={classes.list_avatar}>
+                                            <h4>{month}</h4>
+                                            <p>{day}</p>
+                                          </div>
+                                        }
+                                        title={<h5>{item.description}</h5>}
+                                        description={<p>{item.expense}</p>}
+                                      />
+                                      <Update_expense itemId={item.id} />
+                                      {loadingItems[item.id] ? (
+                                          <Loader size={20} />
+                                        ) : (
+                                          <img
+                                            src="/Icons/delete.png"
+                                            onClick={() => deleteitem(item.id)}
+                                            alt="Delete"
+                                            style={{ height: "1.4rem", cursor: "pointer" }}
+                                          />
+                                        )}                          
+                                    </List.Item>
+                                );
+                              }}
+                            />
+                          ) : (
+                            <div className={classes.empty_list_handler}>No expenses to display</div>
+                          )}
+                        </div>
+                    </My_modal>
             </>
    
   );

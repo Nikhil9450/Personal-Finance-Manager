@@ -52,17 +52,17 @@ const Dashboard = () => {
 
         <div className={classes.dashboard_content}>
           <Grid container rowSpacing={5} columnSpacing={5}>
-            <Grid size={12}>
-            <div style={{height:'300px'}}>
-              <Daily_expenses_chart/>
-            </div>
+            <Grid size={8}>
+              {/* <div style={{height:'300px'}}> */}
+                <Daily_expenses_chart/>
+              {/* </div> */}
               {/* <Card width="" height="315px"> */}
               {/* </Card> */}
             </Grid>
-            {/* <Grid size={6}>
-              <Card width="" height="400px">
+            <Grid size={4}>
+              <Card>
               </Card>
-            </Grid> */}
+            </Grid>
           </Grid>
         </div>
 
