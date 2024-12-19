@@ -53,11 +53,11 @@ const Dashboard = () => {
         <div className={classes.dashboard_content}>
           <Grid container rowSpacing={5} columnSpacing={5}>
             <Grid size={8}>
-              {/* <div style={{height:'300px'}}> */}
+              <Card width="" height=""t>
+              {/* <div syle={{height:'300px'}}> */}
                 <Daily_expenses_chart/>
               {/* </div> */}
-              {/* <Card width="" height="315px"> */}
-              {/* </Card> */}
+              </Card>
             </Grid>
             <Grid size={4}>
               <Card>
