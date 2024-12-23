@@ -13,6 +13,7 @@ import Daily_expenses_chart from '../../chart/daily_expenses_chart';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from '../../../firebase';
 import LoadingScreen from 'react-loading-screen';
+import BarChart from '../../chart/BarChart';
 const Dashboard = () => {
   const dispatch = useDispatch();
   const exp_loader=useSelector((state)=>state.user.loader)
@@ -61,6 +62,7 @@ const Dashboard = () => {
             </Grid>
             <Grid size={4}>
               <Card>
+              <BarChart/>
               </Card>
             </Grid>
           </Grid>

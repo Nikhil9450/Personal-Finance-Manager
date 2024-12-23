@@ -33,10 +33,8 @@ const AreaChart = ({ Chart_data }) => {
     },
     xaxis: {
       categories: categories.length > 0 ? categories : ["No Data"],
-      title: { text: "Categories" },
     },
     yaxis: {
-      title: { text: "Expenses" },
     },
     dataLabels: { enabled: false },
     stroke: {
@@ -47,7 +45,7 @@ const AreaChart = ({ Chart_data }) => {
      fill: {
       type: "solid",
       colors: ["#124E66"], 
-      opacity: 0.4, 
+      opacity: 0.2, 
       // type: "gradient",
       // gradient: {
       //   shade: "light",

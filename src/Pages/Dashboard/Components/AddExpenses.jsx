@@ -72,17 +72,14 @@ const AddExpenses = ({ onUpdateExpenses }) => {
       setCategory(value);
     }
     const categories = [
-      { value: "Food & Beverages", label: "Food & Beverages" },
-      { value: "Vegetables", label: "Vegetables" },
+      { value: "Food", label: "Food" },
       { value: "Electronics", label: "Electronics" },
       { value: "Clothing", label: "Clothing" },
       { value: "Entertainment", label: "Entertainment" },
-      { value: "Grocery", label: "Grocery" },
       { value: "Transportation", label: "Transportation" },
-      { value: "Health & Fitness", label: "Health & Fitness" },
-      { value: "Travel", label: "Travel" },
+      { value: "Health", label: "Health" },
       { value: "Education", label: "Education" },
-      { value: "Personal Care", label: "Personal Care" },
+      { value: "Personal Expenses", label: "Personal Expenses" },
       { value: "Renting", label: "Renting" },
       { value: "Others", label: "Others" }
     ];
