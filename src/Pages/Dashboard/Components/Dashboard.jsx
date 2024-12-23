@@ -53,7 +53,7 @@ const Dashboard = () => {
         <div className={classes.dashboard_content}>
           <Grid container rowSpacing={5} columnSpacing={5}>
             <Grid size={8}>
-              <Card width="" height=""t>
+              <Card width="" height="">
               {/* <div syle={{height:'300px'}}> */}
                 <Daily_expenses_chart/>
               {/* </div> */}
