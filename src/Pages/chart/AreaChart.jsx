@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 
 const AreaChart = ({ Chart_data }) => {
+  console.log("Chart_data------>",Chart_data)
   const chartRef = useRef(null);
   const [chartWidth, setChartWidth] = useState(0);
 

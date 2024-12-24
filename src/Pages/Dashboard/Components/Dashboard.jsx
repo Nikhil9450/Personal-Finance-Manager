@@ -60,11 +60,11 @@ const Dashboard = () => {
               {/* </div> */}
               </Card>
             </Grid>
-            <Grid size={4}>
+            {/* <Grid size={4}>
               <Card>
               <BarChart/>
               </Card>
-            </Grid>
+            </Grid> */}
           </Grid>
         </div>
 

@@ -14,7 +14,8 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import { useDispatch } from 'react-redux';
 import { listenToUserExpenses,listenToUserProfile,data_tobe_render,updateUserExpenses,deleteExpense,createExpenses } from '../../Slices/UserSlice';
 import Swal from 'sweetalert2';
-import { BarChart } from '@mui/x-charts/BarChart';
+// import { BarChart } from '@mui/x-charts/BarChart';
+import BarChart from './BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { LineChart } from '@mui/x-charts/LineChart';
 import AddExpenses from '../Dashboard/Components/AddExpenses';
@@ -124,6 +125,7 @@ const deleteitem = async (itemId) => {
                       </div>
                       <div className={classes.chart_container}>
                           <AreaChart Chart_data={Chart_data} />
+                          <BarChart Monthly_total_data={Monthly_total_data}/>
                       </div>
                     </div>
                     ) : (
