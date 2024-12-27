@@ -125,7 +125,7 @@ const deleteitem = async (itemId) => {
                       </div>
                       <div className={classes.chart_container}>
                           <AreaChart Chart_data={Chart_data} />
-                          <BarChart Monthly_total_data={Monthly_total_data}/>
+                          {/* <BarChart Monthly_total_data={Monthly_total_data}/> */}
                       </div>
                     </div>
                     ) : (

@@ -74,7 +74,7 @@ const Update_expense = (props) => {
   const handleDescriptionChange = (e) => setDescription(e.target.value);
   const handleDateChange = (e) => setDate(e.target.value);
   const updateItem = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     const formattedDate = date || new Date().toISOString().split("T")[0]; // Fallback to today's date
 
@@ -124,7 +124,7 @@ const Update_expense = (props) => {
       />
 
       <My_modal title="" button_name="Update Expense" isModalOpen={modal} handleCancel={handleCancel}>
-        <form onSubmit={updateItem} method="post">
+        {/* <form onSubmit={updateItem} method="post"> */}
           <div id="addExpense_container" className={classes.addExpense_container}>
             <div className={classes.Container_Child} style={{display:'flex',justifyContent:'space-between'}}>
               <Select
@@ -177,12 +177,12 @@ const Update_expense = (props) => {
               />
             </div>
             <div className={classes.submitbtn_container}>
-              <button className={classes.button} type="submit">
+              <button className={classes.button} type="button" onClick={updateItem}>
                 {(status=="loading") ? <Loader size={30} /> : <img src='/Icons/upload.png' alt="upload image" style={{height:'1rem',cursor:'pointer'}}/>}
               </button>
             </div>
           </div>
-        </form>
+        {/* </form> */}
       </My_modal>
     </div>
   );

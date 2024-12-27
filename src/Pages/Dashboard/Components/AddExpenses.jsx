@@ -31,7 +31,7 @@ const AddExpenses = ({ onUpdateExpenses }) => {
 
     const addToList = async (e) => {
       e.preventDefault();
-  
+      e.stopPropagation();
       const user = auth.currentUser; // Get the currently authenticated user
       if (!user) {
         setError("Please log in to add items.");
@@ -60,6 +60,8 @@ const AddExpenses = ({ onUpdateExpenses }) => {
         dispatch(createExpenses(item));
       }   
     };
+
+    
   
 
     const onChange = (date, dateString) => {

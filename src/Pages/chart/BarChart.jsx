@@ -1,76 +1,92 @@
 import React from 'react';
-import Chart from 'react-apexcharts';
+import { Bar } from 'react-chartjs-2';
+import { Card, CardContent, Typography } from '@mui/material';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
-const BarChart = ({Monthly_total_data}) => {
-  // Sample category summary data (replace this with your actual data)
-  console.log("monthly total data length",Monthly_total_data.allExpenses.length);
-  console.log("monthly total data",Monthly_total_data.allExpenses);
+// Register Chart.js components
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-  const categorizedExpenses=Monthly_total_data.allExpenses;
+const BarChart = ({ Monthly_total_data }) => {
+  // Validate input data
+  const categorizedExpenses = Array.isArray(Monthly_total_data?.allExpenses)
+    ? Monthly_total_data.allExpenses
+    : [];
+  console.log("Monthly_total_data", categorizedExpenses);
+
+  // Calculate totals per category
   const categoryTotals = categorizedExpenses.reduce((acc, item) => {
-    console.log(acc);
-  
-    const { category, expense } = item;
-    if (!acc[category]) {
-      acc[category] = 0;
+    const { category, expense } = item || {}; // Safely destructure item
+    if (category && typeof expense === "number") {
+      acc[category] = (acc[category] || 0) + expense;
     }
-    acc[category] += expense;
     return acc;
   }, {});
 
-  console.log("categoryTotals",categoryTotals);
-  console.log("categoryTotals",Object.keys(categoryTotals));
-  console.log("categoryTotals",Object.values(categoryTotals));
-
-
-  // const categorySummary = [
-  //   { category: "Electronics", total: 5020 },
-  //   { category: "Food", total: 1000 },
-  //   { category: "Personal Expenses", total: 500 },
-  // ];
-
-  // const categories = categorySummary.map(item => item.category);
-  // const totals = categorySummary.map(item => item.total);
-
+  // Extract categories and totals
   const categories = Object.keys(categoryTotals);
   const totals = Object.values(categoryTotals);
 
-  // Chart options and data
-  const chartOptions = {
-    chart: {
-      type: 'bar',
-    },
-    xaxis: {
-      categories: categories, // Use category names on the x-axis
-    },
-    title: {
-      text: 'Expenses by Category',
-      align: 'center',
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 10,
-        horizontal: false,
-        columnWidth: '55%',
+  // Chart.js data
+  const data = {
+    labels: categories,
+    datasets: [
+      {
+        label: 'Total Expense',
+        data: totals,
+        backgroundColor: ['#4CAF50', '#FF9800', '#FF5722', '#2196F3', '#9C27B0'],
+        borderWidth: 1,
       },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    colors: ['#4CAF50', '#FF9800', '#FF5722'], // Customize the bar colors
+    ],
   };
 
-  const chartData = [
-    {
-      name: 'Total Expense',
-      data: totals, // Total expenses corresponding to each category
+  // Chart.js options
+  const options = {
+    indexAxis: 'y', // Horizontal bar chart
+    elements: {
+      bar: {
+        borderWidth: 2,
+      },
     },
-  ];
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Expenses by Category',
+      },
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+      },
+    },
+  };
 
   return (
-    <div className="chart-container">
-      <Chart options={chartOptions} series={chartData} type="bar" height={350} />
-    </div>
+    // <Card>
+    //   <CardContent>
+    //     <Typography variant="h6" gutterBottom>
+    //       Expenses by Category
+    //     </Typography>
+    <>
+        {categories.length > 0 && totals.length > 0 ? (
+          <Bar data={data} options={options} />
+        ) : (
+          <Typography color="textSecondary">No data available to display the chart.</Typography>
+        )}
+    </>
+    //   </CardContent>
+    // </Card>
   );
 };
 

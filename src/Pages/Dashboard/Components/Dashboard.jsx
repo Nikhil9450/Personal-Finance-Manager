@@ -18,6 +18,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const exp_loader=useSelector((state)=>state.user.loader)
   // const Chart_data=useSelector((state)=>state.user.chart_data_expense)
+     const Monthly_total_data=useSelector((state)=>state.user.month_wise_totalExpense)
    
   useEffect(() => {
     if (auth.currentUser) {
@@ -60,11 +61,11 @@ const Dashboard = () => {
               {/* </div> */}
               </Card>
             </Grid>
-            {/* <Grid size={4}>
+            <Grid size={4}>
               <Card>
-              <BarChart/>
+              <BarChart Monthly_total_data={Monthly_total_data}/>
               </Card>
-            </Grid> */}
+            </Grid>
           </Grid>
         </div>
 
