@@ -17,7 +17,7 @@ import { Select } from 'antd';
 import { Alert,Collapse } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { Timestamp } from "firebase/firestore";
 const AddExpenses = ({ onUpdateExpenses }) => {
     const [modal,setModal]=useState(false)
     const priceRef=useRef(null);
@@ -29,38 +29,76 @@ const AddExpenses = ({ onUpdateExpenses }) => {
     const [open, setOpen]=useState(false);
     const dispatch=useDispatch();
 
-    const addToList = async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const user = auth.currentUser; // Get the currently authenticated user
-      if (!user) {
-        setError("Please log in to add items.");
-        return;
-      }
+    // const addToList = async (e) => {
+    //   e.preventDefault();
+    //   alert("Form submitted successfully1");
+    //   const user = auth.currentUser; // Get the currently authenticated user
+    //   if (!user) {
+    //     setError("Please log in to add items.");
+    //     return;
+    //   }
   
-      const today = new Date();
-      const formattedDate = date || today.toISOString().split("T")[0];
-      const item = {
-        price: priceRef.current.value,
-        description: descriptionRef.current.value,
-        expenditure_date: formattedDate,
-        createdAt: new Date(), // Add a timestamp
-        category:category,
-      };
+    //   const today = new Date();
+    //   const formattedDate = date || today.toISOString().split("T")[0];
+    //   const item = {
+    //     price: priceRef.current.value,
+    //     description: descriptionRef.current.value,
+    //     expenditure_date: formattedDate,
+    //     createdAt: Timestamp.fromDate(new Date()), // Add a timestamp
+    //     category:category,
+    //   };
 
-      if (!item.price || !item.description || !item.expenditure_date || !item.category) {
-        console.error("All fields are required!");
-        setOpen(true);
-        setTimeout(() => {
+    //   if (!item.price || !item.description || !item.expenditure_date || !item.category) {
+    //     console.error("All fields are required!");
+    //     setOpen(true);
+    //     setTimeout(() => {
+    //       setOpen(false);
+    //     }, 1500);
+    //   } else {
+    //     console.log("All fields are filled:", item);
+    //     setOpen(false);
+    //     alert("Form submitted successfully2");
+    //     dispatch(createExpenses(item));
+    //     alert("Form submitted successfully3");
+    //   }   
+    // };
+
+    const addToList = async (e) => {
+      try {
+        e.preventDefault();
+        console.log("Default behavior prevented");
+    
+        const user = auth.currentUser;
+        if (!user) {
+          setError("Please log in to add items.");
+          return;
+        }
+    
+        const today = new Date();
+        const formattedDate = date || today.toISOString().split("T")[0];
+        const item = {
+          price: priceRef.current.value,
+          description: descriptionRef.current.value,
+          expenditure_date: formattedDate,
+          createdAt: Timestamp.fromDate(new Date()), // Add a timestamp
+          category: category,
+        };
+    
+        if (!item.price || !item.description || !item.expenditure_date || !item.category) {
+          console.error("All fields are required!");
+          setOpen(true);
+          setTimeout(() => {
+            setOpen(false);
+          }, 1500);
+        } else {
+          console.log("All fields are filled:", item);
           setOpen(false);
-        }, 1500);
-      } else {
-        console.log("All fields are filled:", item);
-        setOpen(false);
-        dispatch(createExpenses(item));
-      }   
+          dispatch(createExpenses(item));
+        }
+      } catch (error) {
+        console.error("Error in addToList:", error);
+      }
     };
-
     
   
 
@@ -135,7 +173,7 @@ const AddExpenses = ({ onUpdateExpenses }) => {
               All fields are required.
             </Alert>
           </Collapse>
-        <form onSubmit={addToList} method='post'>
+        <form onSubmit={addToList}>
 
              <div id='addExpense_container' className={classes.addExpense_container}>
              <div className={classes.Container_Child}>

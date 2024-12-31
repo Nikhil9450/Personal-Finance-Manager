@@ -1,4 +1,4 @@
-import {React,useEffect} from 'react'
+import {React,useEffect, useState} from 'react'
 import Navbar from '../../Navbar/Components/Navbar'
 import classes from './Dashboard.module.css'
 import Card from './Card'
@@ -16,7 +16,7 @@ import LoadingScreen from 'react-loading-screen';
 import BarChart from '../../chart/BarChart';
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const exp_loader=useSelector((state)=>state.user.loader)
+  const [exp_loader,set_expLoader]=useState(true);
   // const Chart_data=useSelector((state)=>state.user.chart_data_expense)
      const Monthly_total_data=useSelector((state)=>state.user.month_wise_totalExpense)
    
@@ -31,7 +31,9 @@ const Dashboard = () => {
   }, [dispatch]);
 
   useEffect(()=>{
-
+   setTimeout(()=>{
+    set_expLoader(false);
+   },5000)
   })
 
 

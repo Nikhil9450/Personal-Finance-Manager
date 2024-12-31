@@ -163,7 +163,7 @@ export const listenToUserExpenses = (uid) => (dispatch) => {
           return {
             id: doc.id,
             ...data,
-            createdAt: data.createdAt?.toDate().toISOString(), // Convert to serializable format
+            createdAt: data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt), // Convert to serializable format
           };
         });
         dispatch(userSlice.actions.setExpenses(expenses));
@@ -239,33 +239,68 @@ export const deleteExpense=(itemid)=>async(dispatch,getState)=>{
   }
 }
 
+// export const createExpenses = (item) => async (dispatch, getState) => {
+//   console.log("item before adding in db",item);
+//   dispatch(userSlice.actions.setLoader(true)); // Start loader
+//   dispatch(userSlice.actions.setStatus("loading"));
+//   const uid = getState().user.uid;
+//   try {
+//     // Add the new item to the Firestore collection
+//     const itemsCollection = collection(db, "users", uid, "items");
+//     const docRef = await addDoc(itemsCollection, item);
+//     dispatch(userSlice.actions.setStatus("success"));
+//     console.log("Item added to Firestore.");
+
+//     // Update Redux state with the new item
+//     const currentExpenses = getState().user.expenses; // Get current state expenses
+//     const newItem = { id: docRef.id, ...item }; // Merge Firestore-generated ID with item
+//     const updatedExpenses = [...currentExpenses, newItem]; // Add new item to the state
+//     dispatch(userSlice.actions.setExpenses(updatedExpenses)); // Update state
+//   } catch (error) {
+//     console.error("Error adding item:", error);
+//     dispatch(userSlice.actions.setStatus("failed"));
+//     dispatch(userSlice.actions.setError(error.message)); // Handle error
+//   } finally {
+//     dispatch(userSlice.actions.setLoader(false)); // Stop loader
+//   }
+// };
+
+// Export actions
+
 export const createExpenses = (item) => async (dispatch, getState) => {
-  console.log("item before adding in db",item);
-  dispatch(userSlice.actions.setLoader(true)); // Start loader
+  console.log("Inside createExpenses with item:", item);
+  dispatch(userSlice.actions.setLoader(true));
   dispatch(userSlice.actions.setStatus("loading"));
   const uid = getState().user.uid;
   try {
-    // Add the new item to the Firestore collection
     const itemsCollection = collection(db, "users", uid, "items");
     const docRef = await addDoc(itemsCollection, item);
-    dispatch(userSlice.actions.setStatus("success"));
-    console.log("Item added to Firestore.");
+    console.log("Item successfully added to Firestore:", docRef);
+    const currentExpenses = getState().user.expenses;
+    console.log("currentExpenses",currentExpenses)
+    const newItem = { id: docRef.id, ...item };
+      // Avoid duplication by checking if the newItem already exists
+      const isItemPresent = currentExpenses.some(
+        (expense) => expense.id === newItem.id
+      );
 
-    // Update Redux state with the new item
-    const currentExpenses = getState().user.expenses; // Get current state expenses
-    const newItem = { id: docRef.id, ...item }; // Merge Firestore-generated ID with item
-    const updatedExpenses = [...currentExpenses, newItem]; // Add new item to the state
-    dispatch(userSlice.actions.setExpenses(updatedExpenses)); // Update state
+    const updatedExpenses = isItemPresent
+      ? currentExpenses
+      : [...currentExpenses, newItem];
+      console.log("Updated expenses:", updatedExpenses);
+    dispatch(userSlice.actions.setExpenses(updatedExpenses));
+
+    dispatch(userSlice.actions.setStatus("success"));
   } catch (error) {
-    console.error("Error adding item:", error);
+    console.error("Error in createExpenses:", error);
     dispatch(userSlice.actions.setStatus("failed"));
-    dispatch(userSlice.actions.setError(error.message)); // Handle error
+    dispatch(userSlice.actions.setError(error.message));
   } finally {
-    dispatch(userSlice.actions.setLoader(false)); // Stop loader
+    dispatch(userSlice.actions.setLoader(false));
+    console.log("Exiting createExpenses");
   }
 };
 
-// Export actions
 export const { clearProfile } = userSlice.actions;
 
 // Export reducer

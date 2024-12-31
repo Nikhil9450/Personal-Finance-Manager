@@ -15,7 +15,24 @@ import ProtectedRoute from './ProtectedRoute';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    const preventFormReload = (e) => {
+      e.preventDefault();
+      console.log("Global prevention of default form behavior");
+    };
 
+    const forms = document.querySelectorAll("form");
+    forms.forEach((form) => {
+      form.addEventListener("submit", preventFormReload);
+    });
+
+    return () => {
+      forms.forEach((form) => {
+        form.removeEventListener("submit", preventFormReload);
+      });
+    };
+  }, []);
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
