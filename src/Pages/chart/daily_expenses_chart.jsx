@@ -23,15 +23,15 @@ import AreaChart from './AreaChart';
 // import CategorizeExpenses from '../Dashboard/Components/CategorizeExpenses';
 
 
-const Daily_expenses_chart = () => {
+const Daily_expenses_chart = (props) => {
     const Expense_data=useSelector((state)=>state.user.expenses)
     const Monthly_total_data=useSelector((state)=>state.user.month_wise_totalExpense)
     const Chart_data=useSelector((state)=>state.user.chart_data_expense)
     const Total_spent_amt=useSelector((state)=>state.user.total_spent_data)
     // const [Expense_data,setExpense_data]=useState(Expense_data_from_redux);
-    const [date, setDate] = useState(null);
     const [modal,setModal]=useState(false)
-    const [year_month,setYear_month]=useState(moment().format('YYYY-MM'));
+    // const [date, setDate] = useState(null);
+    // const [year_month,setYear_month]=useState(moment().format('YYYY-MM'));
     const dispatch= useDispatch();
     // const [chartWidth, setChartWidth] = useState(window.innerWidth * 0.8); 
     const error=useSelector((state)=>state.user.error)
@@ -46,19 +46,19 @@ const Daily_expenses_chart = () => {
     };  
 
 useEffect(()=>{
-  const currentMonth =(!date)? moment().format('YYYY-MM'):date;
+  const currentMonth =(!props.date)? moment().format('YYYY-MM'):props.date;
   dispatch(data_tobe_render(currentMonth));
 },[Expense_data])
 
 
 
-const onChange = (date, dateString) => {
-  setDate(dateString);
-  setYear_month(dateString);
-  dispatch(data_tobe_render(dateString));
-  console.log(Monthly_total_data)
+// const onChange = (date, dateString) => {
+//   setDate(dateString);
+//   setYear_month(dateString);
+//   dispatch(data_tobe_render(dateString));
+//   console.log(Monthly_total_data)
 
-};
+// };
 
 
 
@@ -115,7 +115,7 @@ const deleteitem = async (itemId) => {
                         }
                       `}
                     </style>
-                    <DatePicker style={{ width: '10rem', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" picker="month" />
+                    {/* <DatePicker style={{ width: '10rem', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" picker="month" /> */}
                   </div>
                   { (Chart_data.length > 0)? (
                     <div style={{ width: '100%' }}>
@@ -131,7 +131,7 @@ const deleteitem = async (itemId) => {
                     ) : (
                       <div className={classes.empty_graph_handler}>No expenses to display</div>
                     )}
-                    <My_modal title={'Expenses ('+ year_month +')'}  isModalOpen={modal} handleCancel={handleCancel}>
+                    <My_modal title={'Expenses ('+ props.year_month +')'}  isModalOpen={modal} handleCancel={handleCancel}>
                         <div className={classes.expense_list_container}>
                         {(Object.keys(Monthly_total_data).length > 0) ? (
                             <List

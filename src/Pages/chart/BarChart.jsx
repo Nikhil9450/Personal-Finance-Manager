@@ -1,6 +1,6 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -39,13 +39,27 @@ const BarChart = ({ Monthly_total_data }) => {
     labels: categories,
     datasets: [
       {
-        label: 'Total Expense',
+        label: 'Expense',
         data: totals,
-        backgroundColor: ['#4CAF50', '#FF9800', '#FF5722', '#2196F3', '#9C27B0'],
+        backgroundColor: [
+          '#FF6F61', // Coral
+          '#6B5B95', // Indigo
+          '#88B04B', // Greenery
+          '#F7CAC9', // Rose Quartz
+          '#92A8D1', // Serenity
+          '#955251', // Marsala
+          '#B565A7', // Radiant Orchid
+          '#009B77', // Emerald
+          '#DD4124', // Tangerine Tango
+          '#45B8AC', // Mint
+        ],
         borderWidth: 1,
       },
     ],
   };
+
+  // Calculate dynamic chart height based on categories
+  const chartHeight = Math.max(200, categories.length * 25);
 
   // Chart.js options
   const options = {
@@ -53,40 +67,43 @@ const BarChart = ({ Monthly_total_data }) => {
     elements: {
       bar: {
         borderWidth: 2,
+        barThickness: 30, // Set minimum bar height
       },
     },
     responsive: true,
+    maintainAspectRatio: false, // Allow height adjustment
     plugins: {
       legend: {
-        position: 'top',
+        display: false,
       },
       title: {
-        display: true,
+        display: false,
         text: 'Expenses by Category',
       },
     },
     scales: {
       x: {
         beginAtZero: true,
+        grid: {
+          display: false, // Disable x-axis grid
+        },
       },
+      // y: {
+      //   grid: {
+      //     display: false, // Disable y-axis grid
+      //   },
+      // },
     },
   };
 
   return (
-    // <Card>
-    //   <CardContent>
-    //     <Typography variant="h6" gutterBottom>
-    //       Expenses by Category
-    //     </Typography>
-    <>
-        {categories.length > 0 && totals.length > 0 ? (
-          <Bar data={data} options={options} />
-        ) : (
-          <Typography color="textSecondary">No data available to display the chart.</Typography>
-        )}
-    </>
-    //   </CardContent>
-    // </Card>
+    <div style={{ height: `${chartHeight}px`, width: '100%' }}>
+      {categories.length > 0 && totals.length > 0 ? (
+        <Bar data={data} options={options} />
+      ) : (
+        <Typography color="textSecondary">No data available to display the chart.</Typography>
+      )}
+    </div>
   );
 };
 
