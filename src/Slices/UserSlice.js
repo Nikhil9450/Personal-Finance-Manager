@@ -8,6 +8,9 @@ const userSlice = createSlice({
     uid:null,
     profile: null, // User profile data
     expenses: [], // User expenses data
+    creation_status: 'idle', // idle | loading | success | failed
+    deletion_status: 'idle', // idle | loading | success | failed
+    updation_status: 'idle', // idle | loading | success | failed
     status: 'idle', // idle | loading | success | failed
     error: null, // Error message
     loader:false,
@@ -27,6 +30,15 @@ const userSlice = createSlice({
     },
     setStatus: (state, action) => {
       state.status = action.payload;
+    },
+    setCreationStatus: (state, action) => {
+      state.creation_status = action.payload;
+    },
+    setDeletionStatus: (state, action) => {
+      state.deletion_status = action.payload;
+    },
+    setUpdationStatus: (state, action) => {
+      state.updation_status = action.payload;
     },
     setError: (state, action) => {
       state.error = action.payload;
@@ -114,6 +126,7 @@ export const data_tobe_render = (dateString) => (dispatch, getState) => {
     dispatch(userSlice.actions.setChartData({}));
     dispatch(userSlice.actions.setTotalSpentAmt(""));
     dispatch(userSlice.actions.setStatus("failed"));
+    dispatch(userSlice.actions.setMonthWiseTotalExpense({}));
     // dispatch(userSlice.actions.setLoader(false));
 
     console.log(`No data found for year: ${year}, month: ${month}`);
@@ -270,7 +283,7 @@ export const deleteExpense=(itemid)=>async(dispatch,getState)=>{
 export const createExpenses = (item) => async (dispatch, getState) => {
   console.log("Inside createExpenses with item:", item);
   dispatch(userSlice.actions.setLoader(true));
-  dispatch(userSlice.actions.setStatus("loading"));
+  dispatch(userSlice.actions.setCreationStatus("loading"));
   const uid = getState().user.uid;
   try {
     const itemsCollection = collection(db, "users", uid, "items");
@@ -290,12 +303,13 @@ export const createExpenses = (item) => async (dispatch, getState) => {
       console.log("Updated expenses:", updatedExpenses);
     dispatch(userSlice.actions.setExpenses(updatedExpenses));
 
-    dispatch(userSlice.actions.setStatus("success"));
+    dispatch(userSlice.actions.setCreationStatus("success"));
   } catch (error) {
     console.error("Error in createExpenses:", error);
-    dispatch(userSlice.actions.setStatus("failed"));
+    dispatch(userSlice.actions.setCreationStatus("failed"));
     dispatch(userSlice.actions.setError(error.message));
   } finally {
+    dispatch(userSlice.actions.setCreationStatus("idle"));
     dispatch(userSlice.actions.setLoader(false));
     console.log("Exiting createExpenses");
   }

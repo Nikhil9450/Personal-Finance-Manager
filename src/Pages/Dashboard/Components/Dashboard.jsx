@@ -24,7 +24,7 @@ const onChange = (date, dateString) => {
   setDate(dateString);
   setYear_month(dateString);
   dispatch(data_tobe_render(dateString));
-  console.log(Monthly_total_data)
+  console.log("testing------------->",Monthly_total_data)
 
 };
 
@@ -70,8 +70,9 @@ const onChange = (date, dateString) => {
         {/* <AddExpenses/> */}
 
         <div className={classes.dashboard_content}>
-        <DatePicker style={{ width: '10rem', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,borderRadius:'1rem',color:'lightgrey'}} onChange={onChange}  className="customDropdown" picker="month" />
-
+        <div className={classes.date_picker_container}>
+          <DatePicker style={{ width: '10rem', height:'2.5rem', padding: '0 15px', textAlign: 'center' ,borderRadius:'2rem',color:'grey'}} onChange={onChange}  className="customDropdown" picker="month" />
+        </div>
           <Grid container rowSpacing={5} columnSpacing={5}>
             <Grid size={8}>
               <Card width="" height="">
@@ -82,12 +83,11 @@ const onChange = (date, dateString) => {
             </Grid>
             <Grid size={4}>
               <Card>
-              <BarChart Monthly_total_data={Monthly_total_data}/>
+              <BarChart date={date} Monthly_total_data={Monthly_total_data}/>
               </Card>
             </Grid>
           </Grid>
         </div>
-
       </div>
       
   )

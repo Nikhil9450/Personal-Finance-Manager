@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { Flex } from 'antd';
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -42,16 +43,16 @@ const BarChart = ({ Monthly_total_data }) => {
         label: 'Expense',
         data: totals,
         backgroundColor: [
-          '#FF6F61', // Coral
-          '#6B5B95', // Indigo
-          '#88B04B', // Greenery
-          '#F7CAC9', // Rose Quartz
-          '#92A8D1', // Serenity
-          '#955251', // Marsala
-          '#B565A7', // Radiant Orchid
+          // '#FF6F61', // Coral
+          // '#6B5B95', // Indigo
+          // '#88B04B', // Greenery
+          // '#F7CAC9', // Rose Quartz
+          // '#92A8D1', // Serenity
+          // '#955251', // Marsala
+          // '#B565A7', // Radiant Orchid
           '#009B77', // Emerald
-          '#DD4124', // Tangerine Tango
-          '#45B8AC', // Mint
+          // '#DD4124', // Tangerine Tango
+          // '#45B8AC', // Mint
         ],
         borderWidth: 1,
       },
@@ -101,7 +102,9 @@ const BarChart = ({ Monthly_total_data }) => {
       {categories.length > 0 && totals.length > 0 ? (
         <Bar data={data} options={options} />
       ) : (
-        <Typography color="textSecondary">No data available to display the chart.</Typography>
+        <div style={{display:'flex',justifyContent:'center', height:'100%', alignItems:'center'}}>
+          <p>No expense to display</p>
+        </div>
       )}
     </div>
   );

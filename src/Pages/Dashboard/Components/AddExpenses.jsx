@@ -11,7 +11,7 @@ import { db,auth } from '../../../firebase';
 import Loader from '../../../Loader';
 import Fab from '@mui/material/Fab';
 import { DatePicker } from 'antd';
-import { useDispatch } from 'react-redux';
+import { useDispatch ,useSelector} from 'react-redux';
 import {createExpenses } from '../../../Slices/UserSlice';
 import { Select } from 'antd';
 import { Alert,Collapse } from '@mui/material';
@@ -28,7 +28,7 @@ const AddExpenses = ({ onUpdateExpenses }) => {
     const [category,setCategory]=useState(null);
     const [open, setOpen]=useState(false);
     const dispatch=useDispatch();
-
+    const status=useSelector((state)=>state.user.creation_status)
     // const addToList = async (e) => {
     //   e.preventDefault();
     //   alert("Form submitted successfully1");
@@ -94,6 +94,13 @@ const AddExpenses = ({ onUpdateExpenses }) => {
           console.log("All fields are filled:", item);
           setOpen(false);
           dispatch(createExpenses(item));
+                // Reset form values
+          priceRef.current.value = "";
+          descriptionRef.current.value = "";
+          setDate(null);
+          setCategory(null);
+          setModal(false);
+          console.log("Form cleared after submission");
         }
       } catch (error) {
         console.error("Error in addToList:", error);
@@ -216,7 +223,7 @@ const AddExpenses = ({ onUpdateExpenses }) => {
                 </div>
 
                 <div className={classes.submitbtn_container}>
-                  <button className={classes.button} type='submit'>{loader?<Loader size={30} />:<AddIcon/>}</button>
+                  <button className={classes.button} type='submit'>{(status=='loading')?<Loader size={30} />:<AddIcon/>}</button>
                 </div>
             </div>
         </form>

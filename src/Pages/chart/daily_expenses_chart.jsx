@@ -12,7 +12,7 @@ import { Button } from 'antd';
 import Loader from '../../Loader';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import { useDispatch } from 'react-redux';
-import { listenToUserExpenses,listenToUserProfile,data_tobe_render,updateUserExpenses,deleteExpense,createExpenses } from '../../Slices/UserSlice';
+import {data_tobe_render,deleteExpense } from '../../Slices/UserSlice';
 import Swal from 'sweetalert2';
 // import { BarChart } from '@mui/x-charts/BarChart';
 import BarChart from './BarChart';
