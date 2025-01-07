@@ -69,6 +69,7 @@ const BarChart = ({ Monthly_total_data }) => {
       bar: {
         borderWidth: 2,
         barThickness: 30, // Set minimum bar height
+        borderRadius: 2
       },
     },
     responsive: true,

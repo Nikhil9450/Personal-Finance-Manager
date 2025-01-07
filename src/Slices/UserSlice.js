@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { doc, collection, onSnapshot, getDoc, updateDoc ,deleteDoc,addDoc } from 'firebase/firestore';
+import { doc, collection, onSnapshot, getDoc, updateDoc ,deleteDoc,addDoc,setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const userSlice = createSlice({
@@ -252,34 +252,6 @@ export const deleteExpense=(itemid)=>async(dispatch,getState)=>{
   }
 }
 
-// export const createExpenses = (item) => async (dispatch, getState) => {
-//   console.log("item before adding in db",item);
-//   dispatch(userSlice.actions.setLoader(true)); // Start loader
-//   dispatch(userSlice.actions.setStatus("loading"));
-//   const uid = getState().user.uid;
-//   try {
-//     // Add the new item to the Firestore collection
-//     const itemsCollection = collection(db, "users", uid, "items");
-//     const docRef = await addDoc(itemsCollection, item);
-//     dispatch(userSlice.actions.setStatus("success"));
-//     console.log("Item added to Firestore.");
-
-//     // Update Redux state with the new item
-//     const currentExpenses = getState().user.expenses; // Get current state expenses
-//     const newItem = { id: docRef.id, ...item }; // Merge Firestore-generated ID with item
-//     const updatedExpenses = [...currentExpenses, newItem]; // Add new item to the state
-//     dispatch(userSlice.actions.setExpenses(updatedExpenses)); // Update state
-//   } catch (error) {
-//     console.error("Error adding item:", error);
-//     dispatch(userSlice.actions.setStatus("failed"));
-//     dispatch(userSlice.actions.setError(error.message)); // Handle error
-//   } finally {
-//     dispatch(userSlice.actions.setLoader(false)); // Stop loader
-//   }
-// };
-
-// Export actions
-
 export const createExpenses = (item) => async (dispatch, getState) => {
   console.log("Inside createExpenses with item:", item);
   dispatch(userSlice.actions.setLoader(true));
@@ -315,6 +287,51 @@ export const createExpenses = (item) => async (dispatch, getState) => {
   }
 };
 
+// export const createExpenses = (item) => async (dispatch, getState) => {
+//   console.log("Inside createExpenses with item:", item);
+//   dispatch(userSlice.actions.setLoader(true));
+//   dispatch(userSlice.actions.setCreationStatus("loading"));
+//   const uid = getState().user.uid;
+
+//   try {
+//     // Extract year and month from expenditure_date
+//     const expenditureDate = new Date(item.expenditure_date);
+//     const year = expenditureDate.getFullYear().toString();
+//     const month = (expenditureDate.getMonth() + 1).toString().padStart(2, "0");
+
+//     // Define the Firestore collection path: users/{uid}/expenses/{year}/{month}/items
+//     const itemsCollection = collection(
+//       db,
+//       "users",
+//       uid,
+//       "expenses",
+//       `${year}-${month}`,
+//       "items"
+//     );
+
+//     // Add the expense as a new document
+//     const docRef = await addDoc(itemsCollection, item);
+
+//     // Add the Firestore-generated ID to the expense
+//     const newExpense = { id: docRef.id, ...item };
+
+//     // Update Redux state
+//     const currentExpenses = getState().user.expenses;
+//     const updatedExpenses = [...currentExpenses, newExpense];
+//     dispatch(userSlice.actions.setExpenses(updatedExpenses));
+
+//     console.log("Expense added successfully:", newExpense);
+//     dispatch(userSlice.actions.setCreationStatus("success"));
+//   } catch (error) {
+//     console.error("Error in createExpenses:", error);
+//     dispatch(userSlice.actions.setCreationStatus("failed"));
+//     dispatch(userSlice.actions.setError(error.message));
+//   } finally {
+//     dispatch(userSlice.actions.setCreationStatus("idle"));
+//     dispatch(userSlice.actions.setLoader(false));
+//     console.log("Exiting createExpenses");
+//   }
+// };
 export const { clearProfile } = userSlice.actions;
 
 // Export reducer

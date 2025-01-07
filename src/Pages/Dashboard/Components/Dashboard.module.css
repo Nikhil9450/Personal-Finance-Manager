@@ -4,7 +4,7 @@
     /* height: 100vh; */
 }
 .dashboard_content{
- padding: 2rem;
+ padding: 0rem 2rem;
 }
 .date_picker_container{
     display: flex;

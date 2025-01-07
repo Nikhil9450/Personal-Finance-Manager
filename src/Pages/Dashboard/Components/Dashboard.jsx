@@ -73,17 +73,27 @@ const onChange = (date, dateString) => {
         <div className={classes.date_picker_container}>
           <DatePicker style={{ width: '10rem', height:'2.5rem', padding: '0 15px', textAlign: 'center' ,borderRadius:'2rem',color:'grey'}} onChange={onChange}  className="customDropdown" picker="month" />
         </div>
-          <Grid container rowSpacing={5} columnSpacing={5}>
-            <Grid size={8}>
-              <Card width="" height="">
-              {/* <div syle={{height:'300px'}}> */}
+          <Grid container rowSpacing={3} columnSpacing={3}>
+             <Grid container size={8}>
+                <Grid size={6}>
+                  <Card width="" height="6rem" >
+                     
+                  </Card>
+                </Grid>
+                <Grid size={6}>
+                  <Card width="" height="6rem">
+
+                  </Card>
+                </Grid>
+                <Grid size={12}>
+                  <Card width="" height="">
                 <Daily_expenses_chart date={date} year_month={year_month}/>
-              {/* </div> */}
               </Card>
-            </Grid>
+                </Grid>
+             </Grid>
             <Grid size={4}>
               <Card>
-              <BarChart date={date} Monthly_total_data={Monthly_total_data}/>
+                <BarChart date={date} Monthly_total_data={Monthly_total_data}/>
               </Card>
             </Grid>
           </Grid>
