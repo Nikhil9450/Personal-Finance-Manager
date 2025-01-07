@@ -91,10 +91,20 @@ const onChange = (date, dateString) => {
               </Card>
                 </Grid>
              </Grid>
-            <Grid size={4}>
+            <Grid container size={4}>
+            <Grid  size={12}>
               <Card>
                 <BarChart date={date} Monthly_total_data={Monthly_total_data}/>
               </Card>
+            </Grid>
+            <Grid  size={6}>
+              <Card>
+              </Card>
+            </Grid>
+            <Grid  size={6}>
+              <Card>
+              </Card>
+            </Grid>
             </Grid>
           </Grid>
         </div>
