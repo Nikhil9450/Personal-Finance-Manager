@@ -20,8 +20,6 @@ const BarChart = ({ Monthly_total_data }) => {
   const categorizedExpenses = Array.isArray(Monthly_total_data?.allExpenses)
     ? Monthly_total_data.allExpenses
     : [];
-  console.log("Monthly_total_data", categorizedExpenses);
-
   // Calculate totals per category
   const categoryTotals = categorizedExpenses.reduce((acc, item) => {
     const { category, expense } = item || {}; // Safely destructure item

@@ -18,52 +18,48 @@ import { doc, collection, onSnapshot, getDoc, updateDoc ,deleteDoc,addDoc,setDoc
 const Dashboard = () => {
     const [date, setDate] = useState(null);
     const [year_month,setYear_month]=useState(moment().format('YYYY-MM'));
+    const [salary,setSalary]=useState('');
     const currentUser = auth.currentUser;
+    const total_spent_amt=useSelector((state)=>state.user.total_spent_data)
 const onChange = (date, dateString) => {
   setDate(dateString);
   setYear_month(dateString);
   dispatch(data_tobe_render(dateString));
   fetch_salary(dateString) ;
-  console.log("testing------------->",Monthly_total_data)
+  // console.log("testing------------->",Monthly_total_data)
 
 };
-
-// const fetch_salary=()=>{
-//   try {  
-//       const userExpenseListRef = collection(db, 'users', currentUser.uid, 'salary_detail',year_month);
-//       onSnapshot(userExpenseListRef, (snapshot) => {
-//         if (!snapshot.empty) {
-//           const salary = snapshot.docs.map((doc) => {
-//             const data = doc.data();
-//             return data;
-//           });
-//           console.log("salary----------->",salary)
-
-//         } else {
-//           console.error('No expenses found');
-//         }
-//       });
-//     } catch (error) {
-//       console.error('Error listening to expenses:', error.message);
-//     }
-// }
   
-const fetch_salary = (year_month) => {
+const fetch_salary = (yearMonth = year_month) => {
+  console.log("testing------------->",Monthly_total_data);
   try {
+    if (!currentUser || !currentUser.uid) {
+      console.error('User is not authenticated');
+      return;
+    }
+
+    if (!year_month) {
+      console.error('Year and month are not defined');
+      setSalary('Year and month are not defined');
+      return;
+    }
+
     const userExpenseListRef = doc(
       db,
       'users',
       currentUser.uid,
       'salary_detail',
-      year_month
+      yearMonth
     );
 
     onSnapshot(userExpenseListRef, (snapshot) => {
       if (snapshot.exists()) {
         const salary = snapshot.data(); // For document snapshot, use `.data()`
         console.log("salary----------->", salary);
+        setSalary(salary.salary)
       } else {
         console.error('No salary details found');
+        setSalary('No salary details found')
       }
     });
   } catch (error) {
@@ -81,7 +77,7 @@ const fetch_salary = (year_month) => {
       console.log('UID from auth.currentUser:', auth.currentUser.uid); // Log UID
       dispatch(listenToUserProfile(auth.currentUser.uid));
       dispatch(listenToUserExpenses(auth.currentUser.uid));
-      fetch_salary();
+      fetch_salary(year_month);
       console.log("year_month----------->",year_month);
     } else {
       console.log('auth.currentUser is null');
@@ -120,12 +116,16 @@ const fetch_salary = (year_month) => {
              <Grid container rowSpacing={3} columnSpacing={3} size={8}>
                 <Grid size={6}>
                   <Card width="" height="6rem" >
-                     
+                    <div className={classes.flex_div}>
+                    <p className={classes.styled_text} style={{color:"#c88fd0"}}>{salary}</p> 
+                    </div>
                   </Card>
                 </Grid>
                 <Grid size={6}>
                   <Card width="" height="6rem">
-
+                      <div className={classes.flex_div}>
+                        <p className={classes.styled_text}>{total_spent_amt}</p>
+                      </div>
                   </Card>
                 </Grid>
                 <Grid size={12}>

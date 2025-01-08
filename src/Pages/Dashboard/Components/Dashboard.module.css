@@ -13,3 +13,16 @@
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
+.styled_text{
+    font-family: 'Montserrat';
+    font-size: xx-large;
+    font-weight: 400;
+    color: #7088dc;
+}
+
+.flex_div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
