@@ -46,7 +46,7 @@ const SavingGoalChart = ({ savings, goal }) => {
 
   return (
     <div style={{ width: '150px', margin: '0 auto',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'  }}>
-      <h5 style={{ textAlign: 'center' }}>Savings Goal</h5>
+      <h5 style={{ textAlign: 'center',marginBottom:'10px' }}>Savings Goal</h5>
       <Doughnut data={data} options={options} />
         {/* <p style={{ textAlign: 'center', marginTop: '10px' }}>
             Achieved: <strong>{percentage.toFixed(2)}%</strong>

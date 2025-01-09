@@ -21,7 +21,7 @@ const Dashboard = () => {
   const [date, setDate] = useState(null);
   const [year_month, setYear_month] = useState(moment().format('YYYY-MM'));
   const [salary, setSalary] = useState(0); // Default to 0
-  const [savingGole, setSavingGole] = useState(10000);
+  const [savingGoal, setSavingGoal] = useState(0);
   const [savings, setSavings] = useState(0);
   const currentUser = auth.currentUser;
   const total_spent_amt = useSelector((state) => state.user.total_spent_data);
@@ -35,6 +35,7 @@ const Dashboard = () => {
     setYear_month(dateString);
     dispatch(data_tobe_render(dateString));
     fetch_salary(dateString);
+    fetch_savingGoal(dateString);
   };
 
   const fetch_salary = (yearMonth = year_month) => {
@@ -56,9 +57,39 @@ const Dashboard = () => {
         const data = snapshot.data();
         const salaryValue = parseInt(data.salary || 0); // Default to 0 if invalid
         setSalary(salaryValue);
+        console.log("salaryValue------------>",salaryValue);
       } else {
         console.error('No salary details found');
         setSalary(0); // Set to 0 if no data
+      }
+    });
+  };
+
+  const fetch_savingGoal = (yearMonth = year_month) => {
+    if (!currentUser || !currentUser.uid) {
+      console.error('User is not authenticated');
+      return;
+    }
+
+    const userExpenseListRef = doc(
+      db,
+      'users',
+      currentUser.uid,
+      'saving_detail',
+      yearMonth
+    );
+
+    onSnapshot(userExpenseListRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.data();
+        const savingGoal = parseInt(data.Saving_goal || 0); // Default to 0 if invalid
+        setSavingGoal(savingGoal);
+        console.log("savingGoal----------->",savingGoal)
+        console.log("savingGoal_data----------->",data)
+
+      } else {
+        console.error('Not found');
+        setSavingGoal(0); // Set to 0 if no data
       }
     });
   };
@@ -68,6 +99,7 @@ const Dashboard = () => {
       dispatch(listenToUserProfile(auth.currentUser.uid));
       dispatch(listenToUserExpenses(auth.currentUser.uid));
       fetch_salary(year_month);
+      fetch_savingGoal(year_month);
     }
   }, [dispatch, year_month]);
 
@@ -147,15 +179,14 @@ const Dashboard = () => {
               </Card>
             </Grid>
             <Grid size={6}>
-              <Card height='12rem'>
+              <Card height='15rem'>
                 <div>
-                <SavingGoalChart savings={savings} goal={savingGole} />
-
+                  <SavingGoalChart savings={savings} goal={savingGoal} />
                 </div>
               </Card>
             </Grid>
             <Grid size={6}>
-              <Card height='12rem'></Card>
+              <Card height='15rem'></Card>
             </Grid>
           </Grid>
         </Grid>
