@@ -17,12 +17,15 @@
     font-family: 'Montserrat';
     font-size: xx-large;
     font-weight: 400;
-    color: #7088dc;
+    /* color: #7088dc; */
+    background: linear-gradient(to right, #be81ce, #5d67d7); /* Gradient colors */
+    -webkit-background-clip: text; /* Clip the gradient to the text */
+    -webkit-text-fill-color: transparent;
 }
 
 .flex_div{
     display: flex;
-    justify-content: center;
+    justify-content:space-around;
     align-items: center;
     height: 100%;
 }
