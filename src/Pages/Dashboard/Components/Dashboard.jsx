@@ -23,6 +23,7 @@ const Dashboard = () => {
   const [salary, setSalary] = useState(0); // Default to 0
   const [savingGoal, setSavingGoal] = useState(0);
   const [savings, setSavings] = useState(0);
+  const [remainingSalary,setRemainingSalary]=useState(0);
   const currentUser = auth.currentUser;
   const total_spent_amt = useSelector((state) => state.user.total_spent_data);
 
@@ -113,7 +114,9 @@ const Dashboard = () => {
     const salaryAmount = salary || 0;
     const totalSpentAmount = total_spent_amt || 0;
     const calculatedSavings = salaryAmount - totalSpentAmount;
+    const remainingAmount=salaryAmount-totalSpentAmount
     setSavings(calculatedSavings);
+    setRemainingSalary(remainingAmount)
   }, [salary, total_spent_amt]);
 
   return exp_loader ? (
@@ -146,7 +149,7 @@ const Dashboard = () => {
         </div>
         <Grid container rowSpacing={3} columnSpacing={3}>
           <Grid container rowSpacing={3} columnSpacing={3} size={8}>
-            <Grid size={6}>
+            <Grid size={4}>
               <Card width="" height="6rem">
                 <div className={classes.flex_div}>
                   <p>Your Salary</p>
@@ -156,12 +159,22 @@ const Dashboard = () => {
                 </div>
               </Card>
             </Grid>
-            <Grid size={6}>
+            <Grid size={4}>
               <Card width="" height="6rem">
                 <div className={classes.flex_div}>
                   <p>Total Expenditure</p>
                   <p className={classes.styled_text}>
                     ₹{(total_spent_amt || 0).toLocaleString()} {/* Default to 0 if total_spent_amt is invalid */}
+                  </p>
+                </div>
+              </Card>
+            </Grid>
+            <Grid size={4}>
+              <Card width="" height="6rem">
+                <div className={classes.flex_div}>
+                  <p>Remaining Balance</p>
+                  <p className={classes.styled_text}>
+                    ₹{(remainingSalary || 0).toLocaleString()} {/* Default to 0 if total_spent_amt is invalid */}
                   </p>
                 </div>
               </Card>
