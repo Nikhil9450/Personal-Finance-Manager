@@ -24,6 +24,14 @@ const [selectedMonth, setSelectedMonth] = useState(null);
 const month=useRef(null);
 
 const salary=useRef(null);
+const [loadingState, setLoadingState] = useState({
+  addSalary: false,
+  updateSalary: false,
+  deleteSalary: false,
+});
+const toggleLoader = (buttonName, state) => {
+  setLoadingState((prev) => ({ ...prev, [buttonName]: state }));
+};
 
 
 const onChange = (date, dateString) => {
@@ -33,15 +41,117 @@ const onChange = (date, dateString) => {
   month.current = dateString; // Save the selected value to the ref
 };
 
+// const addSalary = async (e) => {
+//   const buttonName = e.nativeEvent.submitter?.name;
+//   console.log("this is event of ",e)
+//   e.preventDefault();
+
+//   const user = auth.currentUser; // Get the currently authenticated user
+//   if (!user) {
+//     console.log("No user is logged in.");
+//     setError("Please log in to add items.");
+//     return;
+//   }
+
+//   const [year, month] = selectedMonth.split("-");
+//   const user_salary = {
+//     year_month: selectedMonth,
+//     salary: salary.current.value,
+//     createdAt: new Date(), // Add a timestamp
+//   };
+
+//   console.log("user_salary----------->", user_salary);
+//   setLoader(true);
+//   if(buttonName==="addSalary"){
+//     try {
+//       // Reference to the document named by year and month inside salary_detail
+//       const salaryDocRef = doc(db, "users", user.uid, "salary_detail", `${year}-${month}`);
+  
+//       // Check if the document already exists
+//       const salaryDocSnapshot = await getDoc(salaryDocRef);
+//       if (salaryDocSnapshot.exists()) {
+//         setLoader(false);
+//         setError("Salary for this month has already been added.");
+//         console.log("Salary for this month already exists.");
+//         return;
+//       }
+  
+//       // Create or overwrite the document with the salary data
+//       await setDoc(salaryDocRef, user_salary);
+  
+//       console.log("Item added to Firestore subcollection.");
+//       setLoader(false); // Reset loader after success
+//     } catch (error) {
+//       setLoader(false); // Ensure loader is reset on error
+//       setError(error.message);
+//       console.log("error----->", error);
+//     }
+//   }else if(buttonName==="updateSalary"){
+//     try {
+//       // Reference to the document named by year and month inside salary_detail
+//       const salaryDocRef = doc(db, "users", user.uid, "salary_detail", `${year}-${month}`);
+  
+//       // Check if the document already exists
+//       const salaryDocSnapshot = await getDoc(salaryDocRef);
+//       if (salaryDocSnapshot.exists()) {
+
+//       // Create or overwrite the document with the salary data
+//       await updateDoc(salaryDocRef,user_salary);
+//       console.log("Item updated to Firestore subcollection.");
+//       setLoader(false); // Reset loader after success
+        
+
+//         return;
+//       }
+//       setLoader(false);
+//       setError("Salary for this month does not exists.");
+//       console.log("Salary for this month does not exists.");
+//     } catch (error) {
+//       setLoader(false); // Ensure loader is reset on error
+//       setError(error.message);
+//       console.log("error----->", error);
+//     }
+
+//   }else if(buttonName === "deleteSalary"){
+//     try {
+//       // Reference to the document named by year and month inside salary_detail
+//       const salaryDocRef = doc(db, "users", user.uid, "salary_detail", `${year}-${month}`);
+  
+//       // Check if the document already exists
+//       const salaryDocSnapshot = await getDoc(salaryDocRef);
+//       if (salaryDocSnapshot.exists()) {
+//         // Delete the document
+//         await deleteDoc(salaryDocRef);
+//         console.log("Item deleted from Firestore subcollection.");
+//         setLoader(false); // Reset loader after success
+//         return; // Exit after successfully deleting
+//       }
+  
+//       // Document does not exist
+//       setLoader(false);
+//       setError("Salary for this month does not exist.");
+//       console.log("Salary for this month does not exist.");
+//     } catch (error) {
+//       // Handle any errors that occur
+//       setLoader(false); // Ensure loader is reset on error
+//       setError(error.message);
+//       console.log("Error deleting Firestore document:", error);
+//     }
+//   }
+// };
+
 const addSalary = async (e) => {
   const buttonName = e.nativeEvent.submitter?.name;
-  console.log("this is event of ",e)
   e.preventDefault();
 
-  const user = auth.currentUser; // Get the currently authenticated user
+  if (!selectedMonth || !salary.current.value) {
+    setError("Please fill in all fields.");
+    return;
+  }
+
+  const user = auth.currentUser;
   if (!user) {
-    console.log("No user is logged in.");
-    setError("Please log in to add items.");
+    setError("Please log in to proceed.");
     return;
   }
 
@@ -49,89 +159,35 @@ const addSalary = async (e) => {
   const user_salary = {
     year_month: selectedMonth,
     salary: salary.current.value,
-    createdAt: new Date(), // Add a timestamp
+    createdAt: new Date(),
   };
 
-  console.log("user_salary----------->", user_salary);
-  setLoader(true);
-  if(buttonName==="addSalary"){
-    try {
-      // Reference to the document named by year and month inside salary_detail
-      const salaryDocRef = doc(db, "users", user.uid, "salary_detail", `${year}-${month}`);
-  
-      // Check if the document already exists
-      const salaryDocSnapshot = await getDoc(salaryDocRef);
-      if (salaryDocSnapshot.exists()) {
-        setLoader(false);
-        setError("Salary for this month has already been added.");
-        console.log("Salary for this month already exists.");
-        return;
-      }
-  
-      // Create or overwrite the document with the salary data
+  toggleLoader(buttonName, true);
+
+  try {
+    const salaryDocRef = doc(db, "users", user.uid, "salary_detail", `${year}-${month}`);
+    const salaryDocSnapshot = await getDoc(salaryDocRef);
+
+    if (buttonName === "addSalary" && !salaryDocSnapshot.exists()) {
       await setDoc(salaryDocRef, user_salary);
-  
-      console.log("Item added to Firestore subcollection.");
-      setLoader(false); // Reset loader after success
-    } catch (error) {
-      setLoader(false); // Ensure loader is reset on error
-      setError(error.message);
-      console.log("error----->", error);
+      console.log("Salary added successfully.");
+    } else if (buttonName === "updateSalary" && salaryDocSnapshot.exists()) {
+      await updateDoc(salaryDocRef, user_salary);
+      console.log("Salary updated successfully.");
+    } else if (buttonName === "deleteSalary" && salaryDocSnapshot.exists()) {
+      await deleteDoc(salaryDocRef);
+      console.log("Salary deleted successfully.");
+    } else {
+      setError(`Salary for this month ${buttonName === "addSalary" ? "already exists" : "does not exist"}.`);
+      console.log("error------------>",error);
     }
-  }else if(buttonName==="updateSalary"){
-    try {
-      // Reference to the document named by year and month inside salary_detail
-      const salaryDocRef = doc(db, "users", user.uid, "salary_detail", `${year}-${month}`);
-  
-      // Check if the document already exists
-      const salaryDocSnapshot = await getDoc(salaryDocRef);
-      if (salaryDocSnapshot.exists()) {
-
-      // Create or overwrite the document with the salary data
-      await updateDoc(salaryDocRef,user_salary);
-      console.log("Item updated to Firestore subcollection.");
-      setLoader(false); // Reset loader after success
-        
-
-        return;
-      }
-      setLoader(false);
-      setError("Salary for this month does not exists.");
-      console.log("Salary for this month does not exists.");
-    } catch (error) {
-      setLoader(false); // Ensure loader is reset on error
-      setError(error.message);
-      console.log("error----->", error);
-    }
-
-  }else if(buttonName === "deleteSalary"){
-    try {
-      // Reference to the document named by year and month inside salary_detail
-      const salaryDocRef = doc(db, "users", user.uid, "salary_detail", `${year}-${month}`);
-  
-      // Check if the document already exists
-      const salaryDocSnapshot = await getDoc(salaryDocRef);
-      if (salaryDocSnapshot.exists()) {
-        // Delete the document
-        await deleteDoc(salaryDocRef);
-        console.log("Item deleted from Firestore subcollection.");
-        setLoader(false); // Reset loader after success
-        return; // Exit after successfully deleting
-      }
-  
-      // Document does not exist
-      setLoader(false);
-      setError("Salary for this month does not exist.");
-      console.log("Salary for this month does not exist.");
-    } catch (error) {
-      // Handle any errors that occur
-      setLoader(false); // Ensure loader is reset on error
-      setError(error.message);
-      console.log("Error deleting Firestore document:", error);
-    }
+  } catch (error) {
+    setError(error.message);
+    console.error(error);
+  } finally {
+    toggleLoader(buttonName, false);
   }
 };
-
 
 const showModal = () => {
     console.log("opening modal");
@@ -143,12 +199,6 @@ const showModal = () => {
     setModal(false);
   };  
 
-  // const onChange = (date, dateString) => {
-  //   console.log(date, dateString);
-  //   console.log("Selected Month (Moment Object):", date); // Moment.js object
-  //   console.log("Selected Month (String):", dateString); // String representation
-  //   month.current = dateString; // Save the selected value to the ref
-  // };
   return (
     <div>
             <style>
@@ -181,11 +231,29 @@ const showModal = () => {
                     <input id='amount' className={classes.amount} type="integer" placeholder='Enter amount.' ref={salary}/>
                 </div>
                 <div className={classes.submitbtn_container}>
-                  <button name='addSalary' className={classes.button} type='submit'>{loader?<Loader size={30} />:<AddIcon/>}</button>
-                  <button name='updateSalary' className={classes.button} type='submit'>{loader?<Loader size={30} />:<EditIcon/>}</button>
-                  <button name='deleteSalary' className={classes.button} type='submit'>{loader?<Loader size={30} />:<DeleteIcon/>}</button>
-
+                  <button
+                    name='addSalary'
+                    className={classes.button}
+                    type='submit'
+                  >
+                    {loadingState.addSalary ? <Loader size={30} /> : <AddIcon />}
+                  </button>
+                  <button
+                    name='updateSalary'
+                    className={classes.button}
+                    type='submit'
+                  >
+                    {loadingState.updateSalary ? <Loader size={30} /> : <EditIcon />}
+                  </button>
+                  <button
+                    name='deleteSalary'
+                    className={classes.button}
+                    type='submit'
+                  >
+                    {loadingState.deleteSalary ? <Loader size={30} /> : <DeleteIcon />}
+                  </button>
                 </div>
+
             </div>
         </form>
         </My_modal>
