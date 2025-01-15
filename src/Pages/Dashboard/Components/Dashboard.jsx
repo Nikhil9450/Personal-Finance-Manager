@@ -148,7 +148,7 @@ const Dashboard = () => {
           />
         </div>
         <Grid container rowSpacing={3} columnSpacing={3}>
-          <Grid container rowSpacing={3} columnSpacing={3} size={8}>
+          <Grid container rowSpacing={3} columnSpacing={3}   xs={8} sm={8} md={8} lg={8}>
             <Grid size={4}>
               <Card width="" height="6rem" padding="0">
                 <div className={classes.flex_div}>
@@ -162,7 +162,7 @@ const Dashboard = () => {
             <Grid size={4}>
               <Card width="" height="6rem" padding="0">
                 <div className={classes.flex_div}>
-                  <p>Total Expenditure</p>
+                  <p style={{color: '#8c63d9'}}>Total Expenditure</p>
                   <p className={classes.styled_text}>
                     ₹{(total_spent_amt || 0).toLocaleString()} {/* Default to 0 if total_spent_amt is invalid */}
                   </p>
@@ -172,7 +172,7 @@ const Dashboard = () => {
             <Grid size={4}>
               <Card width="" height="6rem" padding="0">
                 <div className={classes.flex_div}>
-                  <p>Remaining Balance</p>
+                  <p style={{color: '#6d2fd4'}}>Remaining Balance</p>
                   <p className={classes.styled_text}>
                     ₹{(remainingSalary || 0).toLocaleString()} {/* Default to 0 if total_spent_amt is invalid */}
                   </p>
@@ -185,7 +185,7 @@ const Dashboard = () => {
               </Card>
             </Grid>
           </Grid>
-          <Grid container rowSpacing={3} columnSpacing={3} size={4}>
+          <Grid container rowSpacing={3} columnSpacing={3}  xs={4} sm={4} md={4} lg={4}>
             <Grid size={12}>
               <Card padding="1rem">
                 <BarChart date={date} Monthly_total_data={Monthly_total_data || []} />
