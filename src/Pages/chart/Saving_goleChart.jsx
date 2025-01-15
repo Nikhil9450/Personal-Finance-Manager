@@ -77,9 +77,11 @@ const SavingGoalChart = ({ savings, goal }) => {
 
   return (
     <div style={{ width: '100%', maxWidth: '150px', margin: '0 auto' }}>
-      <h5 style={{ textAlign: 'center' }}>Your Savings Goal</h5>
-      <p style={{ textAlign: 'center', marginBottom: '10px',fontSize:'15px' }}>{goal}</p>
       <Doughnut data={data} options={options} plugins={[centerTextPlugin]} />
+      {/* <h5 style={{ textAlign: 'center' }}></h5> */}
+      <div style={{ display: 'flex',justifyContent: 'center',alignItems: 'center',background: 'white',borderRadius: '2rem'}}>
+        <p style={{ textAlign: 'center', margin: '5px',fontSize:'10px' }}>Savings Goal <br/><span style={{fontSize:'15px'}}>{goal}</span></p>
+      </div>
     </div>
   );
 };

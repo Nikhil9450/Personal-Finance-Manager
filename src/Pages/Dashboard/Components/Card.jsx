@@ -2,7 +2,7 @@ import React from 'react';
 import classes from './Card.module.css';
 import { motion } from "framer-motion"
 
-const Card = ({ width, height, children }) => {
+const Card = ({ width, height,padding, children }) => {
   return (
     // <div
     //   className={classes.card}
@@ -23,7 +23,7 @@ const Card = ({ width, height, children }) => {
                 style={{
                     width: width,
                     height: height,
-                    padding:'2rem'
+                    padding:padding
                 }}>
                 
        {children}

@@ -150,9 +150,9 @@ const Dashboard = () => {
         <Grid container rowSpacing={3} columnSpacing={3}>
           <Grid container rowSpacing={3} columnSpacing={3} size={8}>
             <Grid size={4}>
-              <Card width="" height="6rem">
+              <Card width="" height="6rem" padding="0">
                 <div className={classes.flex_div}>
-                  <p>Your Salary</p>
+                  <p style={{ color: "#c88fd0" }}>Your Salary</p>
                   <p className={classes.styled_text} style={{ color: "#c88fd0" }}>
                     ₹{(salary || 0).toLocaleString()} {/* Default to 0 if salary is invalid */}
                   </p>
@@ -160,7 +160,7 @@ const Dashboard = () => {
               </Card>
             </Grid>
             <Grid size={4}>
-              <Card width="" height="6rem">
+              <Card width="" height="6rem" padding="0">
                 <div className={classes.flex_div}>
                   <p>Total Expenditure</p>
                   <p className={classes.styled_text}>
@@ -170,7 +170,7 @@ const Dashboard = () => {
               </Card>
             </Grid>
             <Grid size={4}>
-              <Card width="" height="6rem">
+              <Card width="" height="6rem" padding="0">
                 <div className={classes.flex_div}>
                   <p>Remaining Balance</p>
                   <p className={classes.styled_text}>
@@ -180,19 +180,19 @@ const Dashboard = () => {
               </Card>
             </Grid>
             <Grid size={12}>
-              <Card width="" height="">
+              <Card width="" height="" padding="1rem">
                 <Daily_expenses_chart date={date} year_month={year_month} />
               </Card>
             </Grid>
           </Grid>
           <Grid container rowSpacing={3} columnSpacing={3} size={4}>
             <Grid size={12}>
-              <Card>
+              <Card padding="1rem">
                 <BarChart date={date} Monthly_total_data={Monthly_total_data || []} />
               </Card>
             </Grid>
             <Grid size={6}>
-              <Card height='15rem'>
+              <Card height='15rem' padding="1rem 0rem">
                 <div>
                   <SavingGoalChart savings={savings} goal={savingGoal} />
                 </div>
