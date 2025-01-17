@@ -147,10 +147,10 @@ const Dashboard = () => {
             picker="month"
           />
         </div>
-        <Grid container rowSpacing={3} columnSpacing={3}>
-          <Grid container rowSpacing={3} columnSpacing={3}   xs={8} sm={8} md={8} lg={8}>
-            <Grid size={4}>
-              <Card width="" height="6rem" padding="0">
+        <div className={classes.parentContainer}>
+          <div className={classes.childContainer1}>
+            <div className={classes.item}>
+              <Card style={{ height: "6rem", padding: 0 }}>
                 <div className={classes.flex_div}>
                   <p style={{ color: "#c88fd0" }}>Your Salary</p>
                   <p className={classes.styled_text} style={{ color: "#c88fd0" }}>
@@ -158,51 +158,52 @@ const Dashboard = () => {
                   </p>
                 </div>
               </Card>
-            </Grid>
-            <Grid size={4}>
-              <Card width="" height="6rem" padding="0">
+            </div>
+            <div className={classes.item}>
+              <Card style={{ height: "6rem", padding: 0 }}>
                 <div className={classes.flex_div}>
-                  <p style={{color: '#8c63d9'}}>Total Expenditure</p>
+                  <p style={{ color: "#8c63d9" }}>Total Expenditure</p>
                   <p className={classes.styled_text}>
                     ₹{(total_spent_amt || 0).toLocaleString()} {/* Default to 0 if total_spent_amt is invalid */}
                   </p>
                 </div>
               </Card>
-            </Grid>
-            <Grid size={4}>
-              <Card width="" height="6rem" padding="0">
+            </div>
+            <div className={classes.item}>
+              <Card style={{ height: "6rem", padding: 0 }}>
                 <div className={classes.flex_div}>
-                  <p style={{color: '#6d2fd4'}}>Remaining Balance</p>
+                  <p style={{ color: "#6d2fd4" }}>Remaining Balance</p>
                   <p className={classes.styled_text}>
-                    ₹{(remainingSalary || 0).toLocaleString()} {/* Default to 0 if total_spent_amt is invalid */}
+                    ₹{(remainingSalary || 0).toLocaleString()} {/* Default to 0 if remainingSalary is invalid */}
                   </p>
                 </div>
               </Card>
-            </Grid>
-            <Grid size={12}>
-              <Card width="" height="" padding="1rem">
+            </div>
+            <div className={classes.item}>
+              <Card style={{ padding: "1rem" }}>
                 <Daily_expenses_chart date={date} year_month={year_month} />
               </Card>
-            </Grid>
-          </Grid>
-          <Grid container rowSpacing={3} columnSpacing={3}  xs={4} sm={4} md={4} lg={4}>
-            <Grid size={12}>
+            </div>
+          </div>
+
+          <div className={classes.childContainer2}>
+            <div className={classes.item}>
               <Card padding="1rem">
                 <BarChart date={date} Monthly_total_data={Monthly_total_data || []} />
               </Card>
-            </Grid>
-            <Grid size={6}>
+            </div>
+            <div className={classes.item}>
               <Card height='15rem' padding="1rem 0rem">
                 <div>
                   <SavingGoalChart savings={savings} goal={savingGoal} />
                 </div>
               </Card>
-            </Grid>
-            <Grid size={6}>
+            </div>
+            <div className={classes.item}>
               <Card height='15rem'></Card>
-            </Grid>
-          </Grid>
-        </Grid>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
