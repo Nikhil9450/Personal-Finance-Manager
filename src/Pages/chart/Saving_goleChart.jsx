@@ -76,11 +76,21 @@ const SavingGoalChart = ({ savings, goal }) => {
   );
 
   return (
-    <div style={{ width: '100%', maxWidth: '150px', margin: '0 auto' }}>
+    <div style={{ display: 'flex',justifyContent: 'space-evenly',alignItems: 'center', width: '100%', margin: '0 auto',height:'100%' }}>
       <Doughnut data={data} options={options} plugins={[centerTextPlugin]} />
-      {/* <h5 style={{ textAlign: 'center' }}></h5> */}
-      <div style={{ display: 'flex',justifyContent: 'center',alignItems: 'center',background: 'white',borderRadius: '2rem'}}>
-        <p style={{ textAlign: 'center', margin: '5px',fontSize:'10px' }}>Savings Goal <br/><span style={{fontSize:'15px'}}>{goal}</span></p>
+      <div style={{width:'50%'}}>
+        <div>
+          <label htmlFor="">Saving Goal</label>
+          <div style={{ display: 'flex',justifyContent: 'center',alignItems: 'center',background: '#4CAF50',borderRadius: '2rem',height:'4rem'}}>
+            <p style={{ textAlign: 'center', margin: '5px',fontSize:'15px',color:'white' }}>{goal}</p>
+          </div>
+        </div>
+        <div>
+        <label htmlFor="">Current Saving</label>
+          <div style={{ display: 'flex',justifyContent: 'center',alignItems: 'center',background: '#4CAF50',borderRadius: '2rem',height:'4rem'}}>
+            <p style={{ textAlign: 'center', margin: '5px',fontSize:'15px',color:'white' }}>{savings}</p>
+          </div>
+        </div>
       </div>
     </div>
   );

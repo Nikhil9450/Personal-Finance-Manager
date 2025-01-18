@@ -94,10 +94,11 @@ const BarChart = ({ Monthly_total_data }) => {
       //   },
       // },
     },
+    
   };
 
   return (
-    <div style={{ height: `${chartHeight}px`, width: '100%' }}>
+    <div style={{ height: `${chartHeight}px`, maxWidth: '25rem' }}>
       {categories.length > 0 && totals.length > 0 ? (
         <Bar data={data} options={options} />
       ) : (

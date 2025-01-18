@@ -27,6 +27,7 @@ const Dashboard = () => {
   const currentUser = auth.currentUser;
   const total_spent_amt = useSelector((state) => state.user.total_spent_data);
 
+
   const dispatch = useDispatch();
   const [exp_loader, set_expLoader] = useState(true);
   const Monthly_total_data = useSelector((state) => state.user.month_wise_totalExpense);
@@ -147,65 +148,52 @@ const Dashboard = () => {
             picker="month"
           />
         </div>
-        <div className={classes.parentContainer}>
-          <div className={classes.childContainer1}>
-            <div className={classes.item}>
-              <Card style={{ height: "6rem", padding: 0 }}>
-                <div className={classes.flex_div}>
-                  <p style={{ color: "#c88fd0" }}>Your Salary</p>
-                  <p className={classes.styled_text} style={{ color: "#c88fd0" }}>
-                    ₹{(salary || 0).toLocaleString()} {/* Default to 0 if salary is invalid */}
-                  </p>
-                </div>
-              </Card>
+        <div className={classes.container}>
+            <div className={`${classes.item} ${classes.item1}`}>
+              <div className={classes.item1_child} style={{width:"100%",margin:".5rem"}}>
+                <Card height= "6rem" padding={0}  >
+                  <div className={classes.flex_div}>
+                    <p style={{ color: "#c88fd0" }}>Your Salary</p>
+                    <p className={classes.styled_text} style={{ color: "#c88fd0" }}>
+                      ₹{(salary || 0).toLocaleString()} {/* Default to 0 if salary is invalid */}
+                    </p>
+                  </div>
+                </Card>
+                <Card height= "6rem" padding={0}   >
+                  <div className={classes.flex_div}>
+                    <p style={{ color: "#8c63d9" }}>Total Expenditure</p>
+                    <p className={classes.styled_text}>
+                      ₹{(total_spent_amt || 0).toLocaleString()} {/* Default to 0 if total_spent_amt is invalid */}
+                    </p>
+                  </div>
+                </Card>
+                <Card height= "6rem" padding={0}   >
+                  <div className={classes.flex_div}>
+                    <p style={{ color: "#6d2fd4" }}>Remaining Balance</p>
+                    <p className={classes.styled_text}>
+                      ₹{(remainingSalary || 0).toLocaleString()} {/* Default to 0 if remainingSalary is invalid */}
+                    </p>
+                  </div>
+                </Card>
+              </div>
+              <div className={classes.item2_child} style={{width:"100%",margin:".5rem"}}>
+                <Card  padding="2rem">
+                  <Daily_expenses_chart date={date} year_month={year_month} />
+                </Card>
+              </div>
             </div>
-            <div className={classes.item}>
-              <Card style={{ height: "6rem", padding: 0 }}>
-                <div className={classes.flex_div}>
-                  <p style={{ color: "#8c63d9" }}>Total Expenditure</p>
-                  <p className={classes.styled_text}>
-                    ₹{(total_spent_amt || 0).toLocaleString()} {/* Default to 0 if total_spent_amt is invalid */}
-                  </p>
-                </div>
-              </Card>
-            </div>
-            <div className={classes.item}>
-              <Card style={{ height: "6rem", padding: 0 }}>
-                <div className={classes.flex_div}>
-                  <p style={{ color: "#6d2fd4" }}>Remaining Balance</p>
-                  <p className={classes.styled_text}>
-                    ₹{(remainingSalary || 0).toLocaleString()} {/* Default to 0 if remainingSalary is invalid */}
-                  </p>
-                </div>
-              </Card>
-            </div>
-            <div className={classes.item}>
-              <Card style={{ padding: "1rem" }}>
-                <Daily_expenses_chart date={date} year_month={year_month} />
-              </Card>
-            </div>
-          </div>
-
-          <div className={classes.childContainer2}>
-            <div className={classes.item}>
+            <div className={`${classes.item} ${classes.item2}`}>
               <Card padding="1rem">
                 <BarChart date={date} Monthly_total_data={Monthly_total_data || []} />
               </Card>
-            </div>
-            <div className={classes.item}>
-              <Card height='15rem' padding="1rem 0rem">
-                <div>
+              <Card height='15rem' padding="2rem " >
                   <SavingGoalChart savings={savings} goal={savingGoal} />
-                </div>
               </Card>
             </div>
-            <div className={classes.item}>
-              <Card height='15rem'></Card>
-            </div>
+
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
