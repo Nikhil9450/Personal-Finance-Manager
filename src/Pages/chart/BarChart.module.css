@@ -1,0 +1,9 @@
+.chartContainer{
+    width: 25rem;
+}
+
+@media only screen and (max-width: 600px) {
+    .chartContainer{
+        width: 15rem;
+    }
+}

@@ -178,7 +178,7 @@ const Dashboard = () => {
               </div>
               <div className={classes.item2_child} style={{width:"100%",margin:".5rem"}}>
                 <Card  padding="2rem">
-                  <Daily_expenses_chart date={date} year_month={year_month} />
+                  {/* <Daily_expenses_chart date={date} year_month={year_month} /> */}
                 </Card>
               </div>
             </div>
@@ -186,7 +186,7 @@ const Dashboard = () => {
               <Card padding="1rem">
                 <BarChart date={date} Monthly_total_data={Monthly_total_data || []} />
               </Card>
-              <Card height='15rem' padding="2rem " >
+              <Card height='15rem' padding="1rem " >
                   <SavingGoalChart savings={savings} goal={savingGoal} />
               </Card>
             </div>

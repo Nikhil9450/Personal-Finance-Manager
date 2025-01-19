@@ -1,6 +1,7 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Typography } from '@mui/material';
+import classes from './BarChart.module.css'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -98,7 +99,7 @@ const BarChart = ({ Monthly_total_data }) => {
   };
 
   return (
-    <div style={{ height: `${chartHeight}px`, maxWidth: '25rem' }}>
+    <div className={classes.chartContainer} style={{ height: `${chartHeight}px` }}>
       {categories.length > 0 && totals.length > 0 ? (
         <Bar data={data} options={options} />
       ) : (

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-
+import classes from './Saving_goalChart.module.css'
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const SavingGoalChart = ({ savings, goal }) => {
@@ -76,19 +76,19 @@ const SavingGoalChart = ({ savings, goal }) => {
   );
 
   return (
-    <div style={{ display: 'flex',justifyContent: 'space-evenly',alignItems: 'center', width: '100%', margin: '0 auto',height:'100%' }}>
+    <div className={classes.chartContainer} >
       <Doughnut data={data} options={options} plugins={[centerTextPlugin]} />
-      <div style={{width:'50%'}}>
-        <div>
+      <div className={classes.ContainerItem} >
+        <div className={classes.labelContainer}>
           <label htmlFor="">Saving Goal</label>
-          <div style={{ display: 'flex',justifyContent: 'center',alignItems: 'center',background: '#4CAF50',borderRadius: '2rem',height:'4rem'}}>
-            <p style={{ textAlign: 'center', margin: '5px',fontSize:'15px',color:'white' }}>{goal}</p>
+          <div className={classes.textContainer} >
+            <p>{goal}</p>
           </div>
         </div>
         <div>
         <label htmlFor="">Current Saving</label>
-          <div style={{ display: 'flex',justifyContent: 'center',alignItems: 'center',background: '#4CAF50',borderRadius: '2rem',height:'4rem'}}>
-            <p style={{ textAlign: 'center', margin: '5px',fontSize:'15px',color:'white' }}>{savings}</p>
+          <div className={classes.textContainer} >
+            <p>{savings}</p>
           </div>
         </div>
       </div>
