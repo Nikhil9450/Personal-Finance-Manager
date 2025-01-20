@@ -1,24 +1,87 @@
-.chartContainer {
-    width: 100%; /* Full width for responsiveness */
-    max-width: 700px; /* Limit max width for larger screens */
-    margin: auto;
+/* .chartContainer {
+  padding: 20px;
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+} */
+
+.chartTitle {
+  font-size: 18px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.barRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.categoryLabel {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  margin-right: 10px;
+  text-align: right;
+}
+
+.barWrapper {
+  display: flex;
+  align-items: center;
+  flex: 3;
+  position: relative;
+}
+
+.bar {
+  height: 20px;
+  border-radius: 8px;
+  margin-right: 8px;
+  transition: width 0.4s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.bar:hover {
+  box-shadow: 0 4px 10px rgba(255, 111, 97, 0.4);
+}
+
+.barValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.noDataMessage {
+  text-align: center;
+  font-size: 16px;
+  color: gray;
+  padding: 20px;
+}
+
+@media (max-width: 480px) {
+  .chartContainer {
     padding: 10px;
-    box-sizing: border-box;
   }
-  
-  .noDataMessage {
+
+  .categoryLabel {
+    font-size: 9px;
+  }
+
+  .barValue {
+    font-size: 10px;
+  }
+
+  .bar {
+    height: 12px;
+  }
+  .barRow {
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100%;
-    text-align: center;
+    margin-bottom: 8px;
   }
-  
-  /* Mobile responsiveness */
-  @media (max-width: 768px) {
-    .chartContainer {
-      padding: 5px;
-      max-width: 100%; /* Use full width for smaller screens */
-    }
-  }
-  
+}

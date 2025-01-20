@@ -39,7 +39,25 @@ const Dashboard = () => {
     fetch_salary(dateString);
     fetch_savingGoal(dateString);
   };
-
+  // const onChange = (date, dateString) => {
+  //   if (!date || !dateString) {
+  //     // Handle the case when the date is cleared
+  //     setDate('');
+  //     setYear_month('');
+  //     dispatch(data_tobe_render(''));
+  //     fetch_salary('');
+  //     fetch_savingGoal('');
+  //     console.log('Date is cleared');
+  //   } else {
+  //     // Handle the case when a valid date is selected
+  //     setDate(dateString);
+  //     setYear_month(dateString);
+  //     dispatch(data_tobe_render(dateString));
+  //     fetch_salary(dateString);
+  //     fetch_savingGoal(dateString);
+  //   }
+  // };
+  
   const fetch_salary = (yearMonth = year_month) => {
     if (!currentUser || !currentUser.uid) {
       console.error('User is not authenticated');
@@ -164,30 +182,39 @@ const Dashboard = () => {
         <div className={classes.container}>
             <div className={`${classes.item} ${classes.item1}`}>
               <div className={classes.item1_child} style={{width:"100%",margin:".5rem"}}>
-                <Card height= "6rem" padding={0}  >
-                  <div className={classes.flex_div}>
-                    <p style={{ color: "#c88fd0" }}>Your Salary</p>
-                    <p className={classes.styled_text} style={{ color: "#c88fd0" }}>
-                      ₹{(salary || 0).toLocaleString()} {/* Default to 0 if salary is invalid */}
-                    </p>
-                  </div>
-                </Card>
-                <Card height= "6rem" padding={0}   >
-                  <div className={classes.flex_div}>
-                    <p style={{ color: "#8c63d9" }}>Total Expenditure</p>
-                    <p className={classes.styled_text}>
-                      ₹{(total_spent_amt || 0).toLocaleString()} {/* Default to 0 if total_spent_amt is invalid */}
-                    </p>
-                  </div>
-                </Card>
-                <Card height= "6rem" padding={0}   >
-                  <div className={classes.flex_div}>
-                    <p style={{ color: "#6d2fd4" }}>Remaining Balance</p>
-                    <p className={classes.styled_text}>
-                      ₹{(remainingSalary || 0).toLocaleString()} {/* Default to 0 if remainingSalary is invalid */}
-                    </p>
-                  </div>
-                </Card>
+                <div className={classes.I1}>
+                  <Card  height= "100%" padding={0}  >
+                    <div className={classes.flex_div}>
+                      <p style={{ color: "#6d2fd4" }}>Your Salary</p>
+                      <p className={classes.styled_text} style={{ color: "#c88fd0" }}>
+                        ₹{(salary || 0).toLocaleString()} {/* Default to 0 if salary is invalid */}
+                      </p>
+                    </div>
+                  </Card>
+                </div>
+                <div className={classes.I2}>
+                  <Card height= "100%" padding={0}   >
+                    <div className={classes.flex_div}>
+                      <p style={{ color: "#6d2fd4" }}>Total Expenditure</p>
+                      <p className={classes.styled_text}>
+                        ₹{(total_spent_amt || 0).toLocaleString()} {/* Default to 0 if total_spent_amt is invalid */}
+                      </p>
+                    </div>
+                  </Card>
+                </div>
+                <div className={classes.I3}>
+                  <Card height= "100%" padding={0}   >
+                    <div className={classes.flex_div}>
+                      <p style={{ color: "#6d2fd4" }}>Remaining Balance</p>
+                      <p className={classes.styled_text}>
+                        ₹{(remainingSalary || 0).toLocaleString()} {/* Default to 0 if remainingSalary is invalid */}
+                      </p>
+                    </div>
+                  </Card>
+                </div>
+
+
+
               </div>
               <div className={classes.item2_child} style={{width:"100%",margin:".5rem"}}>
                 <Card  padding="2rem">
@@ -196,12 +223,12 @@ const Dashboard = () => {
               </div>
             </div>
             <div className={`${classes.item} ${classes.item2}`}>
-              <Card padding="1rem">
+              <Card className={classes.savingGoal_card} padding="1rem">
                 <BarChart date={date} Monthly_total_data={Monthly_total_data || []} />
               </Card>
-              <div height='15rem' padding="1rem " style={{ padding: '1rem', width: '100%', maxWidth: '200px ', margin: '0 auto' }} >
+              <Card padding={'2rem'}  height={'15rem'} >
                   <SavingGoalChart savings={savings} goal={savingGoal} />
-              </div>
+              </Card>
             </div>
 
           </div>

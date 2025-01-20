@@ -50,16 +50,27 @@
     width: 100%;
 }
 .item1_child{
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns:  1fr 1fr 1fr;
+    /* grid-template-rows:  1fr 1fr; */
+    gap: 1rem;
+    /* flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    align-items: center; */
 
 }
 .item2{
     display: grid;
     grid-template-columns:  1fr;
     gap: 1rem;
+}
+.savingGoal_card{
+    padding: 1rem;
+    width: '100%';
+    max-width: 200px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 2rem;
 }
 
 @media only screen and (max-width: 1000px) {
@@ -91,5 +102,34 @@
         flex-direction: column;
         align-items: center;
     
+    }
+    .item1_child{
+        display: grid;
+        grid-template-columns:  1fr 1fr;
+        grid-template-rows:  1fr 1fr;
+        gap: 1rem;
+        /* flex-direction: row;
+        justify-content: space-between;
+        align-items: center; */
+    
+    }
+    .I1{
+        grid-row-start: -1;
+        grid-row-end: -3;
+    }
+    .I1,.I2,.I3{
+        height: 100%;
+        width: 100%;
+        /* font-size: medium; */
+    }
+
+    .styled_text{
+        font-family: 'Montserrat';
+        font-size: medium;
+        font-weight: 400;
+    }
+
+    .flex_div{
+        font-size: small;
     }
   }
