@@ -50,6 +50,8 @@
     align-items: center;    /* Center content horizontally */
     height: 100%;           /* Adjust based on the desired height */
     width: 100%; 
+    max-width: 100%;
+    overflow: hidden;
 }
 
 

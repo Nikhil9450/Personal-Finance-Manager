@@ -1,7 +1,7 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Typography } from '@mui/material';
-import classes from './BarChart.module.css'
+import classes from './BarChart.module.css';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,7 +11,6 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Flex } from 'antd';
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -21,6 +20,7 @@ const BarChart = ({ Monthly_total_data }) => {
   const categorizedExpenses = Array.isArray(Monthly_total_data?.allExpenses)
     ? Monthly_total_data.allExpenses
     : [];
+  
   // Calculate totals per category
   const categoryTotals = categorizedExpenses.reduce((acc, item) => {
     const { category, expense } = item || {}; // Safely destructure item
@@ -42,16 +42,16 @@ const BarChart = ({ Monthly_total_data }) => {
         label: 'Expense',
         data: totals,
         backgroundColor: [
-          // '#FF6F61', // Coral
-          // '#6B5B95', // Indigo
-          // '#88B04B', // Greenery
-          // '#F7CAC9', // Rose Quartz
-          // '#92A8D1', // Serenity
-          // '#955251', // Marsala
-          // '#B565A7', // Radiant Orchid
+          '#FF6F61', // Coral
+          '#6B5B95', // Indigo
+          '#88B04B', // Greenery
+          '#F7CAC9', // Rose Quartz
+          '#92A8D1', // Serenity
+          '#955251', // Marsala
+          '#B565A7', // Radiant Orchid
           '#009B77', // Emerald
-          // '#DD4124', // Tangerine Tango
-          // '#45B8AC', // Mint
+          '#DD4124', // Tangerine Tango
+          '#45B8AC', // Mint
         ],
         borderWidth: 1,
       },
@@ -67,19 +67,18 @@ const BarChart = ({ Monthly_total_data }) => {
     elements: {
       bar: {
         borderWidth: 2,
-        barThickness: 30, // Set minimum bar height
-        borderRadius: 2
+        barThickness: 30, // Default bar thickness
+        borderRadius: 2,
       },
     },
     responsive: true,
-    maintainAspectRatio: false, // Allow height adjustment
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
       },
       title: {
         display: false,
-        text: 'Expenses by Category',
       },
     },
     scales: {
@@ -89,21 +88,15 @@ const BarChart = ({ Monthly_total_data }) => {
           display: false, // Disable x-axis grid
         },
       },
-      // y: {
-      //   grid: {
-      //     display: false, // Disable y-axis grid
-      //   },
-      // },
     },
-    
   };
 
   return (
-    <div className={classes.chartContainer} style={{ height: `${chartHeight}px` }}>
+    <div className={`${classes.chartContainer}`}>
       {categories.length > 0 && totals.length > 0 ? (
         <Bar data={data} options={options} />
       ) : (
-        <div style={{display:'flex',justifyContent:'center', height:'100%', alignItems:'center'}}>
+        <div className={classes.noDataMessage}>
           <p>No expense to display</p>
         </div>
       )}

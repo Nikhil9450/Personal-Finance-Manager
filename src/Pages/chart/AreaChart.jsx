@@ -5,72 +5,60 @@ const AreaChart = ({ Chart_data }) => {
   const chartRef = useRef(null);
   const [chartWidth, setChartWidth] = useState(0);
 
-  // Dynamically update chart width
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     if (chartRef.current) {
+  //       setChartWidth(chartRef.current.offsetWidth);
+  //     }
+  //   };
+
+  //   // Set initial width and add resize listener
+  //   handleResize();
+  //   window.addEventListener("resize", handleResize);
+
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
+
   useEffect(() => {
-    const handleResize = () => {
-      if (chartRef.current) {
-        setChartWidth(chartRef.current.offsetWidth);
-      }
-    };
+    if (chartRef.current) {
+      setChartWidth(chartRef.current.offsetWidth);
 
-    // Set initial width and add resize listener
-    handleResize();
-    window.addEventListener("resize", handleResize);
+      // Attach resize listener
+      const handleResize = () => setChartWidth(chartRef.current.offsetWidth);
+      window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }
   }, []);
+
+  // useEffect(()=>{
+  //   console.log("chartRef.current.offsetWidth------------>",chartRef.current.offsetWidth)
+  //   console.log("chartWidth------------>",chartWidth)
+  // },[chartWidth])
+
+  // Render chart only if data is available
+  if (!Chart_data || Chart_data.length === 0) return <p>No chart data available</p>;
 
   const categories = Chart_data.map((item) => item.name || "");
   const expenses = Chart_data.map((item) => item.expense || 0);
 
+  console.log("categoriess--------------->",categories)
+  
+  console.log("expenses--------------->",expenses)
   const chartOptions = {
-    chart: {
-      id: "apex-area-chart",
-      type: "area",
-      toolbar: { show: false },
-    },
-    xaxis: {
-      categories: categories.length > 0 ? categories : ["No Data"],
-    },
-    yaxis: {
-    },
+    chart: { id: "apex-area-chart", type: "area", toolbar: { show: false } },
+    xaxis: { categories },
+    stroke: { curve: "smooth", width: 2 },
+    fill: { opacity: 0.2 },
     dataLabels: { enabled: false },
-    stroke: {
-      curve: "smooth", // Options: 'smooth', 'straight', 'stepline'
-      width: 2, // Stroke width
-      colors: ["#124E66"],
-     },
-     fill: {
-      type: "solid",
-      colors: ["#124E66"], 
-      opacity: 0.2, 
-      // type: "gradient",
-      // gradient: {
-      //   shade: "light",
-      //   type: "vertical",
-      //   shadeIntensity: 0.5,
-      //   gradientToColors: ["#124E66"],
-      //   inverseColors: false,
-      //   opacityFrom: 0.9,
-      //   opacityTo: 0.4,
-      //   stops: [0, 100],
-      // },
-    },
-    title: {
-      text: "Expenses Overview",
-      align: "left",
-      style: { fontSize: "16px", fontWeight: "bold" },
-    },
+    title: { text: "Expenses Overview", align: "left", style: { fontSize: "16px" } },
   };
 
-  const chartSeries = [
-    {
-      name: "Expenses",
-      data: expenses.length > 0 ? expenses : [0],
-    },
-  ];
+  const chartSeries = [{ name: "Expenses", data: expenses }];
 
   return (
     <div ref={chartRef} style={{ width: "100%" }}>

@@ -25,7 +25,7 @@ const Card = ({ width, height,padding, children }) => {
                     height: height,
                     padding:padding,
                     width:'100%',
-                    margin:'1rem'
+                    marginBottom:'1rem'
                 }}>
                 
        {children}

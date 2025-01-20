@@ -45,10 +45,15 @@ const Daily_expenses_chart = (props) => {
       setModal(false);
     };  
 
-useEffect(()=>{
-  const currentMonth =(!props.date)? moment().format('YYYY-MM'):props.date;
+// useEffect(()=>{
+//   const currentMonth =(!props.date)? moment().format('YYYY-MM'):props.date;
+//   dispatch(data_tobe_render(currentMonth));
+// },[Expense_data])
+
+useEffect(() => {
+  const currentMonth = (!props.date) ? moment().format('YYYY-MM') : props.date;
   dispatch(data_tobe_render(currentMonth));
-},[Expense_data])
+}, [props.date]);
 
 
 

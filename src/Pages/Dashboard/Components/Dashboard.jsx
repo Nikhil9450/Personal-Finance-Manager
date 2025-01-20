@@ -134,6 +134,19 @@ const Dashboard = () => {
       <Navbar />
       <div className={classes.dashboard_content}>
         <div className={classes.date_picker_container}>
+        <style>
+                    {`.ant-picker-header-view{
+                        display:flex;
+                    }
+                      .ant-picker-dropdown .ant-picker-header {
+                          /* Adjust these properties as needed */
+                          width: 23% !important;         /* Ensures the header fits the dropdown width */
+                          padding: 8px;        /* Adjust padding if needed */
+                          display: flex;
+                          {/* justify-content: center; /* Centers header content */ */}
+                      }
+                    `}
+              </style>
           <DatePicker
             style={{
               width: '10rem',
@@ -178,7 +191,7 @@ const Dashboard = () => {
               </div>
               <div className={classes.item2_child} style={{width:"100%",margin:".5rem"}}>
                 <Card  padding="2rem">
-                  {/* <Daily_expenses_chart date={date} year_month={year_month} /> */}
+                  <Daily_expenses_chart date={date} year_month={year_month} />
                 </Card>
               </div>
             </div>
@@ -186,9 +199,9 @@ const Dashboard = () => {
               <Card padding="1rem">
                 <BarChart date={date} Monthly_total_data={Monthly_total_data || []} />
               </Card>
-              <Card height='15rem' padding="1rem " >
+              <div height='15rem' padding="1rem " style={{ padding: '1rem', width: '100%', maxWidth: '200px ', margin: '0 auto' }} >
                   <SavingGoalChart savings={savings} goal={savingGoal} />
-              </Card>
+              </div>
             </div>
 
           </div>

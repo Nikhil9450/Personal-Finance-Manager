@@ -1,9 +1,24 @@
-.chartContainer{
-    width: 25rem;
-}
-
-@media only screen and (max-width: 600px) {
-    .chartContainer{
-        width: 15rem;
+.chartContainer {
+    width: 100%; /* Full width for responsiveness */
+    max-width: 700px; /* Limit max width for larger screens */
+    margin: auto;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .noDataMessage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .chartContainer {
+      padding: 5px;
+      max-width: 100%; /* Use full width for smaller screens */
     }
-}
+  }
+  
