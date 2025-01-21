@@ -193,7 +193,7 @@ const Dashboard = () => {
                   </Card>
                 </div>
                 <div className={classes.I2}>
-                  <Card height= "100%" padding={0}   >
+                  <Card height= "100%" padding={"0 1rem"}   >
                     <div className={classes.flex_div}>
                       <p style={{ color: "#6d2fd4" }}>Total Expenditure</p>
                       <p className={classes.styled_text}>
@@ -203,7 +203,7 @@ const Dashboard = () => {
                   </Card>
                 </div>
                 <div className={classes.I3}>
-                  <Card height= "100%" padding={0}   >
+                  <Card height= "100%" padding={"0 1rem"}   >
                     <div className={classes.flex_div}>
                       <p style={{ color: "#6d2fd4" }}>Remaining Balance</p>
                       <p className={classes.styled_text}>
@@ -212,24 +212,36 @@ const Dashboard = () => {
                     </div>
                   </Card>
                 </div>
-
-
-
+                <div className={classes.I4}>
+                  <Card height= "100%" padding={"1rem"}   >
+                    <Daily_expenses_chart date={date} year_month={year_month} />
+                  </Card>
+                </div>
+                <div className={classes.I5}>
+                  <Card height= "100%" padding={0}   >
+                    {/* <BarChart date={date} Monthly_total_data={Monthly_total_data || []} /> */}
+                  </Card>
+                </div>
+                <div className={classes.I6}>
+                  <Card height= "100%" padding={0}   >
+                    {/* <SavingGoalChart savings={savings} goal={savingGoal} /> */}
+                  </Card>
+                </div>
               </div>
-              <div className={classes.item2_child} style={{width:"100%",margin:".5rem"}}>
-                <Card  padding="2rem">
-                  <Daily_expenses_chart date={date} year_month={year_month} />
-                </Card>
-              </div>
+              {/* <div className={classes.item2_child} style={{width:"100%",margin:".5rem"}}>
+                <Card  padding="2rem"> */}
+                  {/* <Daily_expenses_chart date={date} year_month={year_month} /> */}
+                {/* </Card>
+              </div> */}
             </div>
-            <div className={`${classes.item} ${classes.item2}`}>
+            {/* <div className={`${classes.item} ${classes.item2}`}>
               <Card className={classes.savingGoal_card} padding="1rem">
                 <BarChart date={date} Monthly_total_data={Monthly_total_data || []} />
               </Card>
               <Card padding={'2rem'}  height={'15rem'} >
                   <SavingGoalChart savings={savings} goal={savingGoal} />
               </Card>
-            </div>
+            </div> */}
 
           </div>
         </div>

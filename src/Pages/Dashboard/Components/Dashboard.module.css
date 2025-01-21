@@ -43,10 +43,10 @@
 .item1{
     grid-column-start: 1;
     grid-column-end: 3;
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: center; */
     width: 100%;
 }
 .item1_child{
@@ -79,14 +79,14 @@
         grid-template-columns:  1fr;
         gap: 1rem;
     } */
-    .item1_child{
+    /* .item1_child{
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         flex-direction: column;
         align-items: center;
     
-    }
+    } */
   }
 
   @media only screen and (max-width: 800px) {
@@ -95,18 +95,18 @@
         grid-template-columns:  1fr;
         gap: 1rem;
     }
-    .item1_child{
+    /* .item1_child{
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         flex-direction: column;
         align-items: center;
     
-    }
+    } */
     .item1_child{
         display: grid;
         grid-template-columns:  1fr 1fr;
-        grid-template-rows:  1fr 1fr;
+        grid-template-rows:  repeat(6,100px);
         gap: 1rem;
         /* flex-direction: row;
         justify-content: space-between;
@@ -114,14 +114,32 @@
     
     }
     .I1{
-        grid-row-start: -1;
-        grid-row-end: -3;
+        grid-column-start: 1;
+        grid-column-end: 2;
+        grid-row-start: -7;
+        grid-row-end: -5;
     }
-    .I1,.I2,.I3{
+    .I4,.I5,.I6{
+        grid-column-start: 1;
+        grid-column-end: 3;
+        /* height: 300px; */
+    }
+    .I4,.I5,.I6{
+        grid-column-start: 1;
+        grid-column-end: 3;
+        /* height: 300px; */
+    }
+    /* .I1,.I2,.I3,.I4,.I5,.I6{
         height: 100%;
         width: 100%;
-        /* font-size: medium; */
+    } */
+
+    /* .I5{
+        height: 300px;
     }
+    .I6{
+        height: 300px;
+    } */
 
     .styled_text{
         font-family: 'Montserrat';
@@ -131,5 +149,11 @@
 
     .flex_div{
         font-size: small;
+    }
+  }
+
+  @media only screen and (max-width: 500px) {
+    .flex_div{
+        font-size: x-small;
     }
   }

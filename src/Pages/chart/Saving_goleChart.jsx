@@ -77,7 +77,9 @@ const SavingGoalChart = ({ savings, goal }) => {
 
   return (
     <div className={classes.chartContainer} >
+    <div className={classes.doughnutContainer}>
       <Doughnut data={data} options={options} plugins={[centerTextPlugin]} />
+    </div>
       <div className={classes.ContainerItem} >
         <div className={classes.labelContainer}>
           <label htmlFor="">Saving Goal</label>
