@@ -34,7 +34,7 @@ const BarChart = ({ Monthly_total_data }) => {
                     background: `linear-gradient(90deg, #FF6F61, #FF9671)`,
                   }}
                 />
-                <span className={classes.barValue}>${totals[index].toFixed(2)}</span>
+                <span className={classes.barValue}>₹{totals[index].toFixed(2)}</span>
               </div>
             </div>
           ))}

@@ -95,22 +95,11 @@
         grid-template-columns:  1fr;
         gap: 1rem;
     }
-    /* .item1_child{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        flex-direction: column;
-        align-items: center;
-    
-    } */
     .item1_child{
         display: grid;
         grid-template-columns:  1fr 1fr;
-        grid-template-rows:  repeat(6,100px);
+        grid-template-rows:  50px,50px,50px,auto,auto,auto;
         gap: 1rem;
-        /* flex-direction: row;
-        justify-content: space-between;
-        align-items: center; */
     
     }
     .I1{
@@ -122,13 +111,8 @@
     .I4,.I5,.I6{
         grid-column-start: 1;
         grid-column-end: 3;
-        /* height: 300px; */
     }
-    .I4,.I5,.I6{
-        grid-column-start: 1;
-        grid-column-end: 3;
-        /* height: 300px; */
-    }
+
     /* .I1,.I2,.I3,.I4,.I5,.I6{
         height: 100%;
         width: 100%;

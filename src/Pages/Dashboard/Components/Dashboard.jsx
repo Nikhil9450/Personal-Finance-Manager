@@ -32,13 +32,13 @@ const Dashboard = () => {
   const [exp_loader, set_expLoader] = useState(true);
   const Monthly_total_data = useSelector((state) => state.user.month_wise_totalExpense);
 
-  const onChange = (date, dateString) => {
-    setDate(dateString);
-    setYear_month(dateString);
-    dispatch(data_tobe_render(dateString));
-    fetch_salary(dateString);
-    fetch_savingGoal(dateString);
-  };
+  // const onChange = (date, dateString) => {
+  //   setDate(dateString);
+  //   setYear_month(dateString);
+  //   dispatch(data_tobe_render(dateString));
+  //   fetch_salary(dateString);
+  //   fetch_savingGoal(dateString);
+  // };
   // const onChange = (date, dateString) => {
   //   if (!date || !dateString) {
   //     // Handle the case when the date is cleared
@@ -57,6 +57,21 @@ const Dashboard = () => {
   //     fetch_savingGoal(dateString);
   //   }
   // };
+  const onChange = (date, dateString) => {
+    setDate(dateString);
+    setYear_month(dateString);
+  
+    if (dateString) {
+      dispatch(data_tobe_render(dateString));
+      fetch_salary(dateString);
+      fetch_savingGoal(dateString);
+    } else {
+      console.log("Date picker cleared");
+      // Reset or handle cleared state
+    }
+  };
+  
+  
   
   const fetch_salary = (yearMonth = year_month) => {
     if (!currentUser || !currentUser.uid) {
@@ -213,18 +228,18 @@ const Dashboard = () => {
                   </Card>
                 </div>
                 <div className={classes.I4}>
-                  <Card height= "100%" padding={"1rem"}   >
+                  <Card  height= "100%" padding={"2rem "}   >
                     <Daily_expenses_chart date={date} year_month={year_month} />
                   </Card>
                 </div>
                 <div className={classes.I5}>
                   <Card height= "100%" padding={0}   >
-                    {/* <BarChart date={date} Monthly_total_data={Monthly_total_data || []} /> */}
+                    <BarChart date={date} Monthly_total_data={Monthly_total_data || []} />
                   </Card>
                 </div>
                 <div className={classes.I6}>
-                  <Card height= "100%" padding={0}   >
-                    {/* <SavingGoalChart savings={savings} goal={savingGoal} /> */}
+                  <Card height= "100%" padding={'2rem'}   >
+                    <SavingGoalChart savings={savings} goal={savingGoal} />
                   </Card>
                 </div>
               </div>
