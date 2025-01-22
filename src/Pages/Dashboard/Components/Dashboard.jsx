@@ -58,18 +58,23 @@ const Dashboard = () => {
   //   }
   // };
   const onChange = (date, dateString) => {
-    setDate(dateString);
-    setYear_month(dateString);
+    const validYearMonth = dateString || moment().format('YYYY-MM');
+    
+    setDate(validYearMonth);
+    setYear_month(validYearMonth);
+    
+    console.log("datestring------------->", validYearMonth, typeof validYearMonth);
   
-    if (dateString) {
-      dispatch(data_tobe_render(dateString));
-      fetch_salary(dateString);
-      fetch_savingGoal(dateString);
-    } else {
-      console.log("Date picker cleared");
-      // Reset or handle cleared state
+    dispatch(data_tobe_render(validYearMonth));
+    fetch_salary(validYearMonth);
+    fetch_savingGoal(validYearMonth);
+  
+    if (!dateString) {
+      console.log("Date picker cleared", validYearMonth);
+      // Handle cleared state if necessary
     }
   };
+  
   
   
   
@@ -78,7 +83,14 @@ const Dashboard = () => {
       console.error('User is not authenticated');
       return;
     }
-
+  
+    // Ensure yearMonth is valid
+    if (!yearMonth) {
+      console.error('Invalid yearMonth provided:', yearMonth);
+      return;
+    }
+  
+    // Construct document reference
     const userExpenseListRef = doc(
       db,
       'users',
@@ -86,26 +98,35 @@ const Dashboard = () => {
       'salary_detail',
       yearMonth
     );
-
+  
+    // Fetch data
     onSnapshot(userExpenseListRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.data();
         const salaryValue = parseInt(data.salary || 0); // Default to 0 if invalid
         setSalary(salaryValue);
-        console.log("salaryValue------------>",salaryValue);
+        console.log("salaryValue------------>", salaryValue);
       } else {
         console.error('No salary details found');
         setSalary(0); // Set to 0 if no data
       }
     });
   };
+  
 
   const fetch_savingGoal = (yearMonth = year_month) => {
     if (!currentUser || !currentUser.uid) {
       console.error('User is not authenticated');
       return;
     }
-
+  
+    // Ensure yearMonth is valid
+    if (!yearMonth) {
+      console.error('Invalid yearMonth provided:', yearMonth);
+      return;
+    }
+  
+    // Construct document reference
     const userExpenseListRef = doc(
       db,
       'users',
@@ -113,21 +134,22 @@ const Dashboard = () => {
       'saving_detail',
       yearMonth
     );
-
+  
+    // Fetch data
     onSnapshot(userExpenseListRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.data();
         const savingGoal = parseInt(data.Saving_goal || 0); // Default to 0 if invalid
         setSavingGoal(savingGoal);
-        console.log("savingGoal----------->",savingGoal)
-        console.log("savingGoal_data----------->",data)
-
+        console.log("savingGoal----------->", savingGoal);
+        console.log("savingGoal_data----------->", data);
       } else {
-        console.error('Not found');
+        console.error('No saving details found');
         setSavingGoal(0); // Set to 0 if no data
       }
     });
   };
+  
 
   useEffect(() => {
     if (auth.currentUser) {
@@ -167,7 +189,7 @@ const Dashboard = () => {
       <Navbar />
       <div className={classes.dashboard_content}>
         <div className={classes.date_picker_container}>
-        <style>
+              <style>
                     {`.ant-picker-header-view{
                         display:flex;
                     }
@@ -180,23 +202,25 @@ const Dashboard = () => {
                       }
                     `}
               </style>
-          <DatePicker
-            style={{
-              width: '10rem',
-              height: '2.5rem',
-              padding: '0 15px',
-              textAlign: 'center',
-              borderRadius: '2rem',
-              color: 'grey'
-            }}
-            onChange={onChange}
-            className="customDropdown"
-            picker="month"
-          />
+              <div style={{display:'flex',justifyContent:'center',alignItems:'center',width:'200px'}}>
+                <p style={{margin:'0px' ,fontFamily: 'Montserrat'}}>{year_month}</p>
+              </div>
+              <DatePicker
+                style={{
+                  width: '10rem',
+                  height: '2.5rem',
+                  padding: '0 15px',
+                  textAlign: 'center',
+                  borderRadius: '2rem',
+                  color: 'grey'
+                }}
+                onChange={onChange}
+                className="customDropdown"
+                picker="month"
+              />
+
         </div>
-        <div className={classes.container}>
-            <div className={`${classes.item} ${classes.item1}`}>
-              <div className={classes.item1_child} style={{width:"100%",margin:".5rem"}}>
+              <div className={classes.item1_child} style={{width:"100%"}}>
                 <div className={classes.I1}>
                   <Card  height= "100%" padding={0}  >
                     <div className={classes.flex_div}>
@@ -208,7 +232,7 @@ const Dashboard = () => {
                   </Card>
                 </div>
                 <div className={classes.I2}>
-                  <Card height= "100%" padding={"0 1rem"}   >
+                  <Card height= "100%" padding={"0 1rem"} >
                     <div className={classes.flex_div}>
                       <p style={{ color: "#6d2fd4" }}>Total Expenditure</p>
                       <p className={classes.styled_text}>
@@ -218,7 +242,7 @@ const Dashboard = () => {
                   </Card>
                 </div>
                 <div className={classes.I3}>
-                  <Card height= "100%" padding={"0 1rem"}   >
+                  <Card height= "100%" padding={"0 1rem"} >
                     <div className={classes.flex_div}>
                       <p style={{ color: "#6d2fd4" }}>Remaining Balance</p>
                       <p className={classes.styled_text}>
@@ -233,7 +257,7 @@ const Dashboard = () => {
                   </Card>
                 </div>
                 <div className={classes.I5}>
-                  <Card height= "100%" padding={0}   >
+                  <Card height= "100%" padding={"1rem"}   >
                     <BarChart date={date} Monthly_total_data={Monthly_total_data || []} />
                   </Card>
                 </div>
@@ -243,22 +267,6 @@ const Dashboard = () => {
                   </Card>
                 </div>
               </div>
-              {/* <div className={classes.item2_child} style={{width:"100%",margin:".5rem"}}>
-                <Card  padding="2rem"> */}
-                  {/* <Daily_expenses_chart date={date} year_month={year_month} /> */}
-                {/* </Card>
-              </div> */}
-            </div>
-            {/* <div className={`${classes.item} ${classes.item2}`}>
-              <Card className={classes.savingGoal_card} padding="1rem">
-                <BarChart date={date} Monthly_total_data={Monthly_total_data || []} />
-              </Card>
-              <Card padding={'2rem'}  height={'15rem'} >
-                  <SavingGoalChart savings={savings} goal={savingGoal} />
-              </Card>
-            </div> */}
-
-          </div>
         </div>
       </div>
   );

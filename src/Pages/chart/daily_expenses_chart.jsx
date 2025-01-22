@@ -124,7 +124,7 @@ const deleteitem = async (itemId) => {
                   </div>
                   { (Chart_data.length > 0)? (
                     <div style={{ width: '100%' }}>
-                      <div style={{display:'flex',justifyContent:'space-between'}}>
+                      <div style={{display:'flex',justifyContent:'space-between',marginBottom:'1rem'}}>
                         <p style={{fontSize:'12px',color:'grey'}}>Total spent amount : {Total_spent_amt}</p>
                         <p style={{color:'#127afb',cursor:'pointer' ,fontSize:'12px'}} onClick={showModal}>View expenses</p>
                       </div>
