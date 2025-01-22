@@ -143,6 +143,7 @@ export const listenToUserProfile = (uid) => (dispatch) => {
     // dispatch(userSlice.actions.setStatus('loading'));
     const userDocRef = doc(db, 'users', uid);
     onSnapshot(userDocRef, (docSnap) => {
+      console.log("onSnapshot of listen to user profile is triggered")
       if (docSnap.exists()) {
         dispatch(userSlice.actions.setProfile(docSnap.data()));
         // dispatch(userSlice.actions.setStatus('success'));
@@ -170,6 +171,7 @@ export const listenToUserExpenses = (uid) => (dispatch) => {
 
     const userExpenseListRef = collection(db, 'users', uid, 'items');
     onSnapshot(userExpenseListRef, (snapshot) => {
+      console.log("onSnapshot of listenToUserExpenses is triggered")
       if (!snapshot.empty) {
         const expenses = snapshot.docs.map((doc) => {
           const data = doc.data();
@@ -252,40 +254,40 @@ export const deleteExpense=(itemid)=>async(dispatch,getState)=>{
   }
 }
 
-export const createExpenses = (item) => async (dispatch, getState) => {
-  console.log("Inside createExpenses with item:", item);
-  dispatch(userSlice.actions.setLoader(true));
-  dispatch(userSlice.actions.setCreationStatus("loading"));
-  const uid = getState().user.uid;
-  try {
-    const itemsCollection = collection(db, "users", uid, "items");
-    const docRef = await addDoc(itemsCollection, item);
-    console.log("Item successfully added to Firestore:", docRef);
-    const currentExpenses = getState().user.expenses;
-    console.log("currentExpenses",currentExpenses)
-    const newItem = { id: docRef.id, ...item };
-      // Avoid duplication by checking if the newItem already exists
-      const isItemPresent = currentExpenses.some(
-        (expense) => expense.id === newItem.id
-      );
+// export const createExpenses = (item) => async (dispatch, getState) => {
+//   console.log("Inside createExpenses with item:", item);
+//   dispatch(userSlice.actions.setLoader(true));
+//   dispatch(userSlice.actions.setCreationStatus("loading"));
+//   const uid = getState().user.uid;
+//   try {
+//     const itemsCollection = collection(db, "users", uid, "items");
+//     const docRef = await addDoc(itemsCollection, item);
+//     console.log("Item successfully added to Firestore:", docRef);
+//     const currentExpenses = getState().user.expenses;
+//     console.log("currentExpenses",currentExpenses)
+//     const newItem = { id: docRef.id, ...item };
+//       // Avoid duplication by checking if the newItem already exists
+//       const isItemPresent = currentExpenses.some(
+//         (expense) => expense.id === newItem.id
+//       );
 
-    const updatedExpenses = isItemPresent
-      ? currentExpenses
-      : [...currentExpenses, newItem];
-      console.log("Updated expenses:", updatedExpenses);
-    dispatch(userSlice.actions.setExpenses(updatedExpenses));
+//     const updatedExpenses = isItemPresent
+//       ? currentExpenses
+//       : [...currentExpenses, newItem];
+//       console.log("Updated expenses:", updatedExpenses);
+//     dispatch(userSlice.actions.setExpenses(updatedExpenses));
 
-    dispatch(userSlice.actions.setCreationStatus("success"));
-  } catch (error) {
-    console.error("Error in createExpenses:", error);
-    dispatch(userSlice.actions.setCreationStatus("failed"));
-    dispatch(userSlice.actions.setError(error.message));
-  } finally {
-    dispatch(userSlice.actions.setCreationStatus("idle"));
-    dispatch(userSlice.actions.setLoader(false));
-    console.log("Exiting createExpenses");
-  }
-};
+//     dispatch(userSlice.actions.setCreationStatus("success"));
+//   } catch (error) {
+//     console.error("Error in createExpenses:", error);
+//     dispatch(userSlice.actions.setCreationStatus("failed"));
+//     dispatch(userSlice.actions.setError(error.message));
+//   } finally {
+//     dispatch(userSlice.actions.setCreationStatus("idle"));
+//     dispatch(userSlice.actions.setLoader(false));
+//     console.log("Exiting createExpenses");
+//   }
+// };
 
 // export const createExpenses = (item) => async (dispatch, getState) => {
 //   console.log("Inside createExpenses with item:", item);
@@ -332,6 +334,44 @@ export const createExpenses = (item) => async (dispatch, getState) => {
 //     console.log("Exiting createExpenses");
 //   }
 // };
+
+export const createExpenses = (item) => async (dispatch, getState) => {
+  console.log("Inside createExpenses with item:", item);
+  dispatch(userSlice.actions.setLoader(true));
+  dispatch(userSlice.actions.setCreationStatus("loading"));
+
+  const uid = getState().user.uid;
+  try {
+    const itemsCollection = collection(db, "users", uid, "items");
+    const docRef = await addDoc(itemsCollection, item);
+    console.log("Item successfully added to Firestore:", docRef);
+
+    const currentExpenses = getState().user.expenses;
+    console.log("Current expenses before update:", currentExpenses);
+
+    const newItem = { id: docRef.id, ...item };
+    const isItemPresent = currentExpenses.some(
+      (expense) => expense.id === newItem.id
+    );
+
+    const updatedExpenses = isItemPresent
+      ? currentExpenses
+      : [...currentExpenses, newItem];
+    console.log("Updated expenses after adding new item:", updatedExpenses);
+
+    dispatch(userSlice.actions.setExpenses(updatedExpenses));
+    dispatch(userSlice.actions.setCreationStatus("success"));
+  } catch (error) {
+    console.error("Error in createExpenses:", error);
+    dispatch(userSlice.actions.setCreationStatus("failed"));
+    dispatch(userSlice.actions.setError(error.message));
+  } finally {
+    dispatch(userSlice.actions.setLoader(false));
+    dispatch(userSlice.actions.setCreationStatus("idle"));
+    console.log("Exiting createExpenses");
+  }
+};
+
 export const { clearProfile } = userSlice.actions;
 
 // Export reducer

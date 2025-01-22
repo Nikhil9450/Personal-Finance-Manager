@@ -32,31 +32,10 @@ const Dashboard = () => {
   const [exp_loader, set_expLoader] = useState(true);
   const Monthly_total_data = useSelector((state) => state.user.month_wise_totalExpense);
 
-  // const onChange = (date, dateString) => {
-  //   setDate(dateString);
-  //   setYear_month(dateString);
-  //   dispatch(data_tobe_render(dateString));
-  //   fetch_salary(dateString);
-  //   fetch_savingGoal(dateString);
-  // };
-  // const onChange = (date, dateString) => {
-  //   if (!date || !dateString) {
-  //     // Handle the case when the date is cleared
-  //     setDate('');
-  //     setYear_month('');
-  //     dispatch(data_tobe_render(''));
-  //     fetch_salary('');
-  //     fetch_savingGoal('');
-  //     console.log('Date is cleared');
-  //   } else {
-  //     // Handle the case when a valid date is selected
-  //     setDate(dateString);
-  //     setYear_month(dateString);
-  //     dispatch(data_tobe_render(dateString));
-  //     fetch_salary(dateString);
-  //     fetch_savingGoal(dateString);
-  //   }
-  // };
+useEffect(()=>{
+ console.log("Monthly_total_data---------->",Monthly_total_data);
+},[Monthly_total_data]);
+
   const onChange = (date, dateString) => {
     const validYearMonth = dateString || moment().format('YYYY-MM');
     
