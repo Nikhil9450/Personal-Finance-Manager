@@ -31,10 +31,11 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const [exp_loader, set_expLoader] = useState(true);
   const Monthly_total_data = useSelector((state) => state.user.month_wise_totalExpense);
+  const expenses = useSelector((state) => state.user.expenses);
 
 useEffect(()=>{
- console.log("Monthly_total_data---------->",Monthly_total_data);
-},[Monthly_total_data]);
+  dispatch(data_tobe_render(year_month));
+},[expenses]);
 
   const onChange = (date, dateString) => {
     const validYearMonth = dateString || moment().format('YYYY-MM');
@@ -132,7 +133,7 @@ useEffect(()=>{
 
   useEffect(() => {
     if (auth.currentUser) {
-      dispatch(listenToUserProfile(auth.currentUser.uid));
+      dispatch(listenToUserProfile(auth.currentUser.uid)); 
       dispatch(listenToUserExpenses(auth.currentUser.uid));
       fetch_salary(year_month);
       fetch_savingGoal(year_month);
@@ -181,12 +182,12 @@ useEffect(()=>{
                       }
                     `}
               </style>
-              <div style={{display:'flex',justifyContent:'center',alignItems:'center',width:'200px'}}>
+              <div style={{marginLeft:'1rem',display:'flex',justifyContent:'start',alignItems:'center',width:'200px'}}>
                 <p style={{margin:'0px' ,fontFamily: 'Montserrat'}}>{year_month}</p>
               </div>
               <DatePicker
                 style={{
-                  width: '10rem',
+                  width: '20rem',
                   height: '2.5rem',
                   padding: '0 15px',
                   textAlign: 'center',

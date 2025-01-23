@@ -164,7 +164,6 @@ export const listenToUserProfile = (uid) => (dispatch) => {
 };
 
 // Thunk to listen for user expenses list changes
-// Thunk to listen for user expenses list changes
 export const listenToUserExpenses = (uid) => (dispatch) => {
   try {
     // dispatch(userSlice.actions.setStatus('loading'));
@@ -182,6 +181,7 @@ export const listenToUserExpenses = (uid) => (dispatch) => {
           };
         });
         dispatch(userSlice.actions.setExpenses(expenses));
+        
         // dispatch(userSlice.actions.setStatus('success'));
       } else {
         console.error('No expenses found');
@@ -197,9 +197,7 @@ export const listenToUserExpenses = (uid) => (dispatch) => {
 };
  
 export const updateUserExpenses = (itemid, updatedData) => async (dispatch, getState) => {
-  const state = getState();
-  const uid = state.user.uid;
-  const currentExpenses = state.user.expenses; // Cache state values
+  const uid = getState().user.uid;
 
   dispatch(userSlice.actions.setLoader(true));
   dispatch(userSlice.actions.setStatus("loading"));
@@ -211,16 +209,10 @@ export const updateUserExpenses = (itemid, updatedData) => async (dispatch, getS
     // Update the Firestore document
     await updateDoc(itemDoc, updatedData);
 
-    dispatch(userSlice.actions.setStatus("success"));
     console.log("Item updated successfully");
 
-    // Update the state
-    const updatedExpenses = currentExpenses.map((expense) =>
-      expense.id === itemid ? { ...expense, ...updatedData } : expense
-    );
-
-    // Dispatch updated expenses to the store
-    dispatch(userSlice.actions.setExpenses(updatedExpenses));
+    // No need to manually update Redux state here
+    dispatch(userSlice.actions.setStatus("success"));
   } catch (error) {
     console.error("Error updating item:", error);
     dispatch(userSlice.actions.setError(error.message || "An unexpected error occurred"));
@@ -231,109 +223,25 @@ export const updateUserExpenses = (itemid, updatedData) => async (dispatch, getS
 };
 
 
-
-export const deleteExpense=(itemid)=>async(dispatch,getState)=>{
+export const deleteExpense = (itemid) => async (dispatch, getState) => {
   console.log("delete executed from slice");
   const uid = getState().user.uid;
   dispatch(userSlice.actions.setStatus("loading"));
-  try{
+  try {
     const itemDoc = doc(db, "users", uid, "items", itemid);
     await deleteDoc(itemDoc);
     console.log("Item deleted successfully");
-    const currentExpenses = getState().user.expenses;
-    const updatedExpenses = currentExpenses.filter((expense) => expense.id !== itemid); // Remove deleted expense
-    dispatch(userSlice.actions.setExpenses(updatedExpenses));
-    dispatch(userSlice.actions.setStatus("success"));
 
-  }catch(error){
-    console.error("Error updating item:", error);
+    // No need to manually update Redux state here, as onSnapshot will handle it
+    dispatch(userSlice.actions.setStatus("success"));
+  } catch (error) {
+    console.error("Error deleting item:", error);
     dispatch(userSlice.actions.setError(error.message));
     dispatch(userSlice.actions.setStatus("failed"));
-  }finally{
+  } finally {
     dispatch(userSlice.actions.setLoader(false));
   }
-}
-
-// export const createExpenses = (item) => async (dispatch, getState) => {
-//   console.log("Inside createExpenses with item:", item);
-//   dispatch(userSlice.actions.setLoader(true));
-//   dispatch(userSlice.actions.setCreationStatus("loading"));
-//   const uid = getState().user.uid;
-//   try {
-//     const itemsCollection = collection(db, "users", uid, "items");
-//     const docRef = await addDoc(itemsCollection, item);
-//     console.log("Item successfully added to Firestore:", docRef);
-//     const currentExpenses = getState().user.expenses;
-//     console.log("currentExpenses",currentExpenses)
-//     const newItem = { id: docRef.id, ...item };
-//       // Avoid duplication by checking if the newItem already exists
-//       const isItemPresent = currentExpenses.some(
-//         (expense) => expense.id === newItem.id
-//       );
-
-//     const updatedExpenses = isItemPresent
-//       ? currentExpenses
-//       : [...currentExpenses, newItem];
-//       console.log("Updated expenses:", updatedExpenses);
-//     dispatch(userSlice.actions.setExpenses(updatedExpenses));
-
-//     dispatch(userSlice.actions.setCreationStatus("success"));
-//   } catch (error) {
-//     console.error("Error in createExpenses:", error);
-//     dispatch(userSlice.actions.setCreationStatus("failed"));
-//     dispatch(userSlice.actions.setError(error.message));
-//   } finally {
-//     dispatch(userSlice.actions.setCreationStatus("idle"));
-//     dispatch(userSlice.actions.setLoader(false));
-//     console.log("Exiting createExpenses");
-//   }
-// };
-
-// export const createExpenses = (item) => async (dispatch, getState) => {
-//   console.log("Inside createExpenses with item:", item);
-//   dispatch(userSlice.actions.setLoader(true));
-//   dispatch(userSlice.actions.setCreationStatus("loading"));
-//   const uid = getState().user.uid;
-
-//   try {
-//     // Extract year and month from expenditure_date
-//     const expenditureDate = new Date(item.expenditure_date);
-//     const year = expenditureDate.getFullYear().toString();
-//     const month = (expenditureDate.getMonth() + 1).toString().padStart(2, "0");
-
-//     // Define the Firestore collection path: users/{uid}/expenses/{year}/{month}/items
-//     const itemsCollection = collection(
-//       db,
-//       "users",
-//       uid,
-//       "expenses",
-//       `${year}-${month}`,
-//       "items"
-//     );
-
-//     // Add the expense as a new document
-//     const docRef = await addDoc(itemsCollection, item);
-
-//     // Add the Firestore-generated ID to the expense
-//     const newExpense = { id: docRef.id, ...item };
-
-//     // Update Redux state
-//     const currentExpenses = getState().user.expenses;
-//     const updatedExpenses = [...currentExpenses, newExpense];
-//     dispatch(userSlice.actions.setExpenses(updatedExpenses));
-
-//     console.log("Expense added successfully:", newExpense);
-//     dispatch(userSlice.actions.setCreationStatus("success"));
-//   } catch (error) {
-//     console.error("Error in createExpenses:", error);
-//     dispatch(userSlice.actions.setCreationStatus("failed"));
-//     dispatch(userSlice.actions.setError(error.message));
-//   } finally {
-//     dispatch(userSlice.actions.setCreationStatus("idle"));
-//     dispatch(userSlice.actions.setLoader(false));
-//     console.log("Exiting createExpenses");
-//   }
-// };
+};
 
 export const createExpenses = (item) => async (dispatch, getState) => {
   console.log("Inside createExpenses with item:", item);
@@ -346,20 +254,7 @@ export const createExpenses = (item) => async (dispatch, getState) => {
     const docRef = await addDoc(itemsCollection, item);
     console.log("Item successfully added to Firestore:", docRef);
 
-    const currentExpenses = getState().user.expenses;
-    console.log("Current expenses before update:", currentExpenses);
-
-    const newItem = { id: docRef.id, ...item };
-    const isItemPresent = currentExpenses.some(
-      (expense) => expense.id === newItem.id
-    );
-
-    const updatedExpenses = isItemPresent
-      ? currentExpenses
-      : [...currentExpenses, newItem];
-    console.log("Updated expenses after adding new item:", updatedExpenses);
-
-    dispatch(userSlice.actions.setExpenses(updatedExpenses));
+    // No need to manually update Redux state here
     dispatch(userSlice.actions.setCreationStatus("success"));
   } catch (error) {
     console.error("Error in createExpenses:", error);
@@ -371,6 +266,7 @@ export const createExpenses = (item) => async (dispatch, getState) => {
     console.log("Exiting createExpenses");
   }
 };
+
 
 export const { clearProfile } = userSlice.actions;
 

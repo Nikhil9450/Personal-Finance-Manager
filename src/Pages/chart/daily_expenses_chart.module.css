@@ -55,9 +55,30 @@
 }
 
 
+  
 
-
-
+/* Increase specificity by targeting .swal2-container and .swal2-popup directly */
+div.swal2-container div.swal2-popup.custom-swal-popup {
+    width: 90% !important; /* Adjust width for smaller screens */
+    max-width: 90% !important;
+    height: auto !important; /* Allow content height to adjust */
+    padding: 20px !important; /* Add custom padding */
+    border-radius: 10px !important; /* Rounded corners */
+  }
+  
+  @media (max-width: 768px) {
+    div.swal2-container div.swal2-popup.custom-swal-popup {
+      width: 90% !important; /* Adjust for tablets */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    div.swal2-container div.swal2-popup.custom-swal-popup {
+      width: 20rem !important; /* Adjust for phones */
+      padding: 10px !important; /* Reduce padding on small screens */
+    }
+  }
+  
 
 
 
