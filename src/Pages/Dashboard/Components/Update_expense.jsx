@@ -7,7 +7,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import classes from "./AddExpenses.module.css";
 import { useDispatch,useSelector } from "react-redux";
-import { listenToUserExpenses,listenToUserProfile,data_tobe_render,updateUserExpenses } from '../../../Slices/UserSlice';
+import { updateUserExpenses } from '../../../Slices/UserSlice';
 import Swal from "sweetalert2";
 import { Select } from 'antd';
 

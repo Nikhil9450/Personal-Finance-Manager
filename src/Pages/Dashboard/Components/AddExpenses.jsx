@@ -174,7 +174,7 @@ const AddExpenses = ({ onUpdateExpenses }) => {
                     onChange={onChangeSelect}
                     // onSearch={onSearch}
                     options={categories}
-                    style={{ width: '40%', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,color:'lightgrey'}}
+                    style={{ width: '55%', height:'2.5rem', padding: '0 8px', textAlign: 'center' ,color:'lightgrey'}}
                   />
                 </div>
               </div>
