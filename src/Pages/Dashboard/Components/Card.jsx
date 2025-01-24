@@ -21,10 +21,10 @@ const Card = ({ width, height,padding, children }) => {
                 //     scale: 1.02
                 // }}
                 style={{
-                    // width: width,
+                    width: width,
                     height: height,
                     padding:padding,
-                    width:'100%',
+                    // width:'100%',
                     marginBottom:'1rem'
                 }}>
                 

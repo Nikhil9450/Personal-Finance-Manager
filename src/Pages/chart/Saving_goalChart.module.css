@@ -38,7 +38,8 @@
     }
   
     .doughnutContainer {
-      max-width: 200px; /* Smaller size for mobile */
+      /* Smaller size for mobile */
+      max-width: 200px; 
     }
   
     .ContainerItem {

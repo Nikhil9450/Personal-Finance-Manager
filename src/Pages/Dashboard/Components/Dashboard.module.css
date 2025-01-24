@@ -91,7 +91,7 @@
         grid-row-start: -7;
         grid-row-end: -5;
     }
-    .I4,.I5,.I6{
+    .I4,.I5{
         grid-column-start: 1;
         grid-column-end: 3;
     }
@@ -110,5 +110,8 @@
   @media only screen and (max-width: 500px) {
     .flex_div{
         font-size: x-small;
+    }
+    .I6{
+        /* width: 100%; */
     }
   }

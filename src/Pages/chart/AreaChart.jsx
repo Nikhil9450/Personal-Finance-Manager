@@ -34,10 +34,10 @@ const AreaChart = ({ Chart_data }) => {
               <stop offset="95%" stopColor="#4CAF50" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid
+          {/* <CartesianGrid
             strokeDasharray="3 3"
             stroke={isMobile ? "#e8e8e8" : "#ccc"}
-          />
+          /> */}
           <XAxis
             dataKey="date"
             tick={{ fontSize, fill: "#666" }}

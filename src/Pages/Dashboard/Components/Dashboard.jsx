@@ -242,8 +242,24 @@ useEffect(()=>{
                   </Card>
                 </div>
                 <div className={classes.I6}>
-                  <Card height= "100%" padding={'2rem'}   >
+                  <Card height= "100%" padding={'2rem'} width={'99%'}  >
                     <SavingGoalChart savings={savings} goal={savingGoal} />
+                  </Card>
+                </div>
+                <div className={classes.I7}>
+                  <Card height= "100%" padding={'2rem'}   >
+                  </Card>
+                </div>
+                <div className={classes.I8}>
+                  <Card height= "100%" padding={'2rem'}   >
+                  </Card>
+                </div>
+                <div className={classes.I9}>
+                  <Card height= "100%" padding={'2rem'}   >
+                  </Card>
+                </div>
+                <div className={classes.I10}>
+                  <Card height= "100%" padding={'2rem'}   >
                   </Card>
                 </div>
               </div>
