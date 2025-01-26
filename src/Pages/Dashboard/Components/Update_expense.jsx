@@ -101,7 +101,7 @@ const Update_expense = (props) => {
     { value: "Clothing", label: "Clothing" },
     { value: "Entertainment", label: "Entertainment" },
     { value: "Grocery", label: "Grocery" },
-    { value: "Transportation", label: "Transportation" },
+    { value: "Travel Expenses", label: "Travel Expenses" },
     { value: "Health & Fitness", label: "Health & Fitness" },
     { value: "Travel", label: "Travel" },
     { value: "Education", label: "Education" },

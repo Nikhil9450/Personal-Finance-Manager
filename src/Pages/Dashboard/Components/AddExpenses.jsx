@@ -90,7 +90,7 @@ const AddExpenses = ({ onUpdateExpenses }) => {
       { value: "Electronics", label: "Electronics" },
       { value: "Clothing", label: "Clothing" },
       { value: "Entertainment", label: "Entertainment" },
-      { value: "Transportation", label: "Transportation" },
+      { value: "Travel Expenses", label: "Travel Expenses" },
       { value: "Health", label: "Health" },
       { value: "Education", label: "Education" },
       { value: "Personal Expenses", label: "Personal Expenses" },
@@ -114,17 +114,18 @@ const AddExpenses = ({ onUpdateExpenses }) => {
       <Fab 
           // color='primary'
           style={{
-            background:'#3a843a',
+            background:'rgb(120 137 219)',
             color:'white',
             position: 'fixed',
             bottom: '20px',
             right: '20px',
             zIndex: 1000,
+            height:'56px'
           }}
           onClick={showModal}
         variant="extended">
-        <ShoppingCartIcon sx={{ mr: 1 }} />
-        Add Expenses
+        <AddIcon />
+        <span className={classes.addExpense_text}>Add Expenses</span>
       </Fab>
 
         <My_modal title="" button_name="Add Expenses" isModalOpen={modal} handleCancel={handleCancel}>

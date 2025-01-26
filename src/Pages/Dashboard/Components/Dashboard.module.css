@@ -91,7 +91,7 @@
         grid-row-start: -7;
         grid-row-end: -5;
     }
-    .I4,.I5{
+    .I4,.I5,.I6,.I7{
         grid-column-start: 1;
         grid-column-end: 3;
     }

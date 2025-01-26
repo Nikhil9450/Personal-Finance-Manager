@@ -16,6 +16,7 @@ import BarChart from '../../chart/BarChart';
 import moment from 'moment';
 import SavingGoalChart from '../../chart/Saving_goleChart';
 import { doc, collection, onSnapshot, getDoc, updateDoc ,deleteDoc,addDoc,setDoc } from 'firebase/firestore';
+import RecentTransactions from './RecentTransaction';
 // import SavingGoalChart from '../../chart/Saving_goleChart';
 const Dashboard = () => {
   const [date, setDate] = useState(null);
@@ -242,12 +243,13 @@ useEffect(()=>{
                   </Card>
                 </div>
                 <div className={classes.I6}>
-                  <Card height= "100%" padding={'2rem'} width={'99%'}  >
+                  <Card height= "100%" padding={'2rem'} width={'100%'}  >
                     <SavingGoalChart savings={savings} goal={savingGoal} />
                   </Card>
                 </div>
                 <div className={classes.I7}>
                   <Card height= "100%" padding={'2rem'}   >
+                    <RecentTransactions date={date} year_month={year_month}/>
                   </Card>
                 </div>
                 <div className={classes.I8}>
