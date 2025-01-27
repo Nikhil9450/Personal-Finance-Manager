@@ -18,7 +18,7 @@ const AreaChart = ({ Chart_data }) => {
   const fontSize = isMobile ? 10 : 12;
   const chartHeight = isMobile ? 150 : 300;
   const margin = isMobile
-    ? { top: 10, right: 20, left: 10, bottom: 10 }
+    ? { top: 10, right: 0, left: 0, bottom: 10 }
     : { top: 10, right: 30, left: 20, bottom: 10 };
 
   return (
@@ -28,28 +28,28 @@ const AreaChart = ({ Chart_data }) => {
           data={Chart_data}
           margin={margin}
         >
-          <defs>
+          {/* <defs>
             <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#4CAF50" stopOpacity={0.8} />
               <stop offset="95%" stopColor="#4CAF50" stopOpacity={0} />
             </linearGradient>
-          </defs>
+          </defs> */}
           {/* <CartesianGrid
             strokeDasharray="3 3"
             stroke={isMobile ? "#e8e8e8" : "#ccc"}
           /> */}
-          <XAxis
+          {/* <XAxis
             dataKey="date"
             tick={{ fontSize, fill: "#666" }}
             tickMargin={8}
             stroke="#888"
             padding={{ left: 15, right: 15 }}
-          />
-          <YAxis
+          /> */}
+          {/* <YAxis
             tick={{ fontSize, fill: "#666" }}
             stroke="#888"
             width={40}
-          />
+          /> */}
             <Tooltip
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
