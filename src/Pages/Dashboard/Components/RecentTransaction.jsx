@@ -22,7 +22,7 @@ export default function RecentTransactions(props) {
     console.log("MonthlyTotalData in recent transactions--------------->", MonthlyTotalData);
   }, [MonthlyTotalData]);
 
-  if (!MonthlyTotalData || MonthlyTotalData.allExpenses.length === 0) {
+  if (!MonthlyTotalData.allExpenses ) {
     return <p>No recent transactions available</p>;
   }
 

@@ -79,13 +79,13 @@ const Daily_expenses_chart = (props) => {
             {/* <p style={{ color: "#127afb", cursor: "pointer", fontSize: "12px" }} onClick={showModal}>
               View expenses
             </p> */}
+            <p className={classes.current_spend}>
+                Current spend <span>₹ {Total_spent_amt}</span> 
+            </p>
           </div>
           <div className={classes.chart_container}>
             <AreaChart Chart_data={Chart_data} />
           </div>
-          <p style={{ fontSize: "12px", color: "grey",textAlign:'center' }}>
-              Total spent amount: {Total_spent_amt}
-            </p>
         </div>
       ) : (
         <div className={classes.empty_graph_handler}>No expenses to display</div>

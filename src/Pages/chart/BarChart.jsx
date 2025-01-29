@@ -27,15 +27,15 @@ const BarChart = ({ Monthly_total_data }) => {
             <div key={index} className={classes.barRow}>
               <span className={classes.categoryLabel}>{category}</span>
               <div className={classes.barWrapper}>
-                <div
-                  className={classes.bar}
-                  style={{
-                    width: `${(totals[index] / maxExpense) * 100}%`,
-                    background: `linear-gradient(90deg, #FF6F61, #FF9671)`,
-                  }}
-                />
-                <span className={classes.barValue}>₹{totals[index].toFixed(2)}</span>
-              </div>
+              <div
+                className={classes.bar}
+                style={{
+                  width: `${(totals[index] / maxExpense) * 100}%`,
+                  background: `linear-gradient(90deg, #FF6F61, #FF9671)`,
+                }}
+              />
+              <span className={classes.barValue}>₹{totals[index].toFixed(2)}</span>
+            </div>
             </div>
           ))}
         </div>
