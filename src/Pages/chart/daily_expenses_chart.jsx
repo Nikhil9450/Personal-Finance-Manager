@@ -80,11 +80,11 @@ const Daily_expenses_chart = (props) => {
               View expenses
             </p> */}
             <p className={classes.current_spend}>
-                Current spend <span>₹ {Total_spent_amt}</span> 
+                Current spend <span style={{fontWeight:'700'}}>₹ {Total_spent_amt}</span> 
             </p>
-            <p>
+            {/* <p>
               Saving Goal - {}
-            </p>
+            </p> */}
           </div>
           <div className={classes.chart_container}>
             <AreaChart Chart_data={Chart_data} />
